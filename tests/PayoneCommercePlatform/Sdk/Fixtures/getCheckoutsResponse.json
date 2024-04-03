@@ -1,0 +1,106 @@
+{
+  "numberOfCheckouts": 1,
+  "checkouts": [
+    {
+      "commerceCaseId": "6793bc98-6e90-46b3-a9c6-2d49f0eece5a",
+      "checkoutId": "6b65e1db-ec22-4e3a-a8a2-bbe547c918de",
+      "merchantCustomerId": "12345",
+      "amountOfMoney": {
+        "amount": 48560,
+        "currencyCode": "EUR"
+      },
+      "references": {
+        "merchantReference": "your-order-6372",
+        "merchantShopReference": "shop-payone-kiel"
+      },
+      "shipping": {
+        "address": {
+          "additionalInfo": "floor 9",
+          "city": "Zaventem",
+          "countryCode": "DE",
+          "houseNumber": "3",
+          "state": "BE",
+          "street": "Da Vinci street",
+          "zip": "1930",
+          "name": {
+            "firstName": "Wile",
+            "surname": "E. Coyote",
+            "title": "Dr."
+          }
+        }
+      },
+      "shoppingCart": {
+        "items": [
+          {
+            "invoiceData": {
+              "description": "Smartwatch"
+            },
+            "orderLineDetails": {
+              "id": "46f1673b-7e5d-4936-bc92-3203fb6ccc4e",
+              "status": [
+                {
+                  "cartItemStatus": "ORDERED",
+                  "quantity": 1
+                }
+              ],
+              "productCode": "ASP01",
+              "productPrice": 48560,
+              "productType": "GOODS",
+              "quantity": 1,
+              "taxAmount": 0,
+              "productUrl": "https://shop.url/watches/watch01",
+              "productImageUrl": "https://shop.url/watches/watch01.jpg",
+              "productCategoryPath": "Watches > Smartwatches",
+              "merchantShopDeliveryReference": "TestShop"
+            }
+          }
+        ]
+      },
+      "paymentExecutions": [
+        {
+          "paymentExecutionId": "a90a086f-bbd7-4f91-8140-b4935510bea1",
+          "paymentId": "PP2AAD3LW04B2ZK3",
+          "cardPaymentMethodSpecificInput": {
+            "authorizationMode": "PRE_AUTHORIZATION",
+            "recurring": {},
+            "paymentProcessingToken": "9550000000000001136",
+            "transactionChannel": "ECOMMERCE",
+            "paymentProductId": 3,
+            "returnUrl": "https://pmi.hoth.pay1-test.de/system/test/api_test.php?exit=success&txid=__txid__"
+          },
+          "paymentChannel": "ECOMMERCE",
+          "references": {
+            "descriptor": "Descriptor-for-test",
+            "merchantReference": "lOwKSXpWadH0rhaGcH9F",
+            "merchantParameters": "{\"SessionID\":\"126548354\",\"ShopperID\":\"73541312\"}"
+          },
+          "events": [
+            {
+              "type": "RESERVATION",
+              "amountOfMoney": {
+                "amount": 48560,
+                "currencyCode": "EUR"
+              },
+              "paymentStatus": "PENDING_CAPTURE"
+            }
+          ]
+        }
+      ],
+      "checkoutStatus": "COMPLETED",
+      "statusOutput": {
+        "paymentStatus": "PAYMENT_NOT_COMPLETED",
+        "isModifiable": false,
+        "openAmount": 48560,
+        "collectedAmount": 0,
+        "cancelledAmount": 0,
+        "refundedAmount": 0,
+        "chargebackAmount": 0
+      },
+      "creationDateTime": "2024-02-29T08:25:25.440561788Z",
+      "allowedPaymentActions": [
+        "ORDER_MANAGEMENT",
+        "PAYMENT_EXECUTION"
+      ]
+    }
+  ]
+}
