@@ -1,0 +1,24 @@
+# PAYONE Commerce Platform Server SDK PHP
+
+## Introduction
+
+The PHP SDK helps you to communicate with the PAYONE commerce platform server API. Its primary features are:
+
+* convenient PHP wrapper around the API calls and responses:
+  * marshals PHP request objects to HTTP requests
+  * unmarshalls HTTP responses to PHP response objects or PHP exceptions
+* handling of all the details concerning authentication
+* handling of required meta data
+
+Its use is demonstrated by an example for most calls. The examples execute a call using the provided API keys.
+
+## Structure of this repository
+
+This repository consists out of the following components:
+
+1. The source code of the SDK itself: `/src` and `/lib`
+2. The source code of the unit and integration tests (including the examples): `/tests`
+
+## Requirements
+
+PHP 8.1 or above is required.
