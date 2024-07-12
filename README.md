@@ -18,6 +18,7 @@ This repository consists out of the following components:
 
 1. The source code of the SDK itself: `/src` and `/lib`
 2. The source code of the unit and integration tests (including the examples): `/tests`
+3. The source code for demos is located `examples/*`. Make sure to run `composer install` and `composer dumb-autoload` before.
 
 ## Requirements
 

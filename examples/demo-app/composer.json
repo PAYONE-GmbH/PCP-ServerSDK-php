@@ -1,0 +1,12 @@
+{
+  "name": "payone-gmbh/pcp-serversdk-php-demo",
+  "require": {
+    "payone-gmbh/pcp-serversdk-php": "dev-main"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../"
+    }
+  ]
+}
