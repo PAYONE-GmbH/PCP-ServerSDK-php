@@ -6,8 +6,22 @@ use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
 use PayoneCommercePlatform\Sdk\RequestHeaderGenerator;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 
-$config = new CommunicatorConfiguration("abc", "def", null, null, []);
-$generator = new RequestHeaderGenerator($config);
-$client = new CommerceCaseApiClient($generator);
+// load your config
+$key = getenv('API_KEY');
+$secret = getenv('API_SECRET');
+$merchantId = getenv('MERCHANT_ID');
 
-print($client->getHostIndex());
+$config = new CommunicatorConfiguration(
+    apiKeyId: $key,
+    apiSecret: $secret,
+    host: 'https://PAYONE_API_URL/',
+    clientMetaInfo: []
+);
+
+$generator = new RequestHeaderGenerator($config);
+$client = new CommerceCaseApiClient($generator, config: $config);
+
+// get all commerce cases
+$res = $client->getCommerceCases($merchantId);
+// do something with the result
+print_r($res);

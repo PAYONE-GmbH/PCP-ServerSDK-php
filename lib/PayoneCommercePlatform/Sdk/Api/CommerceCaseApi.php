@@ -1246,7 +1246,7 @@ class CommerceCaseApi
 
 
 
-        $resourcePath = '/v1/{merchantId}/commerce-cases';
+        $resourcePath = 'v1/{merchantId}/commerce-cases';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];

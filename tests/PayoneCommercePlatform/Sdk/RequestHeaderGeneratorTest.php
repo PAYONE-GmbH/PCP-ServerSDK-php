@@ -17,7 +17,24 @@ class RequestHeaderGeneratorTest extends TestCase
         $this->requestHeaderGenerator    = new RequestHeaderGenerator($this->communicatorConfiguration);
     }
 
-    public function testGenerateAdditionalRequestHeadersAuthHeaderRegexCheck()
+    public function testGenerateAdditionalRequestHeadersAuthHeaderHashCheck(): void
+    {
+        // prepare
+        $fullConfig = new CommunicatorConfiguration(apiKeyId: 'KEY', apiSecret: 'change it', clientMetaInfo: [], integrator: null);
+        $fullGenerator = new RequestHeaderGenerator($fullConfig);
+        $request = new Request('GET', 'https://commerce-api.payone.com/v1/80809090/commerce-cases?offset=0&size=25', ['Date' => 'Mon, 15 Jul 2024 19:39:17 GMT', 'Content-Type' => 'application/json']);
+
+        // act
+        $additionalHeadersRequest = $fullGenerator->generateAdditionalRequestHeaders($request);
+        $authHeader = reset($additionalHeadersRequest->getHeaders()['Authorization']);
+
+        // verify
+        $this->assertEquals(
+            'GCS v1HMAC:KEY:uFcYvdo3akOtJvkMbZOziGvXgM+l4ag3F0vXevDF+9I=',
+            $authHeader,
+        );
+    }
+    public function testGenerateAdditionalRequestHeadersAuthHeaderRegexCheck(): void
     {
         // prepare
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/12345/checkouts', ['Content-Type' => 'application/json']);
@@ -34,7 +51,7 @@ class RequestHeaderGeneratorTest extends TestCase
         );
     }
 
-    public function testGenerateAdditionalRequestHeadersWithoutClientMetaInfo()
+    public function testGenerateAdditionalRequestHeadersWithoutClientMetaInfo(): void
     {
         // prepare
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/12345/checkouts', ['Content-Type' => 'application/json', 'Accept' => 'application/json', 'Date' => 'Wed, 03 Apr 2024 10:02:13 GMT']);
@@ -58,7 +75,7 @@ class RequestHeaderGeneratorTest extends TestCase
         );
     }
 
-    public function testGenerateAdditionalRequestHeadersWithClientMetaInfo()
+    public function testGenerateAdditionalRequestHeadersWithClientMetaInfo(): void
     {
         // prepare
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/12345/checkouts', ['Content-Type' => 'application/json', 'Accept' => 'application/json', 'Date' => 'Wed, 03 Apr 2024 10:02:13 GMT']);

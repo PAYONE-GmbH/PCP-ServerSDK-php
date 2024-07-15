@@ -13,3 +13,6 @@ out/
 .phpunit.cache/
 .phpunit.result.cache
 .vscode/*
+
+.phpactor.json
+.php-cs-fixer.cache
