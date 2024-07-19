@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
 use PayoneCommercePlatform\Sdk\Api\PaymentExecutionApi;
+use GuzzleHttp\Psr7\Request;
 
 class PaymentExecutionApiClient extends PaymentExecutionApi
 {
@@ -11,7 +12,7 @@ class PaymentExecutionApiClient extends PaymentExecutionApi
     /**
      * @inheritDoc
      */
-    public function cancelPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest, string $contentType = self::contentTypes['cancelPaymentExecution'][0])
+    public function cancelPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest, string $contentType = self::contentTypes['cancelPaymentExecution'][0]): Request
     {
         $request = parent::cancelPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest, $contentType);
 
@@ -21,7 +22,7 @@ class PaymentExecutionApiClient extends PaymentExecutionApi
     /**
      * @inheritDoc
      */
-    public function capturePaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $capturePaymentRequest, string $contentType = self::contentTypes['capturePaymentExecution'][0])
+    public function capturePaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $capturePaymentRequest, string $contentType = self::contentTypes['capturePaymentExecution'][0]): Request
     {
         $request = parent::capturePaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $capturePaymentRequest, $contentType);
 
@@ -31,7 +32,7 @@ class PaymentExecutionApiClient extends PaymentExecutionApi
     /**
      * @inheritDoc
      */
-    public function completePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $completePaymentRequest, string $contentType = self::contentTypes['completePayment'][0])
+    public function completePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $completePaymentRequest, string $contentType = self::contentTypes['completePayment'][0]): Request
     {
         $request = parent::completePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $completePaymentRequest, $contentType);
 
@@ -41,7 +42,7 @@ class PaymentExecutionApiClient extends PaymentExecutionApi
     /**
      * @inheritDoc
      */
-    public function createPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionRequest, string $contentType = self::contentTypes['createPayment'][0])
+    public function createPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionRequest, string $contentType = self::contentTypes['createPayment'][0]): Request
     {
         $request = parent::createPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionRequest, $contentType);
 
@@ -51,7 +52,7 @@ class PaymentExecutionApiClient extends PaymentExecutionApi
     /**
      * @inheritDoc
      */
-    public function pausePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, string $contentType = self::contentTypes['pausePayment'][0])
+    public function pausePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, string $contentType = self::contentTypes['pausePayment'][0]): Request
     {
         $request = parent::pausePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $contentType);
 
@@ -61,10 +62,11 @@ class PaymentExecutionApiClient extends PaymentExecutionApi
     /**
      * @inheritDoc
      */
-    public function refundPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $refundRequest, string $contentType = self::contentTypes['refundPaymentExecution'][0])
+    public function refundPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $refundRequest, string $contentType = self::contentTypes['refundPaymentExecution'][0]): Request
     {
         $request = parent::refundPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $refundRequest, $contentType);
 
         return $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
     }
 }
+

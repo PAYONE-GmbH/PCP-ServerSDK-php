@@ -47,12 +47,12 @@ class RequestHeaderGenerator
     /**
      * @return string
      */
-    protected function getRfc161Date()
+    protected function getRfc161Date(): string
     {
         return gmdate(static::DATE_RFC2616);
     }
 
-    protected function getServerMetaInfoValue()
+    protected function getServerMetaInfoValue(): string
     {
         $serverMetaInfo = [
             "platformIdentifier" => sprintf('%s; php version %s', php_uname(), phpversion()),
@@ -73,7 +73,7 @@ class RequestHeaderGenerator
      * @param Request $request
      * @return string
      */
-    protected function getAuthorizationHeaderValue(Request $request)
+    protected function getAuthorizationHeaderValue(Request $request): string
     {
         $apiSecret = $this->communicatorConfiguration->getApiSecret();
         $apiSecret = $apiSecret !== null ? $apiSecret : '';
@@ -95,7 +95,7 @@ class RequestHeaderGenerator
      * @param Request $request
      * @return string
      */
-    protected function getSignData(Request $request)
+    protected function getSignData(Request $request): string
     {
         $signData = $request->getMethod() . "\n";
         $requestHeaders = $request->getHeaders();
@@ -127,4 +127,3 @@ class RequestHeaderGenerator
         return $signData;
     }
 }
-

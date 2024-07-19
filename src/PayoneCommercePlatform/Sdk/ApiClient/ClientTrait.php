@@ -24,4 +24,3 @@ trait ClientTrait
         parent::__construct($client, $config, $selector);
     }
 }
-

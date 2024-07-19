@@ -74,4 +74,3 @@ class CommunicatorConfiguration extends Configuration
         $this->clientMetaInfo[$key] = $value;
     }
 }
-
