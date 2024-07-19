@@ -17,11 +17,15 @@ class CommunicatorConfiguration extends Configuration
         ?string           $host = null,
         protected ?string $integrator = null,
         protected array   $clientMetaInfo = []
-    )
-    {
+    ) {
         // by default use default host from codegen
         if ($host) {
             $this->host = $host;
+        }
+        // url are constructed by string concatenation and no trailing slashis assumed
+        // we need to remove trailing slash
+        if (str_ends_with($this->host, '/')) {
+            $this->host = substr($this->host, 0, -1);
         }
     }
 
@@ -70,3 +74,4 @@ class CommunicatorConfiguration extends Configuration
         $this->clientMetaInfo[$key] = $value;
     }
 }
+
