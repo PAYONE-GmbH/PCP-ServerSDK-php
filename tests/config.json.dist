@@ -1,6 +1,0 @@
-{
-  "merchant_id": "12345",
-  "api_key": "KEY",
-  "api_secret": "SECRET",
-  "host": "http://localhost"
-}

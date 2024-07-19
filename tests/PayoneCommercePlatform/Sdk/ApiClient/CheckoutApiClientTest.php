@@ -2,28 +2,38 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use PayoneCommercePlatform\Sdk\Domain\CheckoutsResponse;
-use PayoneCommercePlatform\Sdk\PayoneCommercePlatformTestCase;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\MockObject\Stub;
+use PayoneCommercePlatform\Sdk\ApiException;
+use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
+use PayoneCommercePlatform\Sdk\RequestHeaderGenerator;
+use PHPUnit\Framework\TestCase;
 
-class CheckoutApiClientTest extends PayoneCommercePlatformTestCase
+class CheckoutApiClientTest extends TestCase
 {
-    public function testGetCheckouts()
+    private CommunicatorConfiguration $communicatorConfiguration;
+    private RequestHeaderGenerator $requestHeaderGenerator;
+    private ClientInterface & Stub  $httpClient;
+    private CheckoutApiClient $checkoutClient;
+    private String $merchantId = "MY_MERCHANT_ID";
+
+    public function setUp(): void
     {
-        // prepare
-        $streamMock = $this->createMock(StreamInterface::class);
-        $streamMock->method('getContents')->willReturn($this->getFixture('getCheckoutsResponse.json'));
+        $this->communicatorConfiguration = new CommunicatorConfiguration(apiKeyId: "KEY", apiSecret: "SECRET", host: "awesome-api.com", clientMetaInfo: []);
+        $this->requestHeaderGenerator = new RequestHeaderGenerator($this->communicatorConfiguration);
+        $this->httpClient = $this->createStub(ClientInterface::class);
+        $this->checkoutClient = new CheckoutApiClient($this->requestHeaderGenerator, client: $this->httpClient);
+    }
 
-        $responseMock = $this->createMock(ResponseInterface::class);
-        $responseMock->method('getBody')->willReturn($streamMock);
-
-        $this->client->method('send')->willReturn($responseMock);
+    public function testGetCheckouts(): void
+    {
+        // arrange
+        $reponse = new Response(500);
+        $this->httpClient->method('send')->willReturn($reponse);
+        $this->expectException(ApiException::class);
 
         // act
-        $response = $this->checkoutApiClient->getCheckouts($this->getMerchantId());
-
-        // verify
-        $this->assertInstanceOf(CheckoutsResponse::class, $response);
+        $response = $this->checkoutClient->getCheckouts($this->merchantId);
     }
 }

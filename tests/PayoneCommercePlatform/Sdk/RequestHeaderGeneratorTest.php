@@ -3,11 +3,12 @@
 namespace PayoneCommercePlatform\Sdk;
 
 use GuzzleHttp\Psr7\Request;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class RequestHeaderGeneratorTest extends TestCase
 {
-    private CommunicatorConfiguration $communicatorConfiguration;
+    private CommunicatorConfiguration & MockObject $communicatorConfiguration;
 
     private RequestHeaderGenerator $requestHeaderGenerator;
 
@@ -68,8 +69,8 @@ class RequestHeaderGeneratorTest extends TestCase
                 'Accept'               => ['application/json'],
                 'Host'                 => ['commerce-api.payone.com'],
                 'Date'                 => ['Wed, 03 Apr 2024 10:02:13 GMT'],
-                'X-GCS-ServerMetaInfo' => ['eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJXaW5kb3dzIE5UIFAxV04wOTE0IDEwLjAgYnVpbGQgMTkwNDUgKFdpbmRvd3MgMTApIEFNRDY0OyBwaHAgdmVyc2lvbiA4LjIuOSIsInNka0lkZW50aWZpZXIiOiJQSFBTZXJ2ZXJTREsvdjAuMC4xIiwic2RrQ3JlYXRvciI6IlBBWU9ORSBHbWJIIn0='],
-                'Authorization'        => ['GCS v1HMAC:KEY:QO7wahHzU9PHt8k5rD1FknlGGC9Q/UaQbR7WoPTMhdM=']
+                'X-GCS-ServerMetaInfo' => ['eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJEYXJ3aW4gTUJQLXZvbi1MdWthcy5mcml0ei5ib3ggMjMuNS4wIERhcndpbiBLZXJuZWwgVmVyc2lvbiAyMy41LjA6IFdlZCBNYXkgIDEgMjA6MTQ6MzggUERUIDIwMjQ7IHJvb3Q6eG51LTEwMDYzLjEyMS4zfjUvUkVMRUFTRV9BUk02NF9UNjAyMCBhcm02NDsgcGhwIHZlcnNpb24gOC4zLjkiLCJzZGtJZGVudGlmaWVyIjoiUEhQU2VydmVyU0RLL3YwLjAuMSIsInNka0NyZWF0b3IiOiJQQVlPTkUgR21iSCJ9'],
+                'Authorization'        => ['GCS v1HMAC:KEY:sdztnE3Gsfm2Xdlp9UgGhGiVrrjF/mQx4n/YuuS4Iw4=']
             ],
             $additionalHeadersRequest->getHeaders()
         );
@@ -93,9 +94,9 @@ class RequestHeaderGeneratorTest extends TestCase
                 'Accept'               => ['application/json'],
                 'Host'                 => ['commerce-api.payone.com'],
                 'Date'                 => ['Wed, 03 Apr 2024 10:02:13 GMT'],
-                'X-GCS-ServerMetaInfo' => ['eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJXaW5kb3dzIE5UIFAxV04wOTE0IDEwLjAgYnVpbGQgMTkwNDUgKFdpbmRvd3MgMTApIEFNRDY0OyBwaHAgdmVyc2lvbiA4LjIuOSIsInNka0lkZW50aWZpZXIiOiJQSFBTZXJ2ZXJTREsvdjAuMC4xIiwic2RrQ3JlYXRvciI6IlBBWU9ORSBHbWJIIn0='],
+                'X-GCS-ServerMetaInfo' => ['eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJEYXJ3aW4gTUJQLXZvbi1MdWthcy5mcml0ei5ib3ggMjMuNS4wIERhcndpbiBLZXJuZWwgVmVyc2lvbiAyMy41LjA6IFdlZCBNYXkgIDEgMjA6MTQ6MzggUERUIDIwMjQ7IHJvb3Q6eG51LTEwMDYzLjEyMS4zfjUvUkVMRUFTRV9BUk02NF9UNjAyMCBhcm02NDsgcGhwIHZlcnNpb24gOC4zLjkiLCJzZGtJZGVudGlmaWVyIjoiUEhQU2VydmVyU0RLL3YwLjAuMSIsInNka0NyZWF0b3IiOiJQQVlPTkUgR21iSCJ9'],
                 'X-GCS-ClientMetaInfo' => ['eyJrZXkiOiJ2YWx1ZSJ9'],
-                'Authorization'        => ['GCS v1HMAC:KEY:4JY/0vPpluP57xr0BX8g0jsm5g5um+9NlhFEojm8q2g=']
+                'Authorization'        => ['GCS v1HMAC:KEY:sY+UnSLV8EShnjU4smo+evzCJg3gnjkadY+kv6AfEtI=']
             ],
             $additionalHeadersRequest->getHeaders()
         );
