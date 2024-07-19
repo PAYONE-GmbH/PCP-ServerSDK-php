@@ -439,6 +439,25 @@ class Configuration
     }
 
     /**
+     * Returns an array of host settings
+     *
+     * @return array an array of host settings
+     */
+    public static function getHostSettings(): array
+    {
+        return [
+            "prod" => [
+                "url" => "https://commerce-api.payone.com",
+                "description" => "Production URL",
+            ],
+            "preprod" => [
+                "url" => "https://preprod.commerce-api.payone.com",
+                "description" => "Pre-Production URL",
+            ]
+        ];
+    }
+
+    /**
      * Get API key (with prefix if set)
      *
      * @param  string $apiKeyIdentifier name of apikey
@@ -463,73 +482,4 @@ class Configuration
         return $keyWithPrefix;
     }
 
-    /**
-     * Returns an array of host settings
-     *
-     * @return array an array of host settings
-     */
-    public function getHostSettings()
-    {
-        return [
-            [
-                "url" => "https://commerce-api.payone.com",
-                "description" => "Production URL",
-            ],
-            [
-                "url" => "https://preprod.commerce-api.payone.com",
-                "description" => "Pre-Production URL",
-            ]
-        ];
-    }
-
-    /**
-    * Returns URL based on host settings, index and variables
-    *
-    * @param array      $hostSettings array of host settings, generated from getHostSettings() or equivalent from the API clients
-    * @param int        $hostIndex    index of the host settings
-    * @param array|null $variables    hash of variable and the corresponding value (optional)
-    * @return string URL based on host settings
-    */
-    public static function getHostString(array $hostSettings, $hostIndex, array $variables = null)
-    {
-        if (null === $variables) {
-            $variables = [];
-        }
-
-        // check array index out of bound
-        if ($hostIndex < 0 || $hostIndex >= count($hostSettings)) {
-            throw new \InvalidArgumentException("Invalid index $hostIndex when selecting the host. Must be less than ".count($hostSettings));
-        }
-
-        $host = $hostSettings[$hostIndex];
-        $url = $host["url"];
-
-        // go through variable and assign a value
-        foreach ($host["variables"] ?? [] as $name => $variable) {
-            if (array_key_exists($name, $variables)) { // check to see if it's in the variables provided by the user
-                if (!isset($variable['enum_values']) || in_array($variables[$name], $variable["enum_values"], true)) { // check to see if the value is in the enum
-                    $url = str_replace("{".$name."}", $variables[$name], $url);
-                } else {
-                    throw new \InvalidArgumentException("The variable `$name` in the host URL has invalid value ".$variables[$name].". Must be ".join(',', $variable["enum_values"]).".");
-                }
-            } else {
-                // use default value
-                $url = str_replace("{".$name."}", $variable["default_value"], $url);
-            }
-        }
-
-        return $url;
-    }
-
-    /**
-     * Returns URL based on the index and variables
-     *
-     * @param int        $index     index of the host settings
-     * @param array|null $variables hash of variable and the corresponding value (optional)
-     * @return string URL based on host settings
-     */
-    public function getHostFromSettings($index, $variables = null)
-    {
-        return self::getHostString($this->getHostSettings(), $index, $variables);
-    }
 }

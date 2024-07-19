@@ -14,16 +14,14 @@ trait ClientTrait
      * @param ClientInterface|null   $client
      * @param Configuration|null     $config
      * @param HeaderSelector|null    $selector
-     * @param int                    $hostIndex
      */
     public function __construct(
         protected RequestHeaderGenerator $requestHeaderGenerator,
         ClientInterface                  $client = null,
         Configuration                    $config = null,
         HeaderSelector                   $selector = null,
-        int                              $hostIndex = 0
-    )
-    {
-        parent::__construct($client, $config, $selector, $hostIndex);
+    ) {
+        parent::__construct($client, $config, $selector);
     }
 }
+

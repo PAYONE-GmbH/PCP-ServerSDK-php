@@ -64,11 +64,6 @@ class CommerceCaseApi
      */
     protected $headerSelector;
 
-    /**
-     * @var int Host index
-     */
-    protected $hostIndex;
-
     /** @var string[] $contentTypes **/
     public const contentTypes = [
         'createCommerceCase' => [
@@ -89,38 +84,15 @@ class CommerceCaseApi
      * @param ClientInterface $client
      * @param Configuration   $config
      * @param HeaderSelector  $selector
-     * @param int             $hostIndex (Optional) host index to select the list of hosts if defined in the OpenAPI spec
      */
     public function __construct(
         ClientInterface $client = null,
         Configuration $config = null,
         HeaderSelector $selector = null,
-        $hostIndex = 0
     ) {
         $this->client = $client ?: new Client();
         $this->config = $config ?: new Configuration();
         $this->headerSelector = $selector ?: new HeaderSelector();
-        $this->hostIndex = $hostIndex;
-    }
-
-    /**
-     * Set the host index
-     *
-     * @param int $hostIndex Host index (required)
-     */
-    public function setHostIndex($hostIndex): void
-    {
-        $this->hostIndex = $hostIndex;
-    }
-
-    /**
-     * Get the host index
-     *
-     * @return int Host index
-     */
-    public function getHostIndex()
-    {
-        return $this->hostIndex;
     }
 
     /**
@@ -1246,7 +1218,7 @@ class CommerceCaseApi
 
 
 
-        $resourcePath = 'v1/{merchantId}/commerce-cases';
+        $resourcePath = '/v1/{merchantId}/commerce-cases';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
