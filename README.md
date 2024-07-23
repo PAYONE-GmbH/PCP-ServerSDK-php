@@ -23,3 +23,8 @@ This repository consists out of the following components:
 ## Requirements
 
 PHP 8.1 or above is required.
+
+## Development
+
+Ensure you have PHP 8.1 or higher installed. You will need [composer](https://getcomposer.org/) and [xdebug](https://xdebug.org/docs/install). An pretty version of the coverage report can will be placed in `coverage`, after running `composer run-script coverage-report`.
+
