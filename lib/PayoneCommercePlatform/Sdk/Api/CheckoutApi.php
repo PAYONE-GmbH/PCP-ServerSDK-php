@@ -1742,15 +1742,6 @@ class CheckoutApi
         if ($merchantCustomerId !== null && strlen($merchantCustomerId) > 20) {
             throw new \InvalidArgumentException('invalid length for "$merchantCustomerId" when calling CheckoutApi.getCheckouts, must be smaller than or equal to 20.');
         }
-        
-
-
-
-
-
-
-
-
 
 
         if ($dateOfBirth !== null && strlen($dateOfBirth) > 8) {
@@ -1759,7 +1750,6 @@ class CheckoutApi
         if ($dateOfBirth !== null && !preg_match("/^((19|20|21)\\d{6})?$/", $dateOfBirth)) {
             throw new \InvalidArgumentException("invalid value for \"dateOfBirth\" when calling CheckoutApi.getCheckouts, must conform to the pattern /^((19|20|21)\\d{6})?$/.");
         }
-        
 
 
         $resourcePath = '/v1/{merchantId}/checkouts';
