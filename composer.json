@@ -33,6 +33,9 @@
         }
     },
     "scripts": {
-      "demo": "php ./examples/demo-app/index.php"
+      "demo": "php ./examples/demo-app/index.php",
+      "test": "phpunit tests",
+      "coverage": "XDEBUG_MODE=coverage phpunit --coverage-text",
+      "coverage-report": "XDEBUG_MODE=coverage phpunit --coverage-html=out"
     }
 }

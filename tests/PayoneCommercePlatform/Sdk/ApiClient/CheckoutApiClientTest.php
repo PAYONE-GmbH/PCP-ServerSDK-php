@@ -29,11 +29,20 @@ class CheckoutApiClientTest extends TestCase
     public function testGetCheckouts(): void
     {
         // arrange
-        $reponse = new Response(500);
-        $this->httpClient->method('send')->willReturn($reponse);
+        $mockResponse = new Response(500);
+        $this->httpClient->method('send')->willReturn($mockResponse);
         $this->expectException(ApiException::class);
+        $this->expectExceptionCode(500);
 
         // act
         $response = $this->checkoutClient->getCheckouts($this->merchantId);
+    }
+
+    public function testGetCheckoutsWithoutMerchantId(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("required parameter \$merchantId");
+
+        $response = $this->checkoutClient->getCheckouts(merchantId: null);
     }
 }
