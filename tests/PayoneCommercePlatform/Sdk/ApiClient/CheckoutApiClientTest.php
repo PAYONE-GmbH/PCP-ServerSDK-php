@@ -7,23 +7,20 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\Stub;
 use PayoneCommercePlatform\Sdk\ApiException;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
-use PayoneCommercePlatform\Sdk\RequestHeaderGenerator;
 use PHPUnit\Framework\TestCase;
 
 class CheckoutApiClientTest extends TestCase
 {
     private CommunicatorConfiguration $communicatorConfiguration;
-    private RequestHeaderGenerator $requestHeaderGenerator;
     private ClientInterface & Stub  $httpClient;
     private CheckoutApiClient $checkoutClient;
     private String $merchantId = "MY_MERCHANT_ID";
 
     public function setUp(): void
     {
-        $this->communicatorConfiguration = new CommunicatorConfiguration(apiKeyId: "KEY", apiSecret: "SECRET", host: "awesome-api.com", clientMetaInfo: []);
-        $this->requestHeaderGenerator = new RequestHeaderGenerator($this->communicatorConfiguration);
+        $this->communicatorConfiguration = new CommunicatorConfiguration(apiKey: "KEY", apiSecret: "SECRET", host: "awesome-api.com", clientMetaInfo: []);
         $this->httpClient = $this->createStub(ClientInterface::class);
-        $this->checkoutClient = new CheckoutApiClient($this->requestHeaderGenerator, client: $this->httpClient);
+        $this->checkoutClient = new CheckoutApiClient($this->communicatorConfiguration, client: $this->httpClient);
     }
 
     public function testGetCheckouts(): void
@@ -40,8 +37,7 @@ class CheckoutApiClientTest extends TestCase
 
     public function testGetCheckoutsWithoutMerchantId(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("required parameter \$merchantId");
+        $this->expectException(\TypeError::class);
 
         $response = $this->checkoutClient->getCheckouts(merchantId: null);
     }

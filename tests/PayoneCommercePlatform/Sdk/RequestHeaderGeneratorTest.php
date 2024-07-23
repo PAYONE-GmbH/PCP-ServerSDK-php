@@ -21,7 +21,7 @@ class RequestHeaderGeneratorTest extends TestCase
     public function testGenerateAdditionalRequestHeadersAuthHeaderHashCheck(): void
     {
         // prepare
-        $fullConfig = new CommunicatorConfiguration(apiKeyId: 'KEY', apiSecret: 'change it', clientMetaInfo: [], integrator: null);
+        $fullConfig = new CommunicatorConfiguration(apiKey: 'KEY', apiSecret: 'change it', clientMetaInfo: [], integrator: null);
         $fullGenerator = new RequestHeaderGenerator($fullConfig);
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/80809090/commerce-cases?offset=0&size=25', ['Date' => 'Mon, 15 Jul 2024 19:39:17 GMT', 'Content-Type' => 'application/json']);
 
@@ -39,7 +39,7 @@ class RequestHeaderGeneratorTest extends TestCase
     {
         // prepare
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/12345/checkouts', ['Content-Type' => 'application/json']);
-        $this->communicatorConfiguration->method('getApiKeyId')->willReturn('KEY');
+        $this->communicatorConfiguration->method('getApiKey')->willReturn('KEY');
         $this->communicatorConfiguration->method('getApiSecret')->willReturn('SECRET');
 
         // act
@@ -48,7 +48,7 @@ class RequestHeaderGeneratorTest extends TestCase
         // verify
         $this->assertEquals(
             1,
-            preg_match('/^GCS v1HMAC:'.$this->communicatorConfiguration->getApiKeyId().':[a-zA-Z0-9\/\+]+={0,2}$/', reset($additionalHeadersRequest->getHeaders()['Authorization']))
+            preg_match('/^GCS v1HMAC:'.$this->communicatorConfiguration->getApiKey().':[a-zA-Z0-9\/\+]+={0,2}$/', reset($additionalHeadersRequest->getHeaders()['Authorization']))
         );
     }
 
@@ -56,7 +56,7 @@ class RequestHeaderGeneratorTest extends TestCase
     {
         // prepare
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/12345/checkouts', ['Content-Type' => 'application/json', 'Accept' => 'application/json', 'Date' => 'Wed, 03 Apr 2024 10:02:13 GMT']);
-        $this->communicatorConfiguration->method('getApiKeyId')->willReturn('KEY');
+        $this->communicatorConfiguration->method('getApiKey')->willReturn('KEY');
         $this->communicatorConfiguration->method('getApiSecret')->willReturn('SECRET');
 
         // act
@@ -80,7 +80,7 @@ class RequestHeaderGeneratorTest extends TestCase
     {
         // prepare
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/12345/checkouts', ['Content-Type' => 'application/json', 'Accept' => 'application/json', 'Date' => 'Wed, 03 Apr 2024 10:02:13 GMT']);
-        $this->communicatorConfiguration->method('getApiKeyId')->willReturn('KEY');
+        $this->communicatorConfiguration->method('getApiKey')->willReturn('KEY');
         $this->communicatorConfiguration->method('getApiSecret')->willReturn('SECRET');
         $this->communicatorConfiguration->method('getClientMetaInfo')->willReturn(['key' => 'value']);
 

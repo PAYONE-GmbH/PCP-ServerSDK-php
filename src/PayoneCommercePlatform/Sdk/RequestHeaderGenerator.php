@@ -80,7 +80,7 @@ class RequestHeaderGenerator
 
         return
             static::AUTHORIZATION_ID . ' ' . static::AUTHORIZATION_TYPE . ':' .
-            $this->communicatorConfiguration->getApiKeyId() . ':' .
+            $this->communicatorConfiguration->getApiKey() . ':' .
             base64_encode(
                 hash_hmac(
                     static::HASH_ALGORITHM,
