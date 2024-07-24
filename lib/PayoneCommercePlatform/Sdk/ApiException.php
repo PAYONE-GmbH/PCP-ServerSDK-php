@@ -27,7 +27,7 @@
 
 namespace PayoneCommercePlatform\Sdk;
 
-use \Exception;
+use Exception;
 
 /**
  * ApiException Class Doc Comment

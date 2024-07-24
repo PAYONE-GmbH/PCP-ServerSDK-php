@@ -2,8 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
-use PayoneCommercePlatform\Sdk\RequestHeaderGenerator;
+use PayoneCommercePlatform\Sdk\ApiClient\CheckoutApiClient;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 
 // load your config
@@ -12,16 +11,15 @@ $secret = getenv('API_SECRET');
 $merchantId = getenv('MERCHANT_ID');
 
 $config = new CommunicatorConfiguration(
-    apiKeyId: $key,
+    apiKey: $key,
     apiSecret: $secret,
-    host: 'https://PAYONE_API_URL/',
+    host: CommunicatorConfiguration::getPredefinedHosts()['preprod']['url'],
     clientMetaInfo: []
 );
 
-$generator = new RequestHeaderGenerator($config);
-$client = new CommerceCaseApiClient($generator, config: $config);
+$client = new CheckoutApiClient($config);
 
 // get all commerce cases
-$res = $client->getCommerceCases($merchantId);
+$res = $client->getCheckouts($merchantId);
 // do something with the result
-print_r($res);
+var_dump($res);
