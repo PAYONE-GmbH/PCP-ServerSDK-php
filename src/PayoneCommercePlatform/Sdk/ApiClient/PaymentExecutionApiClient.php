@@ -4,17 +4,17 @@ namespace PayoneCommercePlatform\Sdk\ApiClient;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
-use PayoneCommercePlatform\Sdk\Domain\CancelPaymentRequest;
-use PayoneCommercePlatform\Sdk\Domain\CancelPaymentResponse;
-use PayoneCommercePlatform\Sdk\Domain\CapturePaymentRequest;
-use PayoneCommercePlatform\Sdk\Domain\CapturePaymentResponse;
-use PayoneCommercePlatform\Sdk\Domain\CompletePaymentRequest;
-use PayoneCommercePlatform\Sdk\Domain\CompletePaymentResponse;
-use PayoneCommercePlatform\Sdk\Domain\CreatePaymentResponse;
-use PayoneCommercePlatform\Sdk\Domain\PausePaymentResponse;
-use PayoneCommercePlatform\Sdk\Domain\PaymentExecutionRequest;
-use PayoneCommercePlatform\Sdk\Domain\RefundPaymentResponse;
-use PayoneCommercePlatform\Sdk\Domain\RefundRequest;
+use PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest;
+use PayoneCommercePlatform\Sdk\Models\CancelPaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest;
+use PayoneCommercePlatform\Sdk\Models\CapturePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\PausePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest;
+use PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\RefundRequest;
 use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
@@ -27,28 +27,6 @@ use PayoneCommercePlatform\Sdk\ObjectSerializer;
  */
 class PaymentExecutionApiClient extends BaseApiClient
 {
-    /** @var string[] $contentTypes **/
-    public const contentTypes = [
-        'cancelPaymentExecution' => [
-            'application/json',
-        ],
-        'capturePaymentExecution' => [
-            'application/json',
-        ],
-        'completePayment' => [
-            'application/json',
-        ],
-        'createPayment' => [
-            'application/json',
-        ],
-        'pausePayment' => [
-            'application/json',
-        ],
-        'refundPaymentExecution' => [
-            'application/json',
-        ],
-    ];
-
     /**
      * Operation cancelPaymentExecution
      *
@@ -58,11 +36,11 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CancelPaymentRequest $cancelPaymentRequest cancelPaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest $cancelPaymentRequest cancelPaymentRequest (required)
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CancelPaymentResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\CancelPaymentResponse
      */
     public function cancelPaymentExecution(
         string $merchantId,
@@ -85,7 +63,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CancelPaymentRequest $cancelPaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest $cancelPaymentRequest (required)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -107,7 +85,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CancelPaymentRequest $cancelPaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest $cancelPaymentRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['cancelPaymentExecution'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
@@ -121,62 +99,43 @@ class PaymentExecutionApiClient extends BaseApiClient
         CancelPaymentRequest $cancelPaymentRequest
     ): Request {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/cancel';
-        $contentType = 'application/json';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
-
-
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'paymentExecutionId' . '}',
-            ObjectSerializer::toPathValue($paymentExecutionId),
+            rawurlencode($paymentExecutionId),
             $resourcePath
         );
 
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
+        /** @var array<string, string> */
+        $headers = [];
+        if ($this->config->getUserAgent()) {
+            $headers['User-Agent'] = $this->config->getUserAgent();
+        }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
         $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($cancelPaymentRequest));
 
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );
@@ -191,11 +150,11 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CapturePaymentRequest $capturePaymentRequest capturePaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest $capturePaymentRequest capturePaymentRequest (required)
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CapturePaymentResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\CapturePaymentResponse
      */
     public function capturePaymentExecution(
         string $merchantId,
@@ -218,7 +177,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CapturePaymentRequest $capturePaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest $capturePaymentRequest (required)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -240,7 +199,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CapturePaymentRequest $capturePaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest $capturePaymentRequest (required)
      *
      * @return \GuzzleHttp\Psr7\Request
      */
@@ -252,56 +211,42 @@ class PaymentExecutionApiClient extends BaseApiClient
         CapturePaymentRequest $capturePaymentRequest
     ): Request {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/capture';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
+
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'paymentExecutionId' . '}',
-            ObjectSerializer::toPathValue($paymentExecutionId),
+            rawurlencode($paymentExecutionId),
             $resourcePath
         );
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($capturePaymentRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($capturePaymentRequest, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );
@@ -316,12 +261,12 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CompletePaymentRequest $completePaymentRequest completePaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest $completePaymentRequest completePaymentRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['completePayment'] to see the possible values for this operation
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CompletePaymentResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse
      */
     public function completePayment(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): CompletePaymentResponse
     {
@@ -339,7 +284,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CompletePaymentRequest $completePaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest $completePaymentRequest (required)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -361,64 +306,49 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CompletePaymentRequest $completePaymentRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest $completePaymentRequest (required)
      *
      * @return \GuzzleHttp\Psr7\Request
      */
     public function completePaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/complete';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'paymentExecutionId' . '}',
-            ObjectSerializer::toPathValue($paymentExecutionId),
+            rawurlencode($paymentExecutionId),
             $resourcePath
         );
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($completePaymentRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($completePaymentRequest, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );
@@ -432,11 +362,11 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentExecutionRequest $paymentExecutionRequest paymentExecutionRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest $paymentExecutionRequest paymentExecutionRequest (required)
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CreatePaymentResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse
      */
     public function createPayment(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): CreatePaymentResponse
     {
@@ -453,7 +383,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentExecutionRequest $paymentExecutionRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest $paymentExecutionRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPayment'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
@@ -476,7 +406,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentExecutionRequest $paymentExecutionRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest $paymentExecutionRequest (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -484,168 +414,40 @@ class PaymentExecutionApiClient extends BaseApiClient
     public function createPaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
 
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($paymentExecutionRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($paymentExecutionRequest, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
-        );
-    }
-
-    /**
-     * Operation pausePayment
-     *
-     * Pause a Payment for selected payment methods
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\PausePaymentResponse
-     */
-    public function pausePayment(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId): PausePaymentResponse
-    {
-        $request = $this->pausePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId);
-        list($response) = $this->makeApiCall($request, PausePaymentResponse::class);
-        return $response;
-    }
-
-    /**
-     * Operation pausePaymentAsync
-     *
-     * Pause a Payment for selected payment methods
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function pausePaymentAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId): PromiseInterface
-    {
-        $request = $this->pausePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId);
-        return $this->makeAsyncApiCall($request, PausePaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'pausePayment'
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    public function pausePaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId): Request
-    {
-        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/pause';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
-        $multipart = false;
-
-        // path params
-        $resourcePath = str_replace(
-            '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
-            $resourcePath
-        );
-        $resourcePath = str_replace(
-            '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
-            $resourcePath
-        );
-        $resourcePath = str_replace(
-            '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
-            $resourcePath
-        );
-        $resourcePath = str_replace(
-            '{' . 'paymentExecutionId' . '}',
-            ObjectSerializer::toPathValue($paymentExecutionId),
-            $resourcePath
-        );
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
-        return new Request(
-            'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            '',
         );
     }
 
@@ -658,12 +460,12 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\RefundRequest $refundRequest refundRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\RefundRequest $refundRequest refundRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['refundPaymentExecution'] to see the possible values for this operation
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\RefundPaymentResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse
      */
     public function refundPaymentExecution(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, RefundRequest $refundRequest): RefundPaymentResponse
     {
@@ -681,7 +483,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\RefundRequest $refundRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\RefundRequest $refundRequest (required)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -703,7 +505,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\RefundRequest $refundRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\RefundRequest $refundRequest (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['refundPaymentExecution'] to see the possible values for this operation
      *
      * @return \GuzzleHttp\Psr7\Request
@@ -717,61 +519,43 @@ class PaymentExecutionApiClient extends BaseApiClient
     ): Request {
 
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/refund';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
-
-
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'paymentExecutionId' . '}',
-            ObjectSerializer::toPathValue($paymentExecutionId),
+            rawurlencode($paymentExecutionId),
             $resourcePath
         );
 
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($refundRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($refundRequest, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );

@@ -4,17 +4,14 @@ namespace PayoneCommercePlatform\Sdk\ApiClient;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
-use PayoneCommercePlatform\Sdk\Domain\CancelRequest;
-use PayoneCommercePlatform\Sdk\Domain\CancelResponse;
-use PayoneCommercePlatform\Sdk\Domain\CompleteOrderRequest;
-use PayoneCommercePlatform\Sdk\Domain\CompletePaymentResponse;
-use PayoneCommercePlatform\Sdk\Domain\DeliverRequest;
-use PayoneCommercePlatform\Sdk\Domain\DeliverResponse;
-use PayoneCommercePlatform\Sdk\Domain\OrderRequest;
-use PayoneCommercePlatform\Sdk\Domain\OrderResponse;
-use PayoneCommercePlatform\Sdk\Domain\ReturnRequest;
-use PayoneCommercePlatform\Sdk\Domain\ReturnResponse;
-use PayoneCommercePlatform\Sdk\ObjectSerializer;
+use PayoneCommercePlatform\Sdk\Models\CancelRequest;
+use PayoneCommercePlatform\Sdk\Models\CancelResponse;
+use PayoneCommercePlatform\Sdk\Models\DeliverRequest;
+use PayoneCommercePlatform\Sdk\Models\DeliverResponse;
+use PayoneCommercePlatform\Sdk\Models\OrderRequest;
+use PayoneCommercePlatform\Sdk\Models\OrderResponse;
+use PayoneCommercePlatform\Sdk\Models\ReturnRequest;
+use PayoneCommercePlatform\Sdk\Models\ReturnResponse;
 
 /**
  * OrderManagementCheckoutActionsApi Class Doc Comment
@@ -34,11 +31,11 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CancelRequest $cancelRequest cancelRequest (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CancelRequest $cancelRequest cancelRequest (optional)
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CancelResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\CancelResponse
      */
     public function cancelOrder(string $merchantId, string $commerceCaseId, string $checkoutId, ?CancelRequest $cancelRequest = null): CancelResponse
     {
@@ -55,7 +52,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CancelRequest $cancelRequest (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CancelRequest $cancelRequest (optional)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -76,7 +73,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CancelRequest $cancelRequest (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CancelRequest $cancelRequest (optional)
      *
      * @return \GuzzleHttp\Psr7\Request
      */
@@ -88,176 +85,40 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
     ): Request {
 
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/cancel';
-        $contentType = $this::MEDIA_TYPE_JSON;
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
-
-
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
 
-        $headers = $this->headerSelector->selectHeaders(
-            [$this::MEDIA_TYPE_JSON, ],
-            $contentType,
-            $multipart
-        );
+        /** @var array<string, string> */
+        $headers = [];
+        if ($this->config->getUserAgent()) {
+            $headers['User-Agent'] = $this->config->getUserAgent();
+        }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
         if ($cancelRequest !== null) {
-            $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($cancelRequest));
+            $httpBody = self::$serializer->serialize($cancelRequest, 'json');
         }
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation completeOrder
-     *
-     * Complete an Order
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CompleteOrderRequest $completeOrderRequest completeOrderRequest (required)
-     *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CompletePaymentResponse
-     */
-    public function completeOrder(
-        string $merchantId,
-        string $commerceCaseId,
-        string $checkoutId,
-        CompleteOrderRequest $completeOrderRequest
-    ): CompletePaymentResponse {
-        $request = $this->completeOrderRequest($merchantId, $commerceCaseId, $checkoutId, $completeOrderRequest);
-        list($response) = $this->makeApiCall($request, $completeOrderRequest);
-        return $response;
-    }
-
-    /**
-     * Operation completeOrderAsync
-     *
-     * Complete an Order
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CompleteOrderRequest $completeOrderRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function completeOrderAsync(
-        string $merchantId,
-        string $commerceCaseId,
-        string $checkoutId,
-        CompleteOrderRequest $completeOrderRequest
-    ): PromiseInterface {
-        $request = $this->completeOrderRequest($merchantId, $commerceCaseId, $checkoutId, $completeOrderRequest);
-        return $this->makeAsyncApiCall(request, CompletePaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-
-    /**
-     * Create request for operation 'completeOrder'
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CompleteOrderRequest $completeOrderRequest (required)
-     *
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    public function completeOrderRequest(string $merchantId, string $commerceCaseId, string $checkoutId, CompleteOrderRequest $completeOrderRequest): Request
-    {
-        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/complete-order';
-        $contentType = $this::MEDIA_TYPE_JSON;
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-
-        // path params
-        $resourcePath = str_replace(
-            '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
-            $resourcePath
-        );
-        $resourcePath = str_replace(
-            '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
-            $resourcePath
-        );
-        $resourcePath = str_replace(
-            '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
-            $resourcePath
-        );
-
-        $headers = $this->headerSelector->selectHeaders(
-            [$this::MEDIA_TYPE_JSON, ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($completeOrderRequest));
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
-        return new Request(
-            'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );
@@ -271,11 +132,11 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\OrderRequest $orderRequest orderRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\OrderRequest $orderRequest orderRequest (required)
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\OrderResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\OrderResponse
      */
     public function createOrder(string $merchantId, string $commerceCaseId, string $checkoutId, OrderRequest $orderRequest): OrderResponse
     {
@@ -292,7 +153,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\OrderRequest $orderRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\OrderRequest $orderRequest (required)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -317,7 +178,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\OrderRequest $orderRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\OrderRequest $orderRequest (required)
      *
      * @return \GuzzleHttp\Psr7\Request
      */
@@ -328,56 +189,39 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         OrderRequest $orderRequest
     ): Request {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/order';
-        $contentType = $this::MEDIA_TYPE_JSON;
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
-
-
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
 
 
-        $headers = $this->headerSelector->selectHeaders(
-            [$this::MEDIA_TYPE_JSON, ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($orderRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($orderRequest, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );
@@ -391,11 +235,11 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\DeliverRequest $deliverRequest deliverRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\DeliverRequest $deliverRequest deliverRequest (required)
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\DeliverResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\DeliverResponse
      */
     public function deliverOrder(
         string $merchantId,
@@ -416,7 +260,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\DeliverRequest $deliverRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\DeliverRequest $deliverRequest (required)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -437,7 +281,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\DeliverRequest $deliverRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\DeliverRequest $deliverRequest (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -449,54 +293,39 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         DeliverRequest $deliverRequest
     ): Request {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/deliver';
-        $contentType = $this::MEDIA_TYPE_JSON;
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
 
 
-        $headers = $this->headerSelector->selectHeaders(
-            [$this::MEDIA_TYPE_JSON, ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($deliverRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($deliverRequest, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );
@@ -510,11 +339,11 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\ReturnRequest $returnRequest returnRequest (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Models\ReturnRequest $returnRequest returnRequest (optional)
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\ReturnResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\ReturnResponse
      */
     public function returnOrder(string $merchantId, string  $commerceCaseId, string $checkoutId, ?ReturnResponse $returnRequest = null): ReturnResponse
     {
@@ -531,7 +360,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\ReturnRequest $returnRequest (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Models\ReturnRequest $returnRequest (optional)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -556,7 +385,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\ReturnRequest $returnRequest (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Models\ReturnRequest $returnRequest (optional)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['returnOrder'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
@@ -569,53 +398,40 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         ?ReturnRequest $returnRequest = null
     ): Request {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/return';
-        $contentType = $this::MEDIA_TYPE_JSON;
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
 
-        $headers = $this->headerSelector->selectHeaders(
-            [$this::MEDIA_TYPE_JSON, ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($returnRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
+        }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+
+        if ($returnRequest !== null) {
+            $httpBody = self::$serializer->serialize($returnRequest, 'json');
         }
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );

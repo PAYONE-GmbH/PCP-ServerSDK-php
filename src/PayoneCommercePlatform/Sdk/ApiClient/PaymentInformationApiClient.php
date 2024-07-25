@@ -5,8 +5,8 @@ namespace PayoneCommercePlatform\Sdk\ApiClient;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
-use PayoneCommercePlatform\Sdk\Domain\PaymentInformationRequest;
-use PayoneCommercePlatform\Sdk\Domain\PaymentInformationResponse;
+use PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest;
+use PayoneCommercePlatform\Sdk\Models\PaymentInformationResponse;
 use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
@@ -37,12 +37,11 @@ class PaymentInformationApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentInformationRequest $paymentInformationRequest paymentInformationRequest (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPaymentInformation'] to see the possible values for this operation
+     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest $paymentInformationRequest paymentInformationRequest (required)
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\PaymentInformationResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\PaymentInformationResponse
      */
     public function createPaymentInformation(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentInformationRequest $paymentInformationRequest): PaymentInformationResponse
     {
@@ -59,7 +58,7 @@ class PaymentInformationApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentInformationRequest $paymentInformationRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest $paymentInformationRequest (required)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -80,7 +79,7 @@ class PaymentInformationApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentInformationRequest $paymentInformationRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest $paymentInformationRequest (required)
      *
      * @return \GuzzleHttp\Psr7\Request
      */
@@ -159,7 +158,7 @@ class PaymentInformationApiClient extends BaseApiClient
      *
      * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
      * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\PaymentInformationResponse
+     * @return \PayoneCommercePlatform\Sdk\Models\PaymentInformationResponse
      */
     public function getPaymentInformation(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentInformationId): PaymentInformationResponse
     {

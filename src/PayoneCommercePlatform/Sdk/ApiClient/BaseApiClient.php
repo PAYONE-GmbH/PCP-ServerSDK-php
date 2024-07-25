@@ -2,26 +2,34 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
+// needed to allow usage of symfony/serializer
+require_once __DIR__.'/../../../../vendor/autoload.php';
+
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PayoneCommercePlatform\Sdk\HeaderSelector;
-use PayoneCommercePlatform\Sdk\ObjectSerializer;
 use PayoneCommercePlatform\Sdk\RequestHeaderGenerator;
-use PayoneCommercePlatform\Sdk\Domain\ErrorResponse;
+use PayoneCommercePlatform\Sdk\Models\ErrorResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
+use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class BaseApiClient
 {
     protected const MEDIA_TYPE_JSON = 'application/json';
+    protected static Serializer $serializer;
     /**
      * @var ClientInterface
      */
@@ -52,6 +60,9 @@ class BaseApiClient
         ClientInterface $client = null,
         HeaderSelector $selector = null,
     ) {
+        $normalizers = [new GetSetMethodNormalizer(), new DateTimeNormalizer()];
+        $encoders = [new JsonEncoder()];
+
         $this->config = $config;
         $this->client = $client ?: new Client();
         $this->headerSelector = $selector ?: new HeaderSelector();
@@ -70,7 +81,7 @@ class BaseApiClient
      * Create http client option
      *
      * @throws \RuntimeException on file opening failure
-     * @return array of http client options
+     * @return array<string, resource> of http client options
      */
     protected function createHttpClientOption(): array
     {
@@ -87,11 +98,11 @@ class BaseApiClient
 
     /**
       *
-      * @param Request  $request  request to send to api
-      * @param array    $options  options to use within the \GuzzleHttp\Client;
-      * @param string|null   $type     type for deserialization
+      * @template T
+      * @param Request                $request  request to send to api
+      * @param class-string<T>|null   $type     type for deserialization
       *
-      * @return array   deserialized object, status code, response headers
+      * @return ($type is null ? array{null, int, array<mixed>} : array{T, int, array<mixed>}) [decoded response type or null, status code, headers]
       */
     protected function makeApiCall(Request $request, ?string $type = null): array
     {
@@ -120,15 +131,15 @@ class BaseApiClient
         $this->handleError($response);
 
         if ($type === null) {
-            return [null, $response->getStatusCode(), $response->getHeaders()];
+            return [$type, $response->getStatusCode(), $response->getHeaders()];
         }
 
         $contents = "";
         try {
             $contents = $response->getBody()->getContents();
-            $decoded = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
+            // @phpstan-ignore-next-line
             return [
-                ObjectSerializer::deserialize($decoded, $type, []),
+                self::$serializer->deserialize($contents, $type, 'json'),
                 $response->getStatusCode(),
                 $response->getHeaders()
             ];
@@ -166,7 +177,7 @@ class BaseApiClient
                       $contents = $response->getBody()->getContents();
                       $decoded = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
                       return [
-                          ObjectSerializer::deserialize($decoded, $returnType, []),
+                          self::$serializer->deserialize($decoded, $returnType, 'json'),
                           $response->getStatusCode(),
                           $response->getHeaders()
                       ];
@@ -204,8 +215,8 @@ class BaseApiClient
         try {
             $contents = $response->getBody()->getContents();
             $decoded = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
-            $res = ObjectSerializer::deserialize($decoded, ErrorResponse::class, []);
-            if (gettype($res) !== 'object' || get_class($res) !== ErrorResponse::class || $res->getErrors() === null || count($res->getErrors()) === 0) {
+            $res = self::$serializer->deserialize($decoded, ErrorResponse::class, 'json');
+            if (get_class($res) !== ErrorResponse::class || $res->getErrors() === null || count($res->getErrors()) === 0) {
                 throw new ApiResponseRetrievalException(
                     statusCode: $statusCode,
                     message: "failed to retrieve error response or errors are empty",
@@ -229,4 +240,14 @@ class BaseApiClient
             );
         }
     }
+
+    public static function init(): void
+    {
+        self::$serializer = new Serializer(
+            normalizers: [new GetSetMethodNormalizer(), new ArrayDenormalizer(), new DateTimeNormalizer(), new BackedEnumNormalizer()],
+            encoders: [new JsonEncoder()]
+        );
+    }
 }
+
+BaseApiClient::init();
