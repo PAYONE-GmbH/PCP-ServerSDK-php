@@ -2,17 +2,13 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Promise\PromiseInterface;
 use PayoneCommercePlatform\Sdk\Domain\CheckoutResponse;
 use PayoneCommercePlatform\Sdk\Domain\CreateCheckoutResponse;
 use PayoneCommercePlatform\Sdk\Domain\PatchCheckoutRequest;
-use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PayoneCommercePlatform\Sdk\Domain\CheckoutsResponse;
-use PayoneCommercePlatform\Sdk\HeaderSelector;
 use PayoneCommercePlatform\Sdk\ObjectSerializer;
-use PayoneCommercePlatform\Sdk\RequestHeaderGenerator;
 use PayoneCommercePlatform\Sdk\Domain\CreateCheckoutRequest;
 
 /**

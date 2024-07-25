@@ -2,16 +2,13 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
-use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PayoneCommercePlatform\Sdk\Domain\CommerceCaseResponse;
 use PayoneCommercePlatform\Sdk\Domain\CreateCommerceCaseRequest;
 use PayoneCommercePlatform\Sdk\Domain\CreateCommerceCaseResponse;
 use PayoneCommercePlatform\Sdk\Domain\Customer;
-use PayoneCommercePlatform\Sdk\HeaderSelector;
 use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
