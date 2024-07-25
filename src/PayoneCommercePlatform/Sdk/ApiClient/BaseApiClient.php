@@ -57,6 +57,14 @@ class BaseApiClient
     }
 
     /**
+     * @return CommunicatorConfiguration
+     */
+    public function getConfig(): CommunicatorConfiguration
+    {
+        return $this->config;
+    }
+
+    /**
      * Create http client option
      *
      * @throws \RuntimeException on file opening failure
@@ -85,6 +93,7 @@ class BaseApiClient
       */
     protected function makeApiCall(Request $request, ?string $type = null): array
     {
+        $request = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
         $options = $this->createHttpClientOption();
 
         try {
@@ -135,6 +144,7 @@ class BaseApiClient
 
     protected function makeAsyncApiCall(Request $request, ?string $type): PromiseInterface
     {
+        $request = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
         $options = $this->createHttpClientOption();
         $returnType = $type ?: '';
 
@@ -191,7 +201,6 @@ class BaseApiClient
         try {
             $contents = $response->getBody()->getContents();
             $decoded = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
-            fwrite(\STDERR, ErrorResponse::class . "\n");
             $res = ObjectSerializer::deserialize($decoded, ErrorResponse::class, []);
             if ($res->getErrors() === null || count($res->getErrors()) === 0) {
                 throw new ApiResponseRetrievalException(
