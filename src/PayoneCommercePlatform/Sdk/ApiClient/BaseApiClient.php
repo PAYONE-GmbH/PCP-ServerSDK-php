@@ -20,6 +20,7 @@ use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
 class BaseApiClient
 {
+    protected const MEDIA_TYPE_JSON = 'application/json';
     /**
      * @var ClientInterface
      */
