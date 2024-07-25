@@ -209,7 +209,6 @@ class ReportingApiClient extends BaseApiClient
      * @param  string $dateOfBirth Filter your results by the date of birth. Format YYYYMMDD (optional)
      * @param  string $companyInformation Filter your results by the name of the company. (optional)
      * @param  string $reportingToken Filter your results by the reporting token. (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getCheckoutSummaryReports'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request

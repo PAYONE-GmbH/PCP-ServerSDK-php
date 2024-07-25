@@ -23,7 +23,7 @@ class ApiException extends Exception
     /**
      * The HTTP status code send by the server
      *
-     * @var string|null
+     * @var int
      */
     protected int $statusCode;
 
@@ -64,7 +64,7 @@ class ApiException extends Exception
      *
      * @return string HTTP body of the server response either as \stdClass or string
      */
-    public function getResponseBody(): string
+    public function getResponseBody(): ?string
     {
         return $this->responseBody;
     }

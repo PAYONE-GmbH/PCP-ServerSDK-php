@@ -76,7 +76,6 @@ class RequestHeaderGenerator
     protected function getAuthorizationHeaderValue(Request $request): string
     {
         $apiSecret = $this->communicatorConfiguration->getApiSecret();
-        $apiSecret = $apiSecret !== null ? $apiSecret : '';
 
         return
             static::AUTHORIZATION_ID . ' ' . static::AUTHORIZATION_TYPE . ':' .

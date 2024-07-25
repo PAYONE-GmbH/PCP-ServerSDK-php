@@ -128,8 +128,8 @@ class CommunicatorConfiguration
         ?string             $host = null,
         ?string             $integrator = null,
         array               $clientMetaInfo = [],
-        ?bool               $debug = false,
-        ?string             $debugFile = 'php://output'
+        bool                $debug = false,
+        string             $debugFile = 'php://output'
     ) {
         $this->tempFolderPath = sys_get_temp_dir();
 

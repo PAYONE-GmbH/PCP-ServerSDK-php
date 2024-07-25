@@ -17,6 +17,7 @@ use PayoneCommercePlatform\Sdk\RequestHeaderGenerator;
 use PayoneCommercePlatform\Sdk\Domain\ErrorResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
+use Psr\Http\Message\ResponseInterface;
 
 class BaseApiClient
 {
@@ -110,6 +111,7 @@ class BaseApiClient
         } catch (ConnectException $e) {
             throw new ApiResponseRetrievalException(
                 statusCode: (int) $e->getCode(),
+                responseBody: "",
                 message: "[{$e->getCode()}] {$e->getMessage()}",
                 previous: $e,
             );
@@ -191,7 +193,7 @@ class BaseApiClient
     }
 
 
-    protected function handleError(Response $response): void
+    protected function handleError(ResponseInterface $response): void
     {
         $statusCode = (int) ($response->getStatusCode());
         if ($statusCode >= 200 && $statusCode <= 299) {
@@ -203,10 +205,10 @@ class BaseApiClient
             $contents = $response->getBody()->getContents();
             $decoded = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
             $res = ObjectSerializer::deserialize($decoded, ErrorResponse::class, []);
-            if ($res->getErrors() === null || count($res->getErrors()) === 0) {
+            if (gettype($res) !== 'object' || get_class($res) !== ErrorResponse::class || $res->getErrors() === null || count($res->getErrors()) === 0) {
                 throw new ApiResponseRetrievalException(
                     statusCode: $statusCode,
-                    message: sprintf("deserialized api errors are empty"),
+                    message: "failed to retrieve error response or errors are empty",
                     responseBody: $contents,
                 );
             } else {
