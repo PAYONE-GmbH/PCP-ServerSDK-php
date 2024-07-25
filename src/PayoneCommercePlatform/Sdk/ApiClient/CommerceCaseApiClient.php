@@ -24,21 +24,6 @@ use PayoneCommercePlatform\Sdk\ObjectSerializer;
  */
 class CommerceCaseApiClient extends BaseApiClient
 {
-    /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var CommunicatorConfiguration
-     */
-    protected $config;
-
-    /**
-     * @var HeaderSelector
-     */
-    protected $headerSelector;
-
     /** @var string[] $contentTypes **/
     public const contentTypes = [
         'createCommerceCase' => [

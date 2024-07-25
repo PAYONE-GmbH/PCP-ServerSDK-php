@@ -26,34 +26,6 @@ use PayoneCommercePlatform\Sdk\Domain\CreateCheckoutRequest;
 class CheckoutApiClient extends BaseApiClient
 {
     /**
-     * @var ClientInterface
-     */
-    protected $client;
-
-    /**
-     * @var CommunicatorConfiguration
-     */
-    protected $config;
-
-    /**
-     * @var HeaderSelector
-     */
-    protected $headerSelector;
-
-    /**
-     * @var RequestHeaderGenerator
-     */
-    protected $requestHeaderGenerator;
-
-    /**
-     * @return CommunicatorConfiguration
-     */
-    public function getConfig(): CommunicatorConfiguration
-    {
-        return $this->config;
-    }
-
-    /**
      * Operation createCheckout
      *
      * Add a Checkout to an existing Commerce Case
