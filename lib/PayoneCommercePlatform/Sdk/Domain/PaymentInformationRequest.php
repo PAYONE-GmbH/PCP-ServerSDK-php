@@ -28,8 +28,17 @@
 
 namespace PayoneCommercePlatform\Sdk\Domain;
 
-use \ArrayAccess;
-use \PayoneCommercePlatform\Sdk\ObjectSerializer;
+use ArrayAccess;
+use PayoneCommercePlatform\Sdk\ObjectSerializer;
+
+// { "hello": { "world": true }, "version": 14, "url": null }
+$helper = [
+  'hello' => [
+    'world' => true,
+  ],
+  'version' => 14,
+  'url' => null
+];
 
 /**
  * PaymentInformationRequest Class Doc Comment
@@ -551,7 +560,7 @@ class PaymentInformationRequest implements ModelInterface, ArrayAccess, \JsonSer
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-       return ObjectSerializer::sanitizeForSerialization($this);
+        return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -577,5 +586,3 @@ class PaymentInformationRequest implements ModelInterface, ArrayAccess, \JsonSer
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

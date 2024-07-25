@@ -2,31 +2,264 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use PayoneCommercePlatform\Sdk\Api\PaymentInformationApi;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
+use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
+use PayoneCommercePlatform\Sdk\Domain\PaymentInformationRequest;
+use PayoneCommercePlatform\Sdk\Domain\PaymentInformationResponse;
+use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
-class PaymentInformationApiClient extends PaymentInformationApi
+/**
+ * PaymentInformationApi Class Doc Comment
+ *
+ * @category Class
+ * @package  PayoneCommercePlatform\Sdk
+ * @author   OpenAPI Generator team
+ * @link     https://openapi-generator.tech
+ */
+class PaymentInformationApiClient extends BaseApiClient
 {
-    use ClientTrait;
+    /** @var string[] $contentTypes **/
+    public const contentTypes = [
+        'createPaymentInformation' => [
+            'application/json',
+        ],
+        'getPaymentInformation' => [
+            'application/json',
+        ],
+    ];
 
     /**
-     * @inheritDoc
+     * Operation createPaymentInformation
+     *
+     * Create a Payment Information
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentInformationRequest $paymentInformationRequest paymentInformationRequest (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPaymentInformation'] to see the possible values for this operation
+     *
+     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
+     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @return \PayoneCommercePlatform\Sdk\Domain\PaymentInformationResponse
      */
-    public function createPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationRequest, string $contentType = self::contentTypes['createPaymentInformation'][0]): Request
+    public function createPaymentInformation(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentInformationRequest $paymentInformationRequest): PaymentInformationResponse
     {
-        $request = parent::createPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationRequest, $contentType);
-
-        return $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
+        $request = $this->createPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationRequest);
+        list($response) = $this->makeApiCall($request, PaymentInformationResponse::class);
+        return $response;
     }
 
     /**
-     * @inheritDoc
+     * Operation createPaymentInformationAsync
+     *
+     * Create a Payment Information
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentInformationRequest $paymentInformationRequest (required)
+     *
+     * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationId, string $contentType = self::contentTypes['getPaymentInformation'][0]): Request
+    public function createPaymentInformationAsync(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentInformationRequest $paymentInformationRequest): PromiseInterface
     {
-        $request = parent::getPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationId, $contentType);
+        $request = $this->createPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationRequest);
+        return $this->makeAsyncApiCall($request, PaymentInformationResponse::class)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
 
-        return $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
+    /**
+     * Create request for operation 'createPaymentInformation'
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentInformationRequest $paymentInformationRequest (required)
+     *
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function createPaymentInformationRequest(
+        string $merchantId,
+        string $commerceCaseId,
+        string $checkoutId,
+        PaymentInformationRequest $paymentInformationRequest
+    ): Request {
+        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information';
+        $contentType = 'application/json';
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'merchantId' . '}',
+            ObjectSerializer::toPathValue($merchantId),
+            $resourcePath
+        );
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'commerceCaseId' . '}',
+            ObjectSerializer::toPathValue($commerceCaseId),
+            $resourcePath
+        );
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'checkoutId' . '}',
+            ObjectSerializer::toPathValue($checkoutId),
+            $resourcePath
+        );
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($paymentInformationRequest));
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation getPaymentInformation
+     *
+     * Get a Payment Information
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     *
+     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
+     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @return \PayoneCommercePlatform\Sdk\Domain\PaymentInformationResponse
+     */
+    public function getPaymentInformation(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentInformationId): PaymentInformationResponse
+    {
+        $request = $this->getPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationId);
+        list($response) = $this->makeApiCall($request, PaymentInformationResponse::class);
+        return $response;
+    }
+
+    /**
+     * Operation getPaymentInformationAsync
+     *
+     * Get a Payment Information
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentInformationId Unique identifier of a paymentInformation (required)
+     *
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function getPaymentInformationAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentInformationId): PromiseInterface
+    {
+        $request = $this->getPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationId);
+        return $this->makeAsyncApiCall($request, PaymentInformationResponse::class)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'getPaymentInformation'
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentInformationId Unique identifier of a paymentInformation (required)
+     *
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function getPaymentInformationRequest(
+        string $merchantId,
+        string $commerceCaseId,
+        string $checkoutId,
+        string $paymentInformationId,
+    ): Request {
+        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information/{paymentInformationId}';
+        $contentType = 'application/json';
+        $queryParams = [];
+        $headerParams = [];
+        $multipart = false;
+
+
+
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'merchantId' . '}',
+            ObjectSerializer::toPathValue($merchantId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'commerceCaseId' . '}',
+            ObjectSerializer::toPathValue($commerceCaseId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'checkoutId' . '}',
+            ObjectSerializer::toPathValue($checkoutId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'paymentInformationId' . '}',
+            ObjectSerializer::toPathValue($paymentInformationId),
+            $resourcePath
+        );
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'GET',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+        );
     }
 }
-
