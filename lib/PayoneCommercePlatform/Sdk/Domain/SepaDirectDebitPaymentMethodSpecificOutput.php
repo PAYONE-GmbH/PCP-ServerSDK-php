@@ -28,8 +28,8 @@
 
 namespace PayoneCommercePlatform\Sdk\Domain;
 
-use \ArrayAccess;
-use \PayoneCommercePlatform\Sdk\ObjectSerializer;
+use ArrayAccess;
+use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
  * SepaDirectDebitPaymentMethodSpecificOutput Class Doc Comment
@@ -430,7 +430,7 @@ class SepaDirectDebitPaymentMethodSpecificOutput implements ModelInterface, Arra
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-       return ObjectSerializer::sanitizeForSerialization($this);
+        return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -456,5 +456,3 @@ class SepaDirectDebitPaymentMethodSpecificOutput implements ModelInterface, Arra
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

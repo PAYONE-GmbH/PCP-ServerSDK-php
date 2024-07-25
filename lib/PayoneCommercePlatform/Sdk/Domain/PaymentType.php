@@ -27,7 +27,8 @@
  */
 
 namespace PayoneCommercePlatform\Sdk\Domain;
-use \PayoneCommercePlatform\Sdk\ObjectSerializer;
+
+use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
  * PaymentType Class Doc Comment
@@ -77,5 +78,3 @@ class PaymentType
         ];
     }
 }
-
-
