@@ -28,8 +28,8 @@
 
 namespace PayoneCommercePlatform\Sdk\Domain;
 
-use \ArrayAccess;
-use \PayoneCommercePlatform\Sdk\ObjectSerializer;
+use ArrayAccess;
+use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
  * CancelPaymentRequest Class Doc Comment
@@ -379,7 +379,7 @@ class CancelPaymentRequest implements ModelInterface, ArrayAccess, \JsonSerializ
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-       return ObjectSerializer::sanitizeForSerialization($this);
+        return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -405,5 +405,3 @@ class CancelPaymentRequest implements ModelInterface, ArrayAccess, \JsonSerializ
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

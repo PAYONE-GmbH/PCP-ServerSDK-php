@@ -28,8 +28,8 @@
 
 namespace PayoneCommercePlatform\Sdk\Domain;
 
-use \ArrayAccess;
-use \PayoneCommercePlatform\Sdk\ObjectSerializer;
+use ArrayAccess;
+use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
  * CapturePaymentResponse Class Doc Comment
@@ -481,7 +481,7 @@ class CapturePaymentResponse implements ModelInterface, ArrayAccess, \JsonSerial
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-       return ObjectSerializer::sanitizeForSerialization($this);
+        return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -507,5 +507,3 @@ class CapturePaymentResponse implements ModelInterface, ArrayAccess, \JsonSerial
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-

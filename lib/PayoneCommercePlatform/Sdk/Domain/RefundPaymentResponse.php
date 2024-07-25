@@ -28,8 +28,8 @@
 
 namespace PayoneCommercePlatform\Sdk\Domain;
 
-use \ArrayAccess;
-use \PayoneCommercePlatform\Sdk\ObjectSerializer;
+use ArrayAccess;
+use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
  * RefundPaymentResponse Class Doc Comment
@@ -482,7 +482,7 @@ class RefundPaymentResponse implements ModelInterface, ArrayAccess, \JsonSeriali
     #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
-       return ObjectSerializer::sanitizeForSerialization($this);
+        return ObjectSerializer::sanitizeForSerialization($this);
     }
 
     /**
@@ -508,5 +508,3 @@ class RefundPaymentResponse implements ModelInterface, ArrayAccess, \JsonSeriali
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
 }
-
-
