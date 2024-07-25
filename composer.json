@@ -34,8 +34,11 @@
     },
     "scripts": {
       "demo": "php ./examples/demo-app/index.php",
+      "format-check": "php-cs-fixer check",
+      "format": "php-cs-fixer fix",
+      "lint": "phpstan analyze -l 9 src tests",
       "test": "phpunit tests",
-      "coverage": "XDEBUG_MODE=coverage phpunit --coverage-text",
-      "coverage-report": "XDEBUG_MODE=coverage phpunit --coverage-html=coverage"
+      "coverage": "XDEBUG_MODE=coverage phpunit --coverage-text tests",
+      "coverage-report": "XDEBUG_MODE=coverage phpunit --coverage-html=coverage tests"
     }
 }
