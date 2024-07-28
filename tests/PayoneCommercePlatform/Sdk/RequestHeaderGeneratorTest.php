@@ -48,6 +48,7 @@ class RequestHeaderGeneratorTest extends TestCase
         // verify
         $this->assertEquals(
             1,
+            // @phpstan-ignore-next-line
             preg_match('/^GCS v1HMAC:'.$this->communicatorConfiguration->getApiKey().':[a-zA-Z0-9\/\+]+={0,2}$/', reset($additionalHeadersRequest->getHeaders()['Authorization']))
         );
     }
