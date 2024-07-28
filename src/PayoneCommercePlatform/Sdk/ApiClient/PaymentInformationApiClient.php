@@ -7,7 +7,6 @@ use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
 use PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest;
 use PayoneCommercePlatform\Sdk\Models\PaymentInformationResponse;
-use PayoneCommercePlatform\Sdk\ObjectSerializer;
 
 /**
  * PaymentInformationApi Class Doc Comment
@@ -19,16 +18,6 @@ use PayoneCommercePlatform\Sdk\ObjectSerializer;
  */
 class PaymentInformationApiClient extends BaseApiClient
 {
-    /** @var string[] $contentTypes **/
-    public const contentTypes = [
-        'createPaymentInformation' => [
-            'application/json',
-        ],
-        'getPaymentInformation' => [
-            'application/json',
-        ],
-    ];
-
     /**
      * Operation createPaymentInformation
      *
@@ -90,58 +79,41 @@ class PaymentInformationApiClient extends BaseApiClient
         PaymentInformationRequest $paymentInformationRequest
     ): Request {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
-
-
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         // path params
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         // path params
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
 
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($paymentInformationRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($paymentInformationRequest, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );
@@ -207,57 +179,40 @@ class PaymentInformationApiClient extends BaseApiClient
         string $paymentInformationId,
     ): Request {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information/{paymentInformationId}';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
-        $multipart = false;
-
-
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'checkoutId' . '}',
-            ObjectSerializer::toPathValue($checkoutId),
+            rawurlencode($checkoutId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'paymentInformationId' . '}',
-            ObjectSerializer::toPathValue($paymentInformationId),
+            rawurlencode($paymentInformationId),
             $resourcePath
         );
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'GET',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
         );
     }
