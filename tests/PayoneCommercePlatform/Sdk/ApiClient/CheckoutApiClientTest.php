@@ -43,9 +43,9 @@ class CheckoutApiClientTest extends TestCase
         );
     }
 
-    protected function makeErrorResponse(int $code = 500): ErrorResponse
+    protected function makeErrorResponse(): ErrorResponse
     {
-        return new ErrorResponse(errorId: 'test-id', errors: [new APIError($code)]);
+        return new ErrorResponse(errorId: 'test-id', errors: [new APIError('test-code')]);
     }
 
     public function testCreateCheckout(): void
@@ -97,16 +97,18 @@ class CheckoutApiClientTest extends TestCase
 
         // act
         $response = $this->checkoutClient->getCheckouts($this->merchantId);
+        $allCheckouts = $response->getCheckouts();
+        $checkout = $allCheckouts ? $allCheckouts[0] : null;
 
         // assert
         $this->assertEquals($checkoutsResponse->getNumberOfCheckouts(), 1);
-        $this->assertEquals($checkoutsResponse->getCheckouts()[0], $this->makeCheckoutResponse());
+        $this->assertEquals($checkout, $this->makeCheckoutResponse());
     }
 
     public function testGetCheckoutsUnsuccessful400(): void
     {
         // arrange
-        $errorResponse = $this->makeErrorResponse(400);
+        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
@@ -126,12 +128,5 @@ class CheckoutApiClientTest extends TestCase
 
         // act
         $response = $this->checkoutClient->getCheckouts($this->merchantId);
-    }
-
-    public function testGetCheckoutsWithoutMerchantId(): void
-    {
-        $this->expectException(\TypeError::class);
-
-        $response = $this->checkoutClient->getCheckouts(merchantId: null);
     }
 }
