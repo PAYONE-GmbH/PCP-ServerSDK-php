@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class Shipping
 {
     /**
-     * @var AddressPersonal|null Shipping address details.
+     * @var AddressPersonal Shipping address details.
      */
     #[SerializedName('address')]
     protected AddressPersonal $address;
