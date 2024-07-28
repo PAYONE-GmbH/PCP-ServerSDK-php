@@ -13,7 +13,6 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
-use PayoneCommercePlatform\Sdk\HeaderSelector;
 use PayoneCommercePlatform\Sdk\RequestHeaderGenerator;
 use PayoneCommercePlatform\Sdk\Models\ErrorResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
@@ -41,11 +40,6 @@ class BaseApiClient
     protected $config;
 
     /**
-     * @var HeaderSelector
-     */
-    protected $headerSelector;
-
-    /**
      * @var RequestHeaderGenerator
      */
     protected $requestHeaderGenerator;
@@ -53,19 +47,16 @@ class BaseApiClient
     /**
      * @param CommunicatorConfiguration   $config
      * @param ClientInterface             $client
-     * @param HeaderSelector              $selector
      */
     public function __construct(
         CommunicatorConfiguration $config,
         ClientInterface $client = null,
-        HeaderSelector $selector = null,
     ) {
         $normalizers = [new GetSetMethodNormalizer(), new DateTimeNormalizer()];
         $encoders = [new JsonEncoder()];
 
         $this->config = $config;
         $this->client = $client ?: new Client();
-        $this->headerSelector = $selector ?: new HeaderSelector();
         $this->requestHeaderGenerator = new RequestHeaderGenerator($this->config);
     }
 
