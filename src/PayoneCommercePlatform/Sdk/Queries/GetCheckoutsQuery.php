@@ -28,13 +28,13 @@ class GetCheckoutsQuery
     private ?string $checkoutId = null;
     private ?string $merchantReference = null;
     private ?string $merchantCustomerId = null;
-    /** @type array<string>|null */
+    /** @var array<string>|null */
     private ?array $includePaymentProductId = null;
-    /** @type array<StatusCheckout>|null */
+    /** @var array<StatusCheckout>|null */
     private ?array $includeCheckoutStatus = null;
-    /** @type array<ExtendedCheckoutStatus>|null */
+    /** @var array<ExtendedCheckoutStatus>|null */
     private ?array $includeExtendedCheckoutStatus = null;
-    /** @type array<PaymentChannel>|null */
+    /** @var array<PaymentChannel>|null */
     private ?array $includePaymentChannel = null;
     private ?string $paymentReference = null;
     private ?string $paymentId = null;
@@ -159,24 +159,40 @@ class GetCheckoutsQuery
         return $this;
     }
 
+    /**
+     * @param array<string> $includePaymentProductId
+     * @return self
+     */
     public function setIncludePaymentProductId(?array $includePaymentProductId): self
     {
         $this->includePaymentProductId = $includePaymentProductId;
         return $this;
     }
 
+    /**
+     * @param array<StatusCheckout> $includeCheckoutStatus
+     * @return self
+     */
     public function setIncludeCheckoutStatus(?array $includeCheckoutStatus): self
     {
         $this->includeCheckoutStatus = $includeCheckoutStatus;
         return $this;
     }
 
+    /**
+     * @param array<ExtendedCheckoutStatus> $includeExtendedCheckoutStatus
+     * @return self
+     */
     public function setIncludeExtendedCheckoutStatus(?array $includeExtendedCheckoutStatus): self
     {
         $this->includeExtendedCheckoutStatus = $includeExtendedCheckoutStatus;
         return $this;
     }
 
+    /**
+     * @param array<PaymentChannel> $includePaymentChannel
+     * @return self
+     */
     public function setIncludePaymentChannel(?array $includePaymentChannel): self
     {
         $this->includePaymentChannel = $includePaymentChannel;
@@ -390,10 +406,10 @@ class GetCheckoutsQuery
         return $this->companyInformation;
     }
 
-    /** @return array<string, string> */
+    /** @return array<string, int|string> */
     public function toQueryMap(): array
     {
-        /** @var array<string, string> */
+        /** @var array<string, int|string> */
         $query = [];
 
         if ($this->offset !== null) {

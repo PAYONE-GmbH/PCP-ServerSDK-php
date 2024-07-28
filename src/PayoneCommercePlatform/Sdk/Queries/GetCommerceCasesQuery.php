@@ -15,9 +15,9 @@ class GetCommerceCasesQuery
     private ?string $commerceCaseId = null;
     private ?string $merchantReference = null;
     private ?string $merchantCustomerId = null;
-    /** @type array<StatusCheckout> */
+    /** @var array<StatusCheckout> */
     private ?array $includeCheckoutStatus = null;
-    /** @type array<PaymentChannel> */
+    /** @var array<PaymentChannel> */
     private ?array $includePaymentChannel = null;
 
     public function setOffset(?int $offset): self
@@ -62,12 +62,20 @@ class GetCommerceCasesQuery
         return $this;
     }
 
+    /**
+      * @param array<StatusCheckout> $includeCheckoutStatus
+      * @return self
+      */
     public function setIncludeCheckoutStatus(?array $includeCheckoutStatus): self
     {
         $this->includeCheckoutStatus = $includeCheckoutStatus;
         return $this;
     }
 
+    /**
+      * @param array<PaymentChannel> $includePaymentChannel
+      * @return self
+      */
     public function setIncludePaymentChannel(?array $includePaymentChannel): self
     {
         $this->includePaymentChannel = $includePaymentChannel;
@@ -109,20 +117,22 @@ class GetCommerceCasesQuery
         return $this->merchantCustomerId;
     }
 
+    /** @return array<StatusCheckout> */
     public function getIncludeCheckoutStatus(): ?array
     {
         return $this->includeCheckoutStatus;
     }
 
+    /** @return array<PaymentChannel> */
     public function getIncludePaymentChannel(): ?array
     {
         return $this->includePaymentChannel;
     }
 
-    /** @return array<string, string> */
+    /** @return array<string, int|string> */
     public function toQueryMap(): array
     {
-        /** @var array<string, string> */
+        /** @var array<string, int|string> */
         $query = [];
 
         if ($this->offset !== null) {
