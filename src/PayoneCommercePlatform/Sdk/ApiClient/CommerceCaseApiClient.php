@@ -146,7 +146,6 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getCommerceCase'] to see the possible values for this operation
      *
      * @return \GuzzleHttp\Psr7\Request
      */
@@ -198,7 +197,11 @@ class CommerceCaseApiClient extends BaseApiClient
         GetCommerceCasesQuery $query = new GetCommerceCasesQuery(),
     ): array {
         $request = $this->getCommerceCasesRequest($merchantId, $query);
+        // The underlying of `makeApiCall` is to strict as it has to be an resolvable class name
+        // but the underlying call to symfony/serialize also allows for an array of classes
+        // @phpstan-ignore-next-line
         list($response) = $this->makeApiCall($request, CommerceCaseResponse::class . '[]');
+        /** @var \PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse[] */
         return $response;
     }
 
@@ -290,7 +293,6 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateCommerceCase'] to see the possible values for this operation
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
@@ -311,7 +313,6 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateCommerceCase'] to see the possible values for this operation
      *
      * @return \GuzzleHttp\Psr7\Request
      */
