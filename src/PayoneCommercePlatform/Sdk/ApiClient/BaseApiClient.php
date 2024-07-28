@@ -18,6 +18,7 @@ use PayoneCommercePlatform\Sdk\Models\ErrorResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
@@ -205,8 +206,7 @@ class BaseApiClient
         $contents = "";
         try {
             $contents = $response->getBody()->getContents();
-            $decoded = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
-            $res = self::$serializer->deserialize($decoded, ErrorResponse::class, 'json');
+            $res = self::$serializer->deserialize($contents, ErrorResponse::class, 'json');
             if (get_class($res) !== ErrorResponse::class || $res->getErrors() === null || count($res->getErrors()) === 0) {
                 throw new ApiResponseRetrievalException(
                     statusCode: $statusCode,
@@ -220,7 +220,7 @@ class BaseApiClient
                     errors: $res->getErrors(),
                 );
             }
-        } catch (\JsonException $exception) {
+        } catch (NotEncodableValueException  $exception) {
             throw new ApiResponseRetrievalException(
                 statusCode: $statusCode,
                 message: sprintf(
@@ -238,6 +238,11 @@ class BaseApiClient
             normalizers: [new GetSetMethodNormalizer(), new ArrayDenormalizer(), new DateTimeNormalizer(), new BackedEnumNormalizer()],
             encoders: [new JsonEncoder()]
         );
+    }
+
+    public static function getSerializer(): Serializer
+    {
+        return self::$serializer;
     }
 }
 
