@@ -12,6 +12,8 @@ use PayoneCommercePlatform\Sdk\Models\OrderRequest;
 use PayoneCommercePlatform\Sdk\Models\OrderResponse;
 use PayoneCommercePlatform\Sdk\Models\ReturnRequest;
 use PayoneCommercePlatform\Sdk\Models\ReturnResponse;
+use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
+use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
 /**
  * OrderManagementCheckoutActionsApi Class Doc Comment
@@ -33,14 +35,13 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CancelRequest $cancelRequest cancelRequest (optional)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CancelResponse
      */
     public function cancelOrder(string $merchantId, string $commerceCaseId, string $checkoutId, ?CancelRequest $cancelRequest = null): CancelResponse
     {
         $request = $this->cancelOrderRequest($merchantId, $commerceCaseId, $checkoutId, $cancelRequest);
-        list($response) = $this->makeApiCall($request, $cancelRequest);
+        list($response) = $this->makeApiCall($request, CancelResponse::class);
         return $response;
     }
 
@@ -134,8 +135,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\OrderRequest $orderRequest orderRequest (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\OrderResponse
      */
     public function createOrder(string $merchantId, string $commerceCaseId, string $checkoutId, OrderRequest $orderRequest): OrderResponse
@@ -237,8 +237,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\DeliverRequest $deliverRequest deliverRequest (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\DeliverResponse
      */
     public function deliverOrder(
@@ -283,7 +282,6 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\DeliverRequest $deliverRequest (required)
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function deliverOrderRequest(
@@ -339,16 +337,15 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\ReturnRequest $returnRequest returnRequest (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Models\ReturnRequest|null $returnRequest returnRequest (optional)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\ReturnResponse
      */
-    public function returnOrder(string $merchantId, string  $commerceCaseId, string $checkoutId, ?ReturnResponse $returnRequest = null): ReturnResponse
+    public function returnOrder(string $merchantId, string  $commerceCaseId, string $checkoutId, ?ReturnRequest $returnRequest = null): ReturnResponse
     {
         $request = $this->returnOrderRequest($merchantId, $commerceCaseId, $checkoutId, $returnRequest);
-        list($response) = $this->makeApiCall($request, $returnRequest);
+        list($response) = $this->makeApiCall($request, ReturnResponse::class);
         return $response;
     }
 
@@ -386,9 +383,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\ReturnRequest $returnRequest (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['returnOrder'] to see the possible values for this operation
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function returnOrderRequest(
