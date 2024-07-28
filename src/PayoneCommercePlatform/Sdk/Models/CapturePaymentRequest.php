@@ -3,6 +3,9 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\CancellationReason;
+use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
+use PayoneCommercePlatform\Sdk\Models\DeliveryInformation;
 
 /**
  * @description If the shopping cart is specified, a Capture is made with the amount of the shopping cart for the items that are specified.

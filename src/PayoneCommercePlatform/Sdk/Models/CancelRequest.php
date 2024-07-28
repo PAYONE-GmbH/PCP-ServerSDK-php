@@ -3,6 +3,9 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\CancelItem;
+use PayoneCommercePlatform\Sdk\Models\CancelType;
+use PayoneCommercePlatform\Sdk\Models\CancellationReason;
 
 /**
  * @description Request to mark items as of the respective Checkout as cancelled and to automatically reverse the associated payment.
@@ -32,6 +35,11 @@ class CancelRequest
     #[SerializedName('cancelItems')]
     protected ?array $cancelItems;
 
+    /**
+     * @param CancelType|null $cancelType The type of cancellation.
+     * @param CancellationReason|null $cancellationReason The reason for cancellation.
+     * @param CancelItem[]|null $cancelItems List of items to be cancelled.
+     */
     public function __construct(
         ?CancelType $cancelType = null,
         ?CancellationReason $cancellationReason = null,
@@ -65,11 +73,18 @@ class CancelRequest
         return $this;
     }
 
+    /**
+     * @return CancelItem[]|null List of items to be cancelled.
+     */
     public function getCancelItems(): ?array
     {
         return $this->cancelItems;
     }
 
+    /**
+     * @param CancelItem[]|null $cancelItems List of items to be cancelled.
+     * @return self
+     */
     public function setCancelItems(?array $cancelItems): self
     {
         $this->cancelItems = $cancelItems;

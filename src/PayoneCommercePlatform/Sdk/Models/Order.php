@@ -3,6 +3,11 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
+use PayoneCommercePlatform\Sdk\Models\Customer;
+use PayoneCommercePlatform\Sdk\Models\References;
+use PayoneCommercePlatform\Sdk\Models\Shipping;
+use PayoneCommercePlatform\Sdk\Models\ShoppingCartInput;
 
 /**
  * @description Order object containing order related data. Please note that this object is required to be able to submit the amount.
@@ -40,15 +45,15 @@ class Order
     protected ?ShoppingCartInput $shoppingCart;
 
     public function __construct(
+        References $references,
         ?AmountOfMoney $amountOfMoney = null,
         ?Customer $customer = null,
-        References $references,
         ?Shipping $shipping = null,
         ?ShoppingCartInput $shoppingCart = null
     ) {
+        $this->references = $references;
         $this->amountOfMoney = $amountOfMoney;
         $this->customer = $customer;
-        $this->references = $references;
         $this->shipping = $shipping;
         $this->shoppingCart = $shoppingCart;
     }

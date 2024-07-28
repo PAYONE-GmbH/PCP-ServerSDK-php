@@ -3,6 +3,9 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\PaymentCreationOutput;
+use PayoneCommercePlatform\Sdk\Models\MerchantAction;
+use PayoneCommercePlatform\Sdk\Models\PaymentResponse;
 
 class CompletePaymentResponse
 {

@@ -2,8 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-
 /**
  * Reason why an order was cancelled. Possible values:
  * CONSUMER_REQUEST - The consumer requested a cancellation of the Order

@@ -3,6 +3,14 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\CardPaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\MobilePaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\RedirectPaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\SepaDirectDebitPaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\FinancingPaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
+use PayoneCommercePlatform\Sdk\Models\References;
+use PayoneCommercePlatform\Sdk\Models\PaymentEvent;
 
 /**
  * @description Object contains information of the payment with a specific payment method.
@@ -69,6 +77,18 @@ class PaymentExecution
     #[SerializedName('events')]
     protected ?array $events;
 
+    /**
+      * @param string|null $paymentExecutionId Unique ID of paymentExecution.
+      * @param string|null $paymentId Unique payment transaction identifier of the payment gateway.
+      * @param CardPaymentMethodSpecificInput|null $cardPaymentMethodSpecificInput Card payment method specific input details.
+      * @param MobilePaymentMethodSpecificInput|null $mobilePaymentMethodSpecificInput Mobile payment method specific input details.
+      * @param RedirectPaymentMethodSpecificInput|null $redirectPaymentMethodSpecificInput Redirect payment method specific input details.
+      * @param SepaDirectDebitPaymentMethodSpecificInput|null $sepaDirectDebitPaymentMethodSpecificInput SEPA direct debit payment method specific input details.
+      * @param FinancingPaymentMethodSpecificInput|null $financingPaymentMethodSpecificInput Financing payment method specific input details.
+      * @param PaymentChannel|null $paymentChannel Payment channel.
+      * @param References|null $references Reference details linked to this transaction.
+      * @param PaymentEvent[]|null $events List of payment events.
+      */
     public function __construct(
         ?string $paymentExecutionId = null,
         ?string $paymentId = null,
@@ -193,11 +213,18 @@ class PaymentExecution
         return $this;
     }
 
+    /**
+     * @return PaymentEvent[]|null List of payment events.
+     */
     public function getEvents(): ?array
     {
         return $this->events;
     }
 
+    /**
+     * @param PaymentEvent[]|null $events List of payment events.
+     * @return self
+     */
     public function setEvents(?array $events): self
     {
         $this->events = $events;

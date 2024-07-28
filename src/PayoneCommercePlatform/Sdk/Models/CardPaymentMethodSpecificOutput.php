@@ -3,6 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\CardFraudResults;
+use PayoneCommercePlatform\Sdk\Models\ThreeDSecureResults;
 
 /**
  * @description Object containing the card payment method details.

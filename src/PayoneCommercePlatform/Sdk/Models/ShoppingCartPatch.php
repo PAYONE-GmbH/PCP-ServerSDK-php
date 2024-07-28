@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\CartItemPatch;
 
 /**
  * @description Shopping cart data, including items and specific amounts.
@@ -15,6 +16,9 @@ class ShoppingCartPatch
     #[SerializedName('items')]
     protected ?array $items;
 
+    /**
+      * @param CartItemPatch[]|null $items List of cart items.
+      */
     public function __construct(
         ?array $items = null
     ) {
@@ -22,11 +26,18 @@ class ShoppingCartPatch
     }
 
     // Getters and Setters
+    /**
+      * @return CartItemPatch[]|null $items List of cart items.
+      */
     public function getItems(): ?array
     {
         return $this->items;
     }
 
+    /**
+      * @param CartItemPatch[]|null $items List of cart items.
+      * @return self
+      */
     public function setItems(?array $items): self
     {
         $this->items = $items;

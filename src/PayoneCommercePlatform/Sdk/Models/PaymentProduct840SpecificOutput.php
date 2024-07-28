@@ -3,6 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\Address;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct840CustomerAccount;
 
 /**
  * @description PayPal (payment product 840) specific details.

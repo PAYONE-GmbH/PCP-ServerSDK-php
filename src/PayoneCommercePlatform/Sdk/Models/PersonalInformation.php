@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\PersonalName;
 
 /**
  * @description Object containing personal information like name, date of birth and gender.

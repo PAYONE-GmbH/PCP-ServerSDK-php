@@ -3,6 +3,10 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
+use PayoneCommercePlatform\Sdk\Models\StatusValue;
+use PayoneCommercePlatform\Sdk\Models\CancellationReason;
+use PayoneCommercePlatform\Sdk\Models\PaymentType;
 
 /**
  * @description Detailed information regarding an occurred payment event.

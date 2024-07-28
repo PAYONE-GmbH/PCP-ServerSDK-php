@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\Customer;
 
 /**
  * @description Update the customer data of the given Commerce Case.

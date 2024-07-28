@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\ProductType;
 
 /**
  * @description Object containing additional information that when supplied can have a beneficial effect on the discountrates.

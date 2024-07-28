@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct771SpecificOutput;
 
 /**
  * @description Object containing the SEPA direct debit details.

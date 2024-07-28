@@ -3,6 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\RedirectPaymentProduct840SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\RedirectionData;
 
 /**
  * @description Object containing the specific input details for payments that involve redirects to 3rd parties to complete, like iDeal and PayPal.

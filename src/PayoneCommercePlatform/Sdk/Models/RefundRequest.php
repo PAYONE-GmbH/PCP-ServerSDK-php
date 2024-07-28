@@ -3,6 +3,9 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\PositiveAmountOfMoney;
+use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
+use PayoneCommercePlatform\Sdk\Models\ReturnInformation;
 
 /**
  * @description Request to refund a payment for a Checkout. It is possible to perform multiple partial refunds by providing an amount that is lower than the total captured amount. The returnReason can be provided for reporting and reconciliation purposes but is not mandatory.

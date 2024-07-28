@@ -7,17 +7,17 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class CancelItem
 {
     /**
-     * @var string|null Id of the item to cancel.
+     * @var string Id of the item to cancel.
      */
     #[SerializedName('id')]
-    protected ?string $id;
+    protected string $id;
 
     /**
-     * @var int|null Quantity of the units being cancelled, should be greater than zero.
+     * @var int Quantity of the units being cancelled, should be greater than zero.
      * Note: Must not be all spaces or all zeros
      */
     #[SerializedName('quantity')]
-    protected ?int $quantity;
+    protected int $quantity;
 
     public function __construct(
         string $id,
@@ -50,4 +50,3 @@ class CancelItem
         return $this;
     }
 }
-

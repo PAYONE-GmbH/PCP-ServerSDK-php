@@ -3,6 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\Customer;
+use PayoneCommercePlatform\Sdk\Models\CheckoutResponse;
 use DateTime;
 
 /**
@@ -40,6 +42,13 @@ class CommerceCaseResponse
     #[SerializedName('creationDateTime')]
     protected ?DateTime $creationDateTime;
 
+    /**
+     * @param string|null $merchantReference Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+     * @param string|null $commerceCaseId Unique ID reference of the Commerce Case.
+     * @param Customer|null $customer The customer details.
+     * @param CheckoutResponse[]|null $checkouts List of checkouts associated with the Commerce Case.
+     * @param DateTime|null $creationDateTime The creation date and time of the Commerce Case in RFC3339 format.
+     */
     public function __construct(
         ?string $merchantReference = null,
         ?string $commerceCaseId = null,
@@ -88,11 +97,18 @@ class CommerceCaseResponse
         return $this;
     }
 
+    /**
+     * @return CheckoutResponse[]|null List of checkouts associated with the Commerce Case.
+     */
     public function getCheckouts(): ?array
     {
         return $this->checkouts;
     }
 
+    /**
+     * @param CheckoutResponse[]|null $checkouts List of checkouts associated with the Commerce Case.
+     * @return self
+     */
     public function setCheckouts(?array $checkouts): self
     {
         $this->checkouts = $checkouts;

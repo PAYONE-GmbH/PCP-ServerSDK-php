@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class PaymentReferences
 {
     /**
-     * @var stringUnique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+     * @var string Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
      */
     #[SerializedName('merchantReference')]
     protected string $merchantReference;

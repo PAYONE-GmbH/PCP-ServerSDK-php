@@ -3,6 +3,9 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\RefundOutput;
+use PayoneCommercePlatform\Sdk\Models\StatusValue;
+use PayoneCommercePlatform\Sdk\Models\PaymentStatusOutput;
 
 /**
  * @description This object has the numeric representation of the current Refund status, timestamp of last status change and performable action on the current Refund resource. In case of a rejected Refund, detailed error information is listed.

@@ -3,6 +3,13 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
+use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
+use PayoneCommercePlatform\Sdk\Models\CardPaymentMethodSpecificOutput;
+use PayoneCommercePlatform\Sdk\Models\MobilePaymentMethodSpecificOutput;
+use PayoneCommercePlatform\Sdk\Models\RedirectPaymentMethodSpecificOutput;
+use PayoneCommercePlatform\Sdk\Models\SepaDirectDebitPaymentMethodSpecificOutput;
+use PayoneCommercePlatform\Sdk\Models\FinancingPaymentMethodSpecificOutput;
 
 /**
  * @description Object containing payment details.

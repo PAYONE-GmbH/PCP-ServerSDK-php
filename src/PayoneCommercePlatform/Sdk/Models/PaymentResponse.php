@@ -3,6 +3,9 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\PaymentOutput;
+use PayoneCommercePlatform\Sdk\Models\StatusValue;
+use PayoneCommercePlatform\Sdk\Models\PaymentStatusOutput;
 
 /**
  * @description Object that holds the payment related properties.

@@ -34,7 +34,11 @@ class RequestHeaderGenerator
 
         $clientMetaInfo = $this->communicatorConfiguration->getClientMetaInfo();
         if (!$request->hasHeader('X-GCS-ClientMetaInfo') && !empty($clientMetaInfo)) {
-            $request = $request->withAddedHeader('X-GCS-ClientMetaInfo', base64_encode(json_encode($clientMetaInfo)));
+            $json = json_encode($clientMetaInfo);
+            if (!$json) {
+                throw new \InvalidArgumentException('ClientMetaInfo is not a valid JSON');
+            }
+            $request = $request->withAddedHeader('X-GCS-ClientMetaInfo', base64_encode($json));
         }
 
         if(!$request->hasHeader('Authorization')) {
@@ -64,9 +68,14 @@ class RequestHeaderGenerator
         if (!is_null($integrator)) {
             $serverMetaInfo["integrator"] = $integrator;
         }
-
         // the sdkIdentifier contains a /. Without the JSON_UNESCAPED_SLASHES, this is turned to \/ in JSON.
-        return base64_encode(json_encode($serverMetaInfo, JSON_UNESCAPED_SLASHES));
+        $json = json_encode($serverMetaInfo, JSON_UNESCAPED_SLASHES);
+        // assert json_encode succeeded
+        if (!$json) {
+            throw new \LogicException('ServerMetaInfo is not a valid JSON');
+        }
+
+        return base64_encode($json);
     }
 
     /**
@@ -116,6 +125,7 @@ class RequestHeaderGenerator
         }
         ksort($gcsHeaders);
         foreach ($gcsHeaders as $gcsHeaderKey => $gcsHeaderValue) {
+            // @phpstan-ignore-next-line
             $gcsEncodedHeaderValue = trim(preg_replace('/\r?\n[\h]*/', ' ', $gcsHeaderValue));
 
             $signData .= strtolower($gcsHeaderKey) . ':' . $gcsEncodedHeaderValue . "\n";

@@ -3,6 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\ShoppingCartResult;
 
 /**
  * @description This object represents the response for a return request, including the payment response and the updated shopping cart.

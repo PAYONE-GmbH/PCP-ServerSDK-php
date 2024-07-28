@@ -3,6 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct320SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\AuthorizationMode;
 
 /**
  * @description Object containing the specific input details for mobile payments.

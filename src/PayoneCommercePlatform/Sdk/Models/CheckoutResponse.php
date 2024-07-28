@@ -3,6 +3,14 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
+use PayoneCommercePlatform\Sdk\Models\CheckoutReferences;
+use PayoneCommercePlatform\Sdk\Models\Shipping;
+use PayoneCommercePlatform\Sdk\Models\ShoppingCartResult;
+use PayoneCommercePlatform\Sdk\Models\PaymentExecution;
+use PayoneCommercePlatform\Sdk\Models\StatusCheckout;
+use PayoneCommercePlatform\Sdk\Models\StatusOutput;
+use PayoneCommercePlatform\Sdk\Models\AllowedPaymentActions;
 use DateTime;
 
 /**
@@ -88,6 +96,21 @@ class CheckoutResponse
     #[SerializedName('allowedPaymentActions')]
     protected ?array $allowedPaymentActions;
 
+    /**
+     * @param string $commerceCaseId Reference to the Commerce Case.
+     * @param string $checkoutId Reference to the Checkout.
+     * @param string $merchantCustomerId Unique identifier for the customer.
+     * @param AmountOfMoney|null $amountOfMoney The amount of money for the checkout.
+     * @param CheckoutReferences|null $references References for the checkout.
+     * @param Shipping|null $shipping Shipping information for the checkout.
+     * @param ShoppingCartResult|null $shoppingCart Shopping cart data for the checkout.
+     * @param PaymentExecution[]|null $paymentExecutions List of payment executions.
+     * @param StatusCheckout|null $checkoutStatus The current status of the checkout.
+     * @param StatusOutput|null $statusOutput The status output details.
+     * @param PaymentInformationResponse[]|null $paymentInformation List of payment information responses.
+     * @param DateTime|null $creationDateTime The creation date and time of the checkout in RFC3339 format.
+     * @param AllowedPaymentActions[]|null $allowedPaymentActions List of allowed payment actions.
+     */
     public function __construct(
         string $commerceCaseId,
         string $checkoutId,
@@ -196,11 +219,18 @@ class CheckoutResponse
         return $this;
     }
 
+    /**
+     * @return PaymentExecution[]|null
+     */
     public function getPaymentExecutions(): ?array
     {
         return $this->paymentExecutions;
     }
 
+    /**
+     * @param PaymentExecution[]|null $paymentExecutions
+     * @return self
+     */
     public function setPaymentExecutions(?array $paymentExecutions): self
     {
         $this->paymentExecutions = $paymentExecutions;
@@ -229,11 +259,18 @@ class CheckoutResponse
         return $this;
     }
 
+    /**
+     * @return PaymentInformationResponse[]|null
+     */
     public function getPaymentInformation(): ?array
     {
         return $this->paymentInformation;
     }
 
+    /**
+     * @param PaymentInformationResponse[]|null $paymentInformation
+     * @return self
+     */
     public function setPaymentInformation(?array $paymentInformation): self
     {
         $this->paymentInformation = $paymentInformation;
@@ -251,11 +288,18 @@ class CheckoutResponse
         return $this;
     }
 
+    /**
+     * @return AllowedPaymentActions[]|null
+     */
     public function getAllowedPaymentActions(): ?array
     {
         return $this->allowedPaymentActions;
     }
 
+    /**
+     * @param AllowedPaymentActions[]|null $allowedPaymentActions
+     * @return self
+     */
     public function setAllowedPaymentActions(?array $allowedPaymentActions): self
     {
         $this->allowedPaymentActions = $allowedPaymentActions;

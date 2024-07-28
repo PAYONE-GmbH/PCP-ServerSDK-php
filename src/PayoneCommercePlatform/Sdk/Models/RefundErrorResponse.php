@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\APIError;
 
 /**
  * @description Object containing details about a refund error response.
@@ -21,6 +22,10 @@ class RefundErrorResponse
     #[SerializedName('errors')]
     protected ?array $errors;
 
+    /**
+     * @param string|null $errorId Unique reference, for debugging purposes, of this error response.
+     * @param APIError[]|null $errors List of errors.
+     */
     public function __construct(
         ?string $errorId = null,
         ?array $errors = null
@@ -41,11 +46,18 @@ class RefundErrorResponse
         return $this;
     }
 
+    /**
+     * @return APIError[]|null List of errors.
+     */
     public function getErrors(): ?array
     {
         return $this->errors;
     }
 
+    /**
+     * @param APIError[]|null $errors List of errors.
+     * @return self
+     */
     public function setErrors(?array $errors): self
     {
         $this->errors = $errors;

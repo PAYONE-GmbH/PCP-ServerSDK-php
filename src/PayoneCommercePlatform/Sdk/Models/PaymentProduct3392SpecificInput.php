@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
 
 /**
  * @description Object containing specific information for PAYONE Secured Direct Debit.
@@ -33,4 +34,3 @@ class PaymentProduct3392SpecificInput
         return $this;
     }
 }
-

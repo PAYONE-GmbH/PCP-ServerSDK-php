@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformation;
 
 /**
  * Additional information about the Apple payment data token. This information is needed for checking the validity

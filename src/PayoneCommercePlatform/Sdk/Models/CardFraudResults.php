@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class CardFraudResults
 {
     /**
-     * @var stringResult of the Address Verification Service checks. Possible values are:
+     * @var string Result of the Address Verification Service checks. Possible values are:
      * A - Address (Street) matches, Zip does not
      * B - Street address match for international transactions—Postal code not verified due to incompatible formats
      * C - Street address and postal code not verified for international transaction due to incompatible formats

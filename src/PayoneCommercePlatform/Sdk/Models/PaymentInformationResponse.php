@@ -3,6 +3,9 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\CardPaymentDetails;
+use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
+use PayoneCommercePlatform\Sdk\Models\PaymentEvent;
 
 /**
  * @description Object containing the related data of the created Payment Information.
@@ -75,6 +78,19 @@ class PaymentInformationResponse
     #[SerializedName('events')]
     protected ?array $events;
 
+    /**
+     * @param string $commerceCaseId Unique ID of the Commerce Case.
+     * @param string $checkoutId Unique ID of the Checkout.
+     * @param string $merchantCustomerId Unique identifier of the customer.
+     * @param string $paymentInformationId Unique ID of the Payment Information.
+     * @param PaymentChannel|null $paymentChannel Payment channel.
+     * @param int $paymentProductId Payment product identifier.
+     * @param string $terminalId Unique identifier of the POS terminal of the payment transaction.
+     * @param string $cardAcceptorId Unique ID that identifies a store location or transaction point and which refers to the contract number of the merchant accepting the card.
+     * @param string $merchantReference Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR or terminal will be used. It is always the reference for external transactions. (e.g. card present payments, cash payments or payments processed by other payment providers).
+     * @param CardPaymentDetails|null $cardPaymentDetails Card payment details.
+     * @param PaymentEvent[]|null $events List of payment events.
+     */
     public function __construct(
         string $commerceCaseId,
         string $checkoutId,
@@ -212,11 +228,18 @@ class PaymentInformationResponse
         return $this;
     }
 
+    /**
+     * @return PaymentEvent[]|null List of payment events.
+     */
     public function getEvents(): ?array
     {
         return $this->events;
     }
 
+    /**
+     * @param PaymentEvent[]|null $events List of payment events.
+     * @return self
+     */
     public function setEvents(?array $events): self
     {
         $this->events = $events;

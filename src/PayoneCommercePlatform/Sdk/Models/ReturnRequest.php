@@ -3,6 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\ReturnType;
+use PayoneCommercePlatform\Sdk\Models\ReturnItem;
 
 /**
  * @description Request to mark items of the respective Checkout as returned and to automatically refund a payment for those items. A Return can be created for a full or the partial ShoppingCart of the Checkout. The platform will automatically calculate the respective amount to trigger the Refund. For a partial Return a list of items must be provided. The item details for the Refund will be automatically loaded from the Checkout. The returnReason can be provided for reporting and reconciliation purposes but is not mandatory.
@@ -27,6 +29,11 @@ class ReturnRequest
     #[SerializedName('returnItems')]
     protected ?array $returnItems;
 
+    /**
+     * @param ReturnType|null $returnType The return type.
+     * @param string|null $returnReason Reason of the Refund (e.g. communicated by or to the consumer).
+     * @param ReturnItem[]|null $returnItems List of items to return.
+     */
     public function __construct(
         ?ReturnType $returnType = null,
         ?string $returnReason = null,
@@ -60,11 +67,18 @@ class ReturnRequest
         return $this;
     }
 
+    /**
+     * @return ReturnItem[]|null List of items to return.
+     */
     public function getReturnItems(): ?array
     {
         return $this->returnItems;
     }
 
+    /**
+     * @param ReturnItem[]|null $returnItems List of items to return.
+     * @return self
+     */
     public function setReturnItems(?array $returnItems): self
     {
         $this->returnItems = $returnItems;
