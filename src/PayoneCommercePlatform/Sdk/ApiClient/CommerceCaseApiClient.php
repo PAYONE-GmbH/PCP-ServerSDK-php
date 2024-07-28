@@ -259,7 +259,7 @@ class CommerceCaseApiClient extends BaseApiClient
         $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
         $operationHost = $this->config->getHost();
-        $query = http_build_query($query->toQueryMap());
+        $query = http_build_query($query->toQueryMap(), '', '&', PHP_QUERY_RFC3986);
         return new Request(
             'GET',
             $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
