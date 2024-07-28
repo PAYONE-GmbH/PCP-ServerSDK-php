@@ -10,6 +10,8 @@ use PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest;
 use PayoneCommercePlatform\Sdk\Models\CheckoutsResponse;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest;
 use PayoneCommercePlatform\Sdk\Queries\GetCheckoutsQuery;
+use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
+use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
 /**
  * CheckoutApi Class Doc Comment
@@ -30,8 +32,7 @@ class CheckoutApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest $createCheckoutRequest createCheckoutRequest (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse
      */
     public function createCheckout(string $merchantId, string $commerceCaseId, CreateCheckoutRequest $createCheckoutRequest): CreateCheckoutResponse
@@ -122,9 +123,7 @@ class CheckoutApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @throws \InvalidArgumentException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return void
      */
     public function deleteCheckout(string $merchantId, string $commerceCaseId, string $checkoutId): void
@@ -213,8 +212,7 @@ class CheckoutApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CheckoutResponse
      */
     public function getCheckout(string $merchantId, string $commerceCaseId, string $checkoutId): CheckoutResponse
@@ -303,7 +301,7 @@ class CheckoutApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param GetCheckoutsQuery $getCheckoutsQuery query parameter to filter checkouts
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CheckoutsResponse
      */
     public function getCheckouts(
@@ -384,8 +382,7 @@ class CheckoutApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest $patchCheckoutRequest patchCheckoutRequest (required)
      *
-     * @throws \payonecommerceplatform\sdk\apierrorresponseexception
-     * @throws \payonecommerceplatform\sdk\apiresponseretrievalexception
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return void
      */
     public function updateCheckout(string $merchantId, string $commerceCaseId, string $checkoutId, PatchCheckoutRequest $patchCheckoutRequest): void

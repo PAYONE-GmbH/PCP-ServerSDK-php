@@ -10,6 +10,8 @@ use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest;
 use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseResponse;
 use PayoneCommercePlatform\Sdk\Models\Customer;
 use PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery;
+use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
+use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
 /**
  * CommerceCaseApi Class Doc Comment
@@ -29,8 +31,7 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest $createCommerceCaseRequest createCommerceCaseRequest (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseResponse
      */
     public function createCommerceCase($merchantId, $createCommerceCaseRequest): CreateCommerceCaseResponse
@@ -48,7 +49,6 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest $createCommerceCaseRequest (required)
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function createCommerceCaseAsync($merchantId, $createCommerceCaseRequest): PromiseInterface
@@ -70,7 +70,6 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest $createCommerceCaseRequest (required)
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function createCommerceCaseRequest(string $merchantId, CreateCommerceCaseRequest $createCommerceCaseRequest): Request
@@ -111,8 +110,7 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse
      */
     public function getCommerceCase(string $merchantId, string $commerceCaseId): CommerceCaseResponse
@@ -150,7 +148,6 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getCommerceCase'] to see the possible values for this operation
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function getCommerceCaseRequest(string $merchantId, string $commerceCaseId): Request
@@ -193,8 +190,7 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
      * @param  \PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery $query filter parameters (optional)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse[]
      */
     public function getCommerceCases(
@@ -277,8 +273,7 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer customer (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return void
      */
     public function updateCommerceCase($merchantId, $commerceCaseId, $customer): void
@@ -297,7 +292,6 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateCommerceCase'] to see the possible values for this operation
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function updateCommerceCaseAsync($merchantId, $commerceCaseId, $customer): PromiseInterface
@@ -319,7 +313,6 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateCommerceCase'] to see the possible values for this operation
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function updateCommerceCaseRequest(string $merchantId, string $commerceCaseId, Customer $customer): Request
