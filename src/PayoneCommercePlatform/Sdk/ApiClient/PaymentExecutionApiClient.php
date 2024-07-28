@@ -11,11 +11,11 @@ use PayoneCommercePlatform\Sdk\Models\CapturePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
-use PayoneCommercePlatform\Sdk\Models\PausePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest;
 use PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\RefundRequest;
-use PayoneCommercePlatform\Sdk\ObjectSerializer;
+use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
+use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
 /**
  * PaymentExecutionApi Class Doc Comment
@@ -38,8 +38,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest $cancelPaymentRequest cancelPaymentRequest (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CancelPaymentResponse
      */
     public function cancelPaymentExecution(
@@ -86,9 +85,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest $cancelPaymentRequest (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['cancelPaymentExecution'] to see the possible values for this operation
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function cancelPaymentExecutionRequest(
@@ -130,7 +127,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         }
         $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($cancelPaymentRequest));
+        $httpBody = self::$serializer->serialize($cancelPaymentRequest, 'json');
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -152,8 +149,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest $capturePaymentRequest capturePaymentRequest (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CapturePaymentResponse
      */
     public function capturePaymentExecution(
@@ -262,10 +258,8 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest $completePaymentRequest completePaymentRequest (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['completePayment'] to see the possible values for this operation
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse
      */
     public function completePayment(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): CompletePaymentResponse
@@ -364,8 +358,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest $paymentExecutionRequest paymentExecutionRequest (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse
      */
     public function createPayment(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): CreatePaymentResponse
@@ -384,12 +377,10 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest $paymentExecutionRequest (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPayment'] to see the possible values for this operation
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createPaymentAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionRequest): PromiseInterface
+    public function createPaymentAsync(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): PromiseInterface
     {
         $request = $this->createPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionRequest);
         return $this->makeAsyncApiCall($request, CreatePaymentResponse::class)
@@ -408,7 +399,6 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest $paymentExecutionRequest (required)
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function createPaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): Request
@@ -461,10 +451,8 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\RefundRequest $refundRequest refundRequest (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['refundPaymentExecution'] to see the possible values for this operation
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse
      */
     public function refundPaymentExecution(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, RefundRequest $refundRequest): RefundPaymentResponse
@@ -506,7 +494,6 @@ class PaymentExecutionApiClient extends BaseApiClient
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
      * @param  \PayoneCommercePlatform\Sdk\Models\RefundRequest $refundRequest (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['refundPaymentExecution'] to see the possible values for this operation
      *
      * @return \GuzzleHttp\Psr7\Request
      */
