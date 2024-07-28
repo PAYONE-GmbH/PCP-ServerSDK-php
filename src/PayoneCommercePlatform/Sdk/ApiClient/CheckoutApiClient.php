@@ -140,15 +140,15 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  CreateCheckoutRequest $createCheckoutRequest Content of the newly created checkout (required)
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteCheckoutAsync(string $merchantId, string $commerceCaseId, string $checkoutId): PromiseInterface
+    public function deleteCheckoutAsync(string $merchantId, string $commerceCaseId, CreateCheckoutRequest $createCheckoutRequest): PromiseInterface
     {
-        $request = $this->createCheckoutRequest($merchantId, $commerceCaseId, $checkoutId);
+        $request = $this->createCheckoutRequest($merchantId, $commerceCaseId, $createCheckoutRequest);
 
-        return $this->makeAsyncApiCall($merchantId, $commerceCaseId, $checkoutId)
+        return $this->makeAsyncApiCall($request, CreateCheckoutResponse::class)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -299,7 +299,7 @@ class CheckoutApiClient extends BaseApiClient
      * Get a list of Checkouts based on Search Parameters
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param GetCheckoutsQuery $getCheckoutsQuery query parameter to filter checkouts
+     * @param GetCheckoutsQuery $query query parameter to filter checkouts
      *
      * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CheckoutsResponse
@@ -325,9 +325,9 @@ class CheckoutApiClient extends BaseApiClient
      */
     public function getCheckoutsAsync(
         string $merchantId,
-        GetCheckoutsQuery $query = new GetCheckoutsQuery(),
+        GetCheckoutsQuery $getCheckoutsQuery = new GetCheckoutsQuery(),
     ): PromiseInterface {
-        $request = $this->getCheckoutsRequest($merchantId, $query);
+        $request = $this->getCheckoutsRequest($merchantId, $getCheckoutsQuery);
 
         return $this->makeAsyncApiCall($request, CheckoutsResponse::class)
             ->then(

@@ -391,7 +391,7 @@ class GetCheckoutsQuery
     }
 
     /** @return array<string, string> */
-    protected function toQueryMap(): array
+    public function toQueryMap(): array
     {
         /** @var array<string, string> */
         $query = [];
