@@ -2,11 +2,11 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\MockObject\Stub;
+use PHPUnit\Framework\TestCase;
+use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
 use PayoneCommercePlatform\Sdk\Models\APIError;
 use PayoneCommercePlatform\Sdk\Models\AddressPersonal;
 use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
@@ -16,8 +16,6 @@ use PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse;
 use PayoneCommercePlatform\Sdk\Models\ErrorResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
-use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
-use PHPUnit\Framework\TestCase;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 use PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest;
 use PayoneCommercePlatform\Sdk\Models\Shipping;
@@ -25,21 +23,13 @@ use PayoneCommercePlatform\Sdk\Queries\GetCheckoutsQuery;
 
 class CheckoutApiClientTest extends TestCase
 {
-    private CommunicatorConfiguration $communicatorConfiguration;
-    private ClientInterface & Stub  $httpClient;
+    use TestApiClientTrait;
     private CheckoutApiClient $checkoutClient;
-    private String $merchantId = "MY_MERCHANT_ID";
 
     public function setUp(): void
     {
-        $this->communicatorConfiguration = new CommunicatorConfiguration(apiKey: "KEY", apiSecret: "SECRET", host: "awesome-api.com", clientMetaInfo: []);
-        $this->httpClient = $this->createStub(ClientInterface::class);
+        $this->initTestConfig();
         $this->checkoutClient = new CheckoutApiClient($this->communicatorConfiguration, client: $this->httpClient);
-    }
-
-    protected function makeErrorResponse(): ErrorResponse
-    {
-        return new ErrorResponse(errorId: 'test-id', errors: [new APIError('test-code')]);
     }
 
     public function testCreateCheckout(): void
