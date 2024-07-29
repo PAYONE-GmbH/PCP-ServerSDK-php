@@ -7,9 +7,7 @@ require_once __DIR__.'/../../../../vendor/autoload.php';
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
@@ -74,25 +72,6 @@ class BaseApiClient
     }
 
     /**
-     * Create http client option
-     *
-     * @throws \RuntimeException on file opening failure
-     * @return array<string, resource> of http client options
-     */
-    protected function createHttpClientOption(): array
-    {
-        $options = [];
-        if ($this->config->getDebug()) {
-            $options[RequestOptions::DEBUG] = fopen($this->config->getDebugFile(), 'a');
-            if (!$options[RequestOptions::DEBUG]) {
-                throw new \RuntimeException('Failed to open the debug file: ' . $this->config->getDebugFile());
-            }
-        }
-
-        return $options;
-    }
-
-    /**
       *
       * @template T
       * @param Request                $request  request to send to api
@@ -103,10 +82,8 @@ class BaseApiClient
     protected function makeApiCall(Request $request, ?string $type = null): array
     {
         $request = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
-        $options = $this->createHttpClientOption();
-
         try {
-            $response = $this->client->send($request, $options);
+            $response = $this->client->send($request, []);
             $this->handleError($response);
         } catch (RequestException $e) {
             throw new ApiResponseRetrievalException(
@@ -151,53 +128,6 @@ class BaseApiClient
             );
         }
     }
-
-    protected function makeAsyncApiCall(Request $request, ?string $type): PromiseInterface
-    {
-        $request = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
-        $options = $this->createHttpClientOption();
-        $returnType = $type ?: '';
-
-        return $this->client
-          ->sendAsync($request, $options)
-          ->then(
-              function ($response) use ($returnType) {
-                  $this->handleError($response);
-
-                  if ($returnType === '') {
-                      return [null, $response->getStatusCode(), $response->getHeaders()];
-                  }
-
-                  $contents = "";
-                  try {
-                      $contents = $response->getBody()->getContents();
-                      return [
-                          self::$serializer->deserialize($contents, $returnType, 'json'),
-                          $response->getStatusCode(),
-                          $response->getHeaders()
-                      ];
-                  } catch (NotEncodableValueException | UnexpectedValueException  $exception) {
-                      throw new ApiResponseRetrievalException(
-                          message: 'Error JSON decoding server response',
-                          statusCode: $response->getStatusCode(),
-                          responseBody: $contents,
-                          previous: $exception,
-                      );
-                  }
-              },
-              function ($exception) {
-                  $response = $exception->getResponse();
-                  $statusCode = $response->getStatusCode();
-                  throw new ApiResponseRetrievalException(
-                      statusCode: $statusCode,
-                      message: sprintf('[%d] Error communicating with the API', $statusCode),
-                      responseBody: $response->getBody()->getContents(),
-                      previous: $exception,
-                  );
-              }
-          );
-    }
-
 
     protected function handleError(ResponseInterface $response): void
     {

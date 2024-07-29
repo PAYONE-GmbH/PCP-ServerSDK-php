@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CancelPaymentResponse;
@@ -17,14 +16,6 @@ use PayoneCommercePlatform\Sdk\Models\RefundRequest;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
-/**
- * PaymentExecutionApi Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class PaymentExecutionApiClient extends BaseApiClient
 {
     /**
@@ -54,30 +45,6 @@ class PaymentExecutionApiClient extends BaseApiClient
     }
 
     /**
-     * Operation cancelPaymentExecutionAsync
-     *
-     * Cancel a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest $cancelPaymentRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function cancelPaymentExecutionAsync($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest): PromiseInterface
-    {
-        $request = $this->cancelPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest);
-        return $this->makeAsyncApiCall($request, CancelPaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'cancelPaymentExecution'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
@@ -88,7 +55,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function cancelPaymentExecutionRequest(
+    protected function cancelPaymentExecutionRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -121,11 +88,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($cancelPaymentRequest, 'json');
 
@@ -165,30 +128,6 @@ class PaymentExecutionApiClient extends BaseApiClient
     }
 
     /**
-     * Operation capturePaymentExecutionAsync
-     *
-     * Capture a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest $capturePaymentRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function capturePaymentExecutionAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CapturePaymentRequest $capturePaymentRequest): PromiseInterface
-    {
-        $request = $this->capturePaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $capturePaymentRequest);
-        return $this->makeAsyncApiCall($request, CapturePaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'capturePaymentExecution'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
@@ -199,7 +138,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function capturePaymentExecutionRequest(
+    protected function capturePaymentExecutionRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -231,11 +170,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($capturePaymentRequest, 'json');
 
@@ -270,30 +205,6 @@ class PaymentExecutionApiClient extends BaseApiClient
     }
 
     /**
-     * Operation completePaymentAsync
-     *
-     * Complete a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest $completePaymentRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function completePaymentAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): PromiseInterface
-    {
-        $request = $this->completePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $completePaymentRequest);
-        return $this->makeAsyncApiCall($request, CompletePaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'completePayment'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
@@ -304,7 +215,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function completePaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): Request
+    protected function completePaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/complete';
         $httpBody = '';
@@ -331,11 +242,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($completePaymentRequest, 'json');
 
@@ -369,29 +276,6 @@ class PaymentExecutionApiClient extends BaseApiClient
     }
 
     /**
-     * Operation createPaymentAsync
-     *
-     * Create a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest $paymentExecutionRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createPaymentAsync(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): PromiseInterface
-    {
-        $request = $this->createPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionRequest);
-        return $this->makeAsyncApiCall($request, CreatePaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'createPayment'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -401,7 +285,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createPaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): Request
+    protected function createPaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions';
         $httpBody = '';
@@ -424,11 +308,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($paymentExecutionRequest, 'json');
 
@@ -463,30 +343,6 @@ class PaymentExecutionApiClient extends BaseApiClient
     }
 
     /**
-     * Operation refundPaymentExecutionAsync
-     *
-     * Refund a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\RefundRequest $refundRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function refundPaymentExecutionAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, RefundRequest $refundRequest): PromiseInterface
-    {
-        $request = $this->refundPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $refundRequest);
-        return $this->makeAsyncApiCall($request, RefundPaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'refundPaymentExecution'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
@@ -497,7 +353,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function refundPaymentExecutionRequest(
+    protected function refundPaymentExecutionRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -531,11 +387,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($refundRequest, 'json');
 

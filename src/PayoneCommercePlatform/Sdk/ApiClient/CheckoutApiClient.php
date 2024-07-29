@@ -3,7 +3,6 @@
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Promise\PromiseInterface;
 use PayoneCommercePlatform\Sdk\Models\CheckoutResponse;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse;
 use PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest;
@@ -13,14 +12,6 @@ use PayoneCommercePlatform\Sdk\Queries\GetCheckoutsQuery;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
-/**
- * CheckoutApi Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class CheckoutApiClient extends BaseApiClient
 {
     /**
@@ -44,29 +35,6 @@ class CheckoutApiClient extends BaseApiClient
     }
 
     /**
-     * Operation createCheckoutAsync
-     *
-     * Add a Checkout to an existing Commerce Case
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest $createCheckoutRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createCheckoutAsync(string $merchantId, string $commerceCaseId, CreateCheckoutRequest $createCheckoutRequest): PromiseInterface
-    {
-        $request = $this->createCheckoutRequest($merchantId, $commerceCaseId, $createCheckoutRequest);
-
-        return $this->makeAsyncApiCall($request, CreateCheckoutResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'createCheckout'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -75,7 +43,7 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createCheckoutRequest(
+    protected function createCheckoutRequest(
         string $merchantId,
         string $commerceCaseId,
         CreateCheckoutRequest $createCheckoutRequest,
@@ -97,11 +65,7 @@ class CheckoutApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($createCheckoutRequest, 'json');
 
@@ -134,29 +98,6 @@ class CheckoutApiClient extends BaseApiClient
     }
 
     /**
-     * Operation deleteCheckoutAsync
-     *
-     * Delete a Checkout
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  CreateCheckoutRequest $createCheckoutRequest Content of the newly created checkout (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function deleteCheckoutAsync(string $merchantId, string $commerceCaseId, CreateCheckoutRequest $createCheckoutRequest): PromiseInterface
-    {
-        $request = $this->createCheckoutRequest($merchantId, $commerceCaseId, $createCheckoutRequest);
-
-        return $this->makeAsyncApiCall($request, CreateCheckoutResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'deleteCheckout'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -165,7 +106,7 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
+    protected function deleteCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
         $contentType = 'application/json';
@@ -189,11 +130,7 @@ class CheckoutApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -224,29 +161,6 @@ class CheckoutApiClient extends BaseApiClient
     }
 
     /**
-     * Operation getCheckoutAsync
-     *
-     * Get Checkout Details
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getCheckoutAsync(string $merchantId, string $commerceCaseId, string $checkoutId): PromiseInterface
-    {
-        $request = $this->getCheckoutRequest($merchantId, $commerceCaseId, $checkoutId);
-
-        return $this->makeAsyncApiCall($request, CheckoutResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'getCheckout'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -255,7 +169,7 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function getCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
+    protected function getCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
     {
 
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
@@ -278,12 +192,7 @@ class CheckoutApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
-
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -314,30 +223,6 @@ class CheckoutApiClient extends BaseApiClient
     }
 
     /**
-     * Operation getCheckoutsAsync
-     *
-     * Get a list of Checkouts based on Search Parameters
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param GetCheckoutsQuery $getCheckoutsQuery query parameter to filter checkouts
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getCheckoutsAsync(
-        string $merchantId,
-        GetCheckoutsQuery $getCheckoutsQuery = new GetCheckoutsQuery(),
-    ): PromiseInterface {
-        $request = $this->getCheckoutsRequest($merchantId, $getCheckoutsQuery);
-
-        return $this->makeAsyncApiCall($request, CheckoutsResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'getCheckouts'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -358,11 +243,7 @@ class CheckoutApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -393,30 +274,6 @@ class CheckoutApiClient extends BaseApiClient
     }
 
     /**
-     * Operation updateCheckoutAsync
-     *
-     * Modify a Checkout
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest $patchCheckoutRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function updateCheckoutAsync($merchantId, $commerceCaseId, $checkoutId, $patchCheckoutRequest): PromiseInterface
-    {
-        $request = $this->updateCheckoutRequest($merchantId, $commerceCaseId, $checkoutId, $patchCheckoutRequest);
-
-        return $this->makeAsyncApiCall($request, null)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'updateCheckout'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -426,7 +283,7 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updateCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PatchCheckoutRequest $patchCheckoutRequest): Request
+    protected function updateCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PatchCheckoutRequest $patchCheckoutRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
         $httpBody = '';
@@ -449,11 +306,7 @@ class CheckoutApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         // json_encode the body
         $httpBody = self::$serializer->serialize($patchCheckoutRequest, 'json');

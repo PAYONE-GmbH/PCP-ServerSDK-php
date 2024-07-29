@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
 use PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse;
@@ -13,14 +12,6 @@ use PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
-/**
- * CommerceCaseApi Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class CommerceCaseApiClient extends BaseApiClient
 {
     /**
@@ -42,29 +33,6 @@ class CommerceCaseApiClient extends BaseApiClient
     }
 
     /**
-     * Operation createCommerceCaseAsync
-     *
-     * Create a Commerce Case
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest $createCommerceCaseRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createCommerceCaseAsync($merchantId, $createCommerceCaseRequest): PromiseInterface
-    {
-        $returnType = CreateCommerceCaseResponse::class;
-        $request = $this->createCommerceCaseRequest($merchantId, $createCommerceCaseRequest);
-
-        return $this->makeAsyncApiCall($request, $returnType)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'createCommerceCase'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
@@ -72,7 +40,7 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createCommerceCaseRequest(string $merchantId, CreateCommerceCaseRequest $createCommerceCaseRequest): Request
+    protected function createCommerceCaseRequest(string $merchantId, CreateCommerceCaseRequest $createCommerceCaseRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases';
         $httpBody = '';
@@ -85,11 +53,7 @@ class CommerceCaseApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($createCommerceCaseRequest, 'json');
 
@@ -121,27 +85,6 @@ class CommerceCaseApiClient extends BaseApiClient
     }
 
     /**
-     * Operation getCommerceCaseAsync
-     *
-     * Get Commerce Case Details
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getCommerceCaseAsync($merchantId, $commerceCaseId): PromiseInterface
-    {
-        $request = $this->getCommerceCaseRequest($merchantId, $commerceCaseId);
-        return $this->makeAsyncApiCall($request, CommerceCaseResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'getCommerceCase'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -149,7 +92,7 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function getCommerceCaseRequest(string $merchantId, string $commerceCaseId): Request
+    protected function getCommerceCaseRequest(string $merchantId, string $commerceCaseId): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}';
 
@@ -167,11 +110,7 @@ class CommerceCaseApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -206,29 +145,6 @@ class CommerceCaseApiClient extends BaseApiClient
     }
 
     /**
-     * Operation getCommerceCasesAsync
-     *
-     * Get a list of Commerce Cases based on Search Parameters
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery $query
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getCommerceCasesAsync(
-        string $merchantId,
-        GetCommerceCasesQuery $query = new GetCommerceCasesQuery(),
-    ): PromiseInterface {
-        $request = $this->getCommerceCasesRequest($merchantId, $query);
-        return $this->makeAsyncApiCall($request, CommerceCaseResponse::class . '[]')
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'getCommerceCases'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
@@ -237,7 +153,7 @@ class CommerceCaseApiClient extends BaseApiClient
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function getCommerceCasesRequest(
+    protected function getCommerceCasesRequest(
         string $merchantId,
         GetCommerceCasesQuery $query,
     ): Request {
@@ -252,11 +168,7 @@ class CommerceCaseApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $operationHost = $this->config->getHost();
         $query = http_build_query($query->toQueryMap(), '', '&', PHP_QUERY_RFC3986);
@@ -286,28 +198,6 @@ class CommerceCaseApiClient extends BaseApiClient
     }
 
     /**
-     * Operation updateCommerceCaseAsync
-     *
-     * Modify an existing Commerce Case.
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function updateCommerceCaseAsync($merchantId, $commerceCaseId, $customer): PromiseInterface
-    {
-        $request = $this->updateCommerceCaseRequest($merchantId, $commerceCaseId, $customer);
-        return $this->makeAsyncApiCall($request, null)
-            ->then(
-                function ($response) {
-                    return;
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'updateCommerceCase'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -316,7 +206,7 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updateCommerceCaseRequest(string $merchantId, string $commerceCaseId, Customer $customer): Request
+    protected function updateCommerceCaseRequest(string $merchantId, string $commerceCaseId, Customer $customer): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}';
         $httpBody = '';
@@ -334,11 +224,7 @@ class CommerceCaseApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($customer, 'json');
 
