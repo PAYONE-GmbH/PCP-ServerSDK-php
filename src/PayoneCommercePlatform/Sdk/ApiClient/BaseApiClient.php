@@ -133,6 +133,7 @@ class BaseApiClient
         $contents = "";
         try {
             $contents = $response->getBody()->getContents();
+            fwrite(\STDERR, $contents . "\n\n");
             // @phpstan-ignore-next-line
             return [
                 self::$serializer->deserialize($contents, $type, 'json'),
@@ -245,8 +246,9 @@ class BaseApiClient
         $propertyTypeExtractor = new PropertyInfoExtractor([$reflectionExtractor, $phpDocExtractor], [$phpDocExtractor, $reflectionExtractor]);
         self::$serializer = new Serializer(
             normalizers: [
-              new ArrayDenormalizer(),  new GetSetMethodNormalizer(propertyTypeExtractor: $propertyTypeExtractor),
-              new DateTimeNormalizer(), new BackedEnumNormalizer(),
+              new ArrayDenormalizer(), new DateTimeNormalizer(),
+              new GetSetMethodNormalizer(propertyTypeExtractor: $propertyTypeExtractor),
+              new BackedEnumNormalizer(),
             ],
             encoders: [new JsonEncoder()]
         );
