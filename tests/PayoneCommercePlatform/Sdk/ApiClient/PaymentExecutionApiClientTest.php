@@ -9,7 +9,6 @@ use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 use PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CancelPaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CancellationReason;
-use PayoneCommercePlatform\Sdk\Models\CaptureOutput;
 use PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CapturePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest;
@@ -28,8 +27,6 @@ use PayoneCommercePlatform\Sdk\Models\RefundOutput;
 use PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\RefundRequest;
 use PayoneCommercePlatform\Sdk\Models\ReturnInformation;
-use PayoneCommercePlatform\Sdk\Models\StatusOutput;
-use PayoneCommercePlatform\Sdk\Models\StatusValue;
 use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
 
 class PaymentExecutionApiClientTest extends TestCase
