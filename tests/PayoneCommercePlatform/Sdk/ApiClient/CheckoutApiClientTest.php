@@ -101,8 +101,8 @@ class CheckoutApiClientTest extends TestCase
         $checkout = $allCheckouts ? $allCheckouts[0] : null;
 
         // assert
-        $this->assertEquals($checkoutsResponse->getNumberOfCheckouts(), 1);
-        $this->assertEquals($checkout, $this->makeCheckoutResponse());
+        $this->assertEquals(1, $checkoutsResponse->getNumberOfCheckouts());
+        $this->assertEquals($this->makeCheckoutResponse(), $checkout);
     }
 
     public function testGetCheckoutsUnsuccessful400(): void

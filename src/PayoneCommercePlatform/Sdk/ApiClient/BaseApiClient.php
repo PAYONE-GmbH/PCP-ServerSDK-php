@@ -18,12 +18,17 @@ use PayoneCommercePlatform\Sdk\Models\ErrorResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
+use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
+use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class BaseApiClient
@@ -220,7 +225,7 @@ class BaseApiClient
                     errors: $res->getErrors(),
                 );
             }
-        } catch (NotEncodableValueException  $exception) {
+        } catch (NotEncodableValueException | UnexpectedValueException  $exception) {
             throw new ApiResponseRetrievalException(
                 statusCode: $statusCode,
                 message: sprintf(
@@ -234,8 +239,17 @@ class BaseApiClient
 
     public static function init(): void
     {
+        $phpDocExtractor = new PhpDocExtractor();
+        $reflectionExtractor = new ReflectionExtractor();
+        // phpstan can't figure out that the exctractors implement the needed interface,
+        // probably because it is local variable
+        // @phpstan-ignore-next-line
+        $propertyTypeExtractor = new PropertyInfoExtractor([$reflectionExtractor, $phpDocExtractor], [$phpDocExtractor, $reflectionExtractor]);
         self::$serializer = new Serializer(
-            normalizers: [new GetSetMethodNormalizer(), new ArrayDenormalizer(), new DateTimeNormalizer(), new BackedEnumNormalizer()],
+            normalizers: [
+              new ArrayDenormalizer(),  new GetSetMethodNormalizer(propertyTypeExtractor: $propertyTypeExtractor),
+              new DateTimeNormalizer(), new BackedEnumNormalizer(),
+            ],
             encoders: [new JsonEncoder()]
         );
     }
