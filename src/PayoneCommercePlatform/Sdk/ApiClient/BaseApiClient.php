@@ -28,7 +28,6 @@ use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class BaseApiClient
@@ -140,7 +139,7 @@ class BaseApiClient
                 $response->getStatusCode(),
                 $response->getHeaders()
             ];
-        } catch (\JsonException $exception) {
+        } catch (NotEncodableValueException | UnexpectedValueException  $exception) {
             throw new ApiResponseRetrievalException(
                 message: sprintf(
                     'Error JSON decoding server response (%s)',
@@ -172,13 +171,12 @@ class BaseApiClient
                   $contents = "";
                   try {
                       $contents = $response->getBody()->getContents();
-                      $decoded = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
                       return [
-                          self::$serializer->deserialize($decoded, $returnType, 'json'),
+                          self::$serializer->deserialize($contents, $returnType, 'json'),
                           $response->getStatusCode(),
                           $response->getHeaders()
                       ];
-                  } catch (\JsonException $exception) {
+                  } catch (NotEncodableValueException | UnexpectedValueException  $exception) {
                       throw new ApiResponseRetrievalException(
                           message: 'Error JSON decoding server response',
                           statusCode: $response->getStatusCode(),
