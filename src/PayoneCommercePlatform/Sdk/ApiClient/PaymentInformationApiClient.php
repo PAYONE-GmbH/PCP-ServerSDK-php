@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
 use PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest;
@@ -38,29 +37,6 @@ class PaymentInformationApiClient extends BaseApiClient
         $request = $this->createPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationRequest);
         list($response) = $this->makeApiCall($request, PaymentInformationResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation createPaymentInformationAsync
-     *
-     * Create a Payment Information
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest $paymentInformationRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createPaymentInformationAsync(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentInformationRequest $paymentInformationRequest): PromiseInterface
-    {
-        $request = $this->createPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationRequest);
-        return $this->makeAsyncApiCall($request, PaymentInformationResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
@@ -138,29 +114,6 @@ class PaymentInformationApiClient extends BaseApiClient
         $request = $this->getPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationId);
         list($response) = $this->makeApiCall($request, PaymentInformationResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation getPaymentInformationAsync
-     *
-     * Get a Payment Information
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentInformationId Unique identifier of a paymentInformation (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getPaymentInformationAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentInformationId): PromiseInterface
-    {
-        $request = $this->getPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationId);
-        return $this->makeAsyncApiCall($request, PaymentInformationResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**

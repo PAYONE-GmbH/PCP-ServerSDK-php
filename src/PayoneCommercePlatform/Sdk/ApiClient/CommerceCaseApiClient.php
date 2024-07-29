@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
 use PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse;
@@ -39,29 +38,6 @@ class CommerceCaseApiClient extends BaseApiClient
         $request = $this->createCommerceCaseRequest($merchantId, $createCommerceCaseRequest);
         list($response) = $this->makeApiCall($request, CreateCommerceCaseResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation createCommerceCaseAsync
-     *
-     * Create a Commerce Case
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest $createCommerceCaseRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createCommerceCaseAsync($merchantId, $createCommerceCaseRequest): PromiseInterface
-    {
-        $returnType = CreateCommerceCaseResponse::class;
-        $request = $this->createCommerceCaseRequest($merchantId, $createCommerceCaseRequest);
-
-        return $this->makeAsyncApiCall($request, $returnType)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
@@ -118,27 +94,6 @@ class CommerceCaseApiClient extends BaseApiClient
         $request = $this->getCommerceCaseRequest($merchantId, $commerceCaseId);
         list($response) = $this->makeApiCall($request, CommerceCaseResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation getCommerceCaseAsync
-     *
-     * Get Commerce Case Details
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getCommerceCaseAsync($merchantId, $commerceCaseId): PromiseInterface
-    {
-        $request = $this->getCommerceCaseRequest($merchantId, $commerceCaseId);
-        return $this->makeAsyncApiCall($request, CommerceCaseResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
@@ -206,29 +161,6 @@ class CommerceCaseApiClient extends BaseApiClient
     }
 
     /**
-     * Operation getCommerceCasesAsync
-     *
-     * Get a list of Commerce Cases based on Search Parameters
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery $query
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getCommerceCasesAsync(
-        string $merchantId,
-        GetCommerceCasesQuery $query = new GetCommerceCasesQuery(),
-    ): PromiseInterface {
-        $request = $this->getCommerceCasesRequest($merchantId, $query);
-        return $this->makeAsyncApiCall($request, CommerceCaseResponse::class . '[]')
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'getCommerceCases'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
@@ -283,28 +215,6 @@ class CommerceCaseApiClient extends BaseApiClient
     {
         $request = $this->updateCommerceCaseRequest($merchantId, $commerceCaseId, $customer);
         $this->makeApiCall($request, null);
-    }
-
-    /**
-     * Operation updateCommerceCaseAsync
-     *
-     * Modify an existing Commerce Case.
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function updateCommerceCaseAsync($merchantId, $commerceCaseId, $customer): PromiseInterface
-    {
-        $request = $this->updateCommerceCaseRequest($merchantId, $commerceCaseId, $customer);
-        return $this->makeAsyncApiCall($request, null)
-            ->then(
-                function ($response) {
-                    return;
-                }
-            );
     }
 
     /**

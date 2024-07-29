@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\Models\CancelRequest;
 use PayoneCommercePlatform\Sdk\Models\CancelResponse;
@@ -43,29 +42,6 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         $request = $this->cancelOrderRequest($merchantId, $commerceCaseId, $checkoutId, $cancelRequest);
         list($response) = $this->makeApiCall($request, CancelResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation cancelOrderAsync
-     *
-     * Mark items of a Checkout as cancelled and automatically cancel the payment for the items
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CancelRequest $cancelRequest (optional)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function cancelOrderAsync(string $merchantId, string $commerceCaseId, string $checkoutId, ?CancelRequest $cancelRequest = null): PromiseInterface
-    {
-        $request = $this->cancelOrderRequest($merchantId, $commerceCaseId, $checkoutId, $cancelRequest);
-        return $this->makeAsyncApiCall($request, CancelResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
@@ -143,33 +119,6 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         $request = $this->createOrderRequest($merchantId, $commerceCaseId, $checkoutId, $orderRequest);
         list($response) = $this->makeApiCall($request, OrderResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation createOrderAsync
-     *
-     * Creates an Order that will automatially execute a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\OrderRequest $orderRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createOrderAsync(
-        string $merchantId,
-        string $commerceCaseId,
-        string $checkoutId,
-        OrderRequest $orderRequest
-    ): PromiseInterface {
-        $request = $this->createOrderRequest($merchantId, $commerceCaseId, $checkoutId, $orderRequest);
-        return $this->makeAsyncApiCall($request, OrderResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
@@ -252,29 +201,6 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
     }
 
     /**
-     * Operation deliverOrderAsync
-     *
-     * Mark items of a Checkout as delivered and automatically capture the payment for the items
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\DeliverRequest $deliverRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function deliverOrderAsync(string $merchantId, string $commerceCaseId, string $checkoutId, DeliverRequest $deliverRequest): PromiseInterface
-    {
-        $request = $this->deliverOrderRequest($merchantId, $commerceCaseId, $checkoutId, $deliverRequest);
-        return $this->makeAsyncApiCall($request, DeliverResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'deliverOrder'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -347,33 +273,6 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         $request = $this->returnOrderRequest($merchantId, $commerceCaseId, $checkoutId, $returnRequest);
         list($response) = $this->makeApiCall($request, ReturnResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation returnOrderAsync
-     *
-     * Mark items of a Checkout as returned and automatically refund the payment for the items
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\ReturnRequest $returnRequest (optional)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function returnOrderAsync(
-        string $merchantId,
-        string  $commerceCaseId,
-        string $checkoutId,
-        ?ReturnRequest $returnRequest = null
-    ): PromiseInterface {
-        $request = $this->returnOrderRequest($merchantId, $commerceCaseId, $checkoutId, $returnRequest);
-        return $this->makeAsyncApiCall($request, ReturnResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**

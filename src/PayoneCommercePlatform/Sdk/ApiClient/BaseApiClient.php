@@ -9,7 +9,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
@@ -151,53 +150,6 @@ class BaseApiClient
             );
         }
     }
-
-    protected function makeAsyncApiCall(Request $request, ?string $type): PromiseInterface
-    {
-        $request = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
-        $options = $this->createHttpClientOption();
-        $returnType = $type ?: '';
-
-        return $this->client
-          ->sendAsync($request, $options)
-          ->then(
-              function ($response) use ($returnType) {
-                  $this->handleError($response);
-
-                  if ($returnType === '') {
-                      return [null, $response->getStatusCode(), $response->getHeaders()];
-                  }
-
-                  $contents = "";
-                  try {
-                      $contents = $response->getBody()->getContents();
-                      return [
-                          self::$serializer->deserialize($contents, $returnType, 'json'),
-                          $response->getStatusCode(),
-                          $response->getHeaders()
-                      ];
-                  } catch (NotEncodableValueException | UnexpectedValueException  $exception) {
-                      throw new ApiResponseRetrievalException(
-                          message: 'Error JSON decoding server response',
-                          statusCode: $response->getStatusCode(),
-                          responseBody: $contents,
-                          previous: $exception,
-                      );
-                  }
-              },
-              function ($exception) {
-                  $response = $exception->getResponse();
-                  $statusCode = $response->getStatusCode();
-                  throw new ApiResponseRetrievalException(
-                      statusCode: $statusCode,
-                      message: sprintf('[%d] Error communicating with the API', $statusCode),
-                      responseBody: $response->getBody()->getContents(),
-                      previous: $exception,
-                  );
-              }
-          );
-    }
-
 
     protected function handleError(ResponseInterface $response): void
     {

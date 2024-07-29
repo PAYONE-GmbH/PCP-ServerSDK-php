@@ -3,7 +3,6 @@
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Promise\PromiseInterface;
 use PayoneCommercePlatform\Sdk\Models\CheckoutResponse;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse;
 use PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest;
@@ -41,29 +40,6 @@ class CheckoutApiClient extends BaseApiClient
 
         list($response) = $this->makeApiCall($request, CreateCheckoutResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation createCheckoutAsync
-     *
-     * Add a Checkout to an existing Commerce Case
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest $createCheckoutRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createCheckoutAsync(string $merchantId, string $commerceCaseId, CreateCheckoutRequest $createCheckoutRequest): PromiseInterface
-    {
-        $request = $this->createCheckoutRequest($merchantId, $commerceCaseId, $createCheckoutRequest);
-
-        return $this->makeAsyncApiCall($request, CreateCheckoutResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
@@ -134,29 +110,6 @@ class CheckoutApiClient extends BaseApiClient
     }
 
     /**
-     * Operation deleteCheckoutAsync
-     *
-     * Delete a Checkout
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  CreateCheckoutRequest $createCheckoutRequest Content of the newly created checkout (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function deleteCheckoutAsync(string $merchantId, string $commerceCaseId, CreateCheckoutRequest $createCheckoutRequest): PromiseInterface
-    {
-        $request = $this->createCheckoutRequest($merchantId, $commerceCaseId, $createCheckoutRequest);
-
-        return $this->makeAsyncApiCall($request, CreateCheckoutResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'deleteCheckout'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -221,29 +174,6 @@ class CheckoutApiClient extends BaseApiClient
 
         list($response) = $this->makeApiCall($request, CheckoutResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation getCheckoutAsync
-     *
-     * Get Checkout Details
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getCheckoutAsync(string $merchantId, string $commerceCaseId, string $checkoutId): PromiseInterface
-    {
-        $request = $this->getCheckoutRequest($merchantId, $commerceCaseId, $checkoutId);
-
-        return $this->makeAsyncApiCall($request, CheckoutResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
@@ -314,30 +244,6 @@ class CheckoutApiClient extends BaseApiClient
     }
 
     /**
-     * Operation getCheckoutsAsync
-     *
-     * Get a list of Checkouts based on Search Parameters
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param GetCheckoutsQuery $getCheckoutsQuery query parameter to filter checkouts
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getCheckoutsAsync(
-        string $merchantId,
-        GetCheckoutsQuery $getCheckoutsQuery = new GetCheckoutsQuery(),
-    ): PromiseInterface {
-        $request = $this->getCheckoutsRequest($merchantId, $getCheckoutsQuery);
-
-        return $this->makeAsyncApiCall($request, CheckoutsResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'getCheckouts'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -390,30 +296,6 @@ class CheckoutApiClient extends BaseApiClient
         $request = $this->updateCheckoutRequest($merchantId, $commerceCaseId, $checkoutId, $patchCheckoutRequest);
 
         $this->makeApiCall($request, null);
-    }
-
-    /**
-     * Operation updateCheckoutAsync
-     *
-     * Modify a Checkout
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest $patchCheckoutRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function updateCheckoutAsync($merchantId, $commerceCaseId, $checkoutId, $patchCheckoutRequest): PromiseInterface
-    {
-        $request = $this->updateCheckoutRequest($merchantId, $commerceCaseId, $checkoutId, $patchCheckoutRequest);
-
-        return $this->makeAsyncApiCall($request, null)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CancelPaymentResponse;
@@ -51,30 +50,6 @@ class PaymentExecutionApiClient extends BaseApiClient
         $request = $this->cancelPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest);
         list($response) = $this->makeApiCall($request, CancelPaymentResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation cancelPaymentExecutionAsync
-     *
-     * Cancel a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest $cancelPaymentRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function cancelPaymentExecutionAsync($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest): PromiseInterface
-    {
-        $request = $this->cancelPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest);
-        return $this->makeAsyncApiCall($request, CancelPaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
@@ -165,30 +140,6 @@ class PaymentExecutionApiClient extends BaseApiClient
     }
 
     /**
-     * Operation capturePaymentExecutionAsync
-     *
-     * Capture a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest $capturePaymentRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function capturePaymentExecutionAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CapturePaymentRequest $capturePaymentRequest): PromiseInterface
-    {
-        $request = $this->capturePaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $capturePaymentRequest);
-        return $this->makeAsyncApiCall($request, CapturePaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'capturePaymentExecution'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
@@ -270,30 +221,6 @@ class PaymentExecutionApiClient extends BaseApiClient
     }
 
     /**
-     * Operation completePaymentAsync
-     *
-     * Complete a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest $completePaymentRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function completePaymentAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): PromiseInterface
-    {
-        $request = $this->completePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $completePaymentRequest);
-        return $this->makeAsyncApiCall($request, CompletePaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'completePayment'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
@@ -369,29 +296,6 @@ class PaymentExecutionApiClient extends BaseApiClient
     }
 
     /**
-     * Operation createPaymentAsync
-     *
-     * Create a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest $paymentExecutionRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createPaymentAsync(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): PromiseInterface
-    {
-        $request = $this->createPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionRequest);
-        return $this->makeAsyncApiCall($request, CreatePaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
      * Create request for operation 'createPayment'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
@@ -460,30 +364,6 @@ class PaymentExecutionApiClient extends BaseApiClient
         $request = $this->refundPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $refundRequest);
         list($response) = $this->makeApiCall($request, RefundPaymentResponse::class);
         return $response;
-    }
-
-    /**
-     * Operation refundPaymentExecutionAsync
-     *
-     * Refund a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\RefundRequest $refundRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function refundPaymentExecutionAsync(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, RefundRequest $refundRequest): PromiseInterface
-    {
-        $request = $this->refundPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $refundRequest);
-        return $this->makeAsyncApiCall($request, RefundPaymentResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
     }
 
     /**
