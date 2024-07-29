@@ -14,14 +14,6 @@ use PayoneCommercePlatform\Sdk\Models\ReturnResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
-/**
- * OrderManagementCheckoutActionsApi Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class OrderManagementCheckoutActionsApiClient extends BaseApiClient
 {
     /**

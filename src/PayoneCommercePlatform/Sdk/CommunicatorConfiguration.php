@@ -2,14 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk;
 
-/**
- * Configuration Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class CommunicatorConfiguration
 {
     public const SDK_VERSION = '0.0.1';

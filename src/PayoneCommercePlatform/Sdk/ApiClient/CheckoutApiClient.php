@@ -12,14 +12,6 @@ use PayoneCommercePlatform\Sdk\Queries\GetCheckoutsQuery;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
-/**
- * CheckoutApi Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class CheckoutApiClient extends BaseApiClient
 {
     /**

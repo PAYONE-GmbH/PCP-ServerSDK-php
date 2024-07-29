@@ -12,14 +12,6 @@ use PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
-/**
- * CommerceCaseApi Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class CommerceCaseApiClient extends BaseApiClient
 {
     /**

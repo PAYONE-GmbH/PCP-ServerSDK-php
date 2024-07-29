@@ -9,14 +9,6 @@ use PayoneCommercePlatform\Sdk\Models\PaymentInformationResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
-/**
- * PaymentInformationApi Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class PaymentInformationApiClient extends BaseApiClient
 {
     /**

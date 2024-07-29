@@ -5,12 +5,6 @@ namespace PayoneCommercePlatform\Sdk\Errors;
 use Exception;
 use Throwable;
 
-/**
- * ApiException Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk\Errors
- */
 class ApiException extends Exception
 {
     /**
