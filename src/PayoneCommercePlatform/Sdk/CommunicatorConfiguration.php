@@ -14,16 +14,6 @@ class CommunicatorConfiguration
 {
     public const SDK_VERSION = '0.0.1';
 
-    public const BOOLEAN_FORMAT_INT = 'int';
-    public const BOOLEAN_FORMAT_STRING = 'string';
-
-    /**
-     * Boolean format for query string
-     *
-     * @var string
-     */
-    protected string $booleanFormatForQueryString = self::BOOLEAN_FORMAT_INT;
-
     /**
      * Api key for the PAYONE Commerce Platform
      *
@@ -140,30 +130,6 @@ class CommunicatorConfiguration
     }
 
     /**
-     * Sets boolean format for query string.
-     *
-     * @param string $booleanFormat Boolean format for query string
-     *
-     * @return $this
-     */
-    public function setBooleanFormatForQueryString(string $booleanFormat): self
-    {
-        $this->booleanFormatForQueryString = $booleanFormat;
-
-        return $this;
-    }
-
-    /**
-     * Gets boolean format for query string.
-     *
-     * @return string Boolean format for query string
-     */
-    public function getBooleanFormatForQueryString(): string
-    {
-        return $this->booleanFormatForQueryString;
-    }
-
-    /**
      * Sets the API key
      *
      * @param string $apiKey apiKey
@@ -269,10 +235,6 @@ class CommunicatorConfiguration
      */
     public function setUserAgent(string $userAgent): self
     {
-        if (!is_string($userAgent)) {
-            throw new \InvalidArgumentException('User-agent must be a string.');
-        }
-
         $this->userAgent = $userAgent;
         return $this;
     }
@@ -420,22 +382,6 @@ class CommunicatorConfiguration
     public function getTempFolderPath(): string
     {
         return $this->tempFolderPath;
-    }
-
-    /**
-     * Gets the essential information for debugging
-     *
-     * @return string The report for debugging
-     */
-    public function toDebugReport(): string
-    {
-        $report  = 'PHP SDK (PayoneCommercePlatform\Sdk) Debug Report:' . PHP_EOL;
-        $report .= '    OS: ' . php_uname() . PHP_EOL;
-        $report .= '    PHP Version: ' . PHP_VERSION . PHP_EOL;
-        $report .= '    The version of the OpenAPI document: 1.6.0' . PHP_EOL;
-        $report .= '    Temp Folder Path: ' . $this->getTempFolderPath() . PHP_EOL;
-
-        return $report;
     }
 
     /**
