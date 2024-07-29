@@ -47,5 +47,5 @@ jobs:
         run: composer run-script lint
 
       - name: Test
-        run: composer run-script test-coverage
+        run: composer run-script test
 
