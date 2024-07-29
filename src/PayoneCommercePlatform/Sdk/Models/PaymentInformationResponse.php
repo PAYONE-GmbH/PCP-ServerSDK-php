@@ -96,11 +96,11 @@ class PaymentInformationResponse
         string $checkoutId,
         string $merchantCustomerId,
         string $paymentInformationId,
-        ?PaymentChannel $paymentChannel,
         int $paymentProductId,
         string $terminalId,
         string $cardAcceptorId,
         string $merchantReference,
+        ?PaymentChannel $paymentChannel = null,
         ?CardPaymentDetails $cardPaymentDetails = null,
         ?array $events = null
     ) {
