@@ -74,11 +74,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         if ($cancelRequest !== null) {
             $httpBody = self::$serializer->serialize($cancelRequest, 'json');
@@ -151,11 +147,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($orderRequest, 'json');
 
@@ -230,11 +222,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($deliverRequest, 'json');
 
@@ -304,11 +292,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         if ($returnRequest !== null) {
             $httpBody = self::$serializer->serialize($returnRequest, 'json');

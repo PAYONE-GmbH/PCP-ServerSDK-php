@@ -7,7 +7,6 @@ require_once __DIR__.'/../../../../vendor/autoload.php';
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
@@ -73,25 +72,6 @@ class BaseApiClient
     }
 
     /**
-     * Create http client option
-     *
-     * @throws \RuntimeException on file opening failure
-     * @return array<string, resource> of http client options
-     */
-    protected function createHttpClientOption(): array
-    {
-        $options = [];
-        if ($this->config->getDebug()) {
-            $options[RequestOptions::DEBUG] = fopen($this->config->getDebugFile(), 'a');
-            if (!$options[RequestOptions::DEBUG]) {
-                throw new \RuntimeException('Failed to open the debug file: ' . $this->config->getDebugFile());
-            }
-        }
-
-        return $options;
-    }
-
-    /**
       *
       * @template T
       * @param Request                $request  request to send to api
@@ -102,10 +82,8 @@ class BaseApiClient
     protected function makeApiCall(Request $request, ?string $type = null): array
     {
         $request = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
-        $options = $this->createHttpClientOption();
-
         try {
-            $response = $this->client->send($request, $options);
+            $response = $this->client->send($request, []);
             $this->handleError($response);
         } catch (RequestException $e) {
             throw new ApiResponseRetrievalException(

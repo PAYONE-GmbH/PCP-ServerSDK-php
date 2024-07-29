@@ -65,11 +65,7 @@ class CheckoutApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::$serializer->serialize($createCheckoutRequest, 'json');
 
@@ -134,11 +130,7 @@ class CheckoutApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -200,12 +192,7 @@ class CheckoutApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
-
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -256,11 +243,7 @@ class CheckoutApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -323,11 +306,7 @@ class CheckoutApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         // json_encode the body
         $httpBody = self::$serializer->serialize($patchCheckoutRequest, 'json');
