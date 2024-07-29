@@ -12,6 +12,8 @@ namespace PayoneCommercePlatform\Sdk;
  */
 class CommunicatorConfiguration
 {
+    public const SDK_VERSION = '0.0.1';
+
     public const BOOLEAN_FORMAT_INT = 'int';
     public const BOOLEAN_FORMAT_STRING = 'string';
 
@@ -58,6 +60,16 @@ class CommunicatorConfiguration
     protected string $userAgent = 'OpenAPI-Generator/1.0.0/PHP';
 
     /**
+     * Server meta info used on the PAYONE commerce platform. Should include 3 fields:
+     *  - `platformIdentifier`: the OS name, the language name (PHP) and the PHP version.
+     *  - `sdkIdentifier`: name of the SDK package and its version
+     *  - `sdkCreator`: PAYONE GmbH
+     *
+     * @var array<string, string>
+     */
+    protected array $serverMetaInfo;
+
+    /**
      * Client meta info used on the PAYONE commerce platform
      *
      * @var array<string, string>
@@ -92,6 +104,7 @@ class CommunicatorConfiguration
      * @param string                  $apiSecret
      * @param string                  $host
      * @param string|null             $integrator
+     * @param array<string, string>   $serverMetaInfo
      * @param array<string, string>   $clientMetaInfo
      * @param bool                    $debug
      * @param string                  $debugFile
@@ -101,7 +114,8 @@ class CommunicatorConfiguration
         string              $apiSecret,
         ?string             $host = null,
         ?string             $integrator = null,
-        array               $clientMetaInfo = [],
+        ?array              $serverMetaInfo = null,
+        ?array              $clientMetaInfo = null,
         bool                $debug = false,
         string              $debugFile = 'php://output'
     ) {
@@ -115,7 +129,12 @@ class CommunicatorConfiguration
             $this->setHost($host);
         }
         $this->integrator = $integrator;
-        $this->clientMetaInfo = $clientMetaInfo;
+        $this->serverMetaInfo = $serverMetaInfo !== null ? $serverMetaInfo : [
+            "platformIdentifier" => sprintf('%s; php version %s', php_uname(), phpversion()),
+            "sdkIdentifier"      => 'PHPServerSDK/v'.static::SDK_VERSION,
+            "sdkCreator"         => 'PAYONE GmbH'
+        ];
+        $this->clientMetaInfo = $clientMetaInfo !== null ? $clientMetaInfo : [];
         $this->debug = $debug;
         $this->debugFile = $debugFile;
     }
@@ -298,6 +317,39 @@ class CommunicatorConfiguration
     public function addClientMetaInfo(string $key, string $value): self
     {
         $this->clientMetaInfo[$key] = $value;
+        return $this;
+    }
+
+    /**
+     * Gets server meta info
+     *
+     * @return array<string, string>
+     */
+    public function getServerMetaInfo(): array
+    {
+        return $this->serverMetaInfo;
+    }
+
+    /**
+     * Sets server meta info
+     *
+     * @param array<string, string> $serverMetaInfo server meta info send to PAYONE Commerce Platform
+     * @return $this
+     */
+    public function setServerMetaInfo(array $serverMetaInfo): self
+    {
+        $this->serverMetaInfo = $serverMetaInfo;
+        return $this;
+    }
+
+    /**
+     * Adds an entry to server meta info
+     *
+     * @return $this
+     */
+    public function addServerMetaInfo(string $key, string $value): self
+    {
+        $this->serverMetaInfo[$key] = $value;
         return $this;
     }
 

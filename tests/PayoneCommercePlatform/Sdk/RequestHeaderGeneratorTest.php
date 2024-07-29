@@ -14,16 +14,29 @@ class RequestHeaderGeneratorTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->communicatorConfiguration = $this->getMockBuilder(CommunicatorConfiguration::class)->disableOriginalConstructor()->getMock();
+        $this->communicatorConfiguration = $this->getMockBuilder(CommunicatorConfiguration::class)
+          ->disableOriginalConstructor()
+          ->getMock();
         $this->requestHeaderGenerator    = new RequestHeaderGenerator($this->communicatorConfiguration);
     }
 
     public function testGenerateAdditionalRequestHeadersAuthHeaderHashCheck(): void
     {
         // prepare
-        $fullConfig = new CommunicatorConfiguration(apiKey: 'KEY', apiSecret: 'change it', clientMetaInfo: [], integrator: null);
+        $fullConfig = new CommunicatorConfiguration(
+            apiKey: 'KEY',
+            apiSecret: 'change it',
+            clientMetaInfo: [],
+            // server meta info usually depends on the php version and the os, which is bad for ci runs
+            serverMetaInfo: ['platformIdentifier' => 'ci'],
+            integrator: null
+        );
         $fullGenerator = new RequestHeaderGenerator($fullConfig);
-        $request = new Request('GET', 'https://commerce-api.payone.com/v1/80809090/commerce-cases?offset=0&size=25', ['Date' => 'Mon, 15 Jul 2024 19:39:17 GMT', 'Content-Type' => 'application/json']);
+        $request = new Request(
+            'GET',
+            'https://commerce-api.payone.com/v1/80809090/commerce-cases?offset=0&size=25',
+            ['Date' => 'Mon, 15 Jul 2024 19:39:17 GMT', 'Content-Type' => 'application/json']
+        );
 
         // act
         $additionalHeadersRequest = $fullGenerator->generateAdditionalRequestHeaders($request);
@@ -31,7 +44,7 @@ class RequestHeaderGeneratorTest extends TestCase
 
         // verify
         $this->assertEquals(
-            'GCS v1HMAC:KEY:uFcYvdo3akOtJvkMbZOziGvXgM+l4ag3F0vXevDF+9I=',
+            'GCS v1HMAC:KEY:1YZigyYNBJVcZweGTuyuYudC7ae8LHtTpdmNBnVg3w8=',
             $authHeader,
         );
     }
@@ -41,6 +54,7 @@ class RequestHeaderGeneratorTest extends TestCase
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/12345/checkouts', ['Content-Type' => 'application/json']);
         $this->communicatorConfiguration->method('getApiKey')->willReturn('KEY');
         $this->communicatorConfiguration->method('getApiSecret')->willReturn('SECRET');
+        $this->communicatorConfiguration->method('getServerMetaInfo')->willReturn([]);
 
         // act
         $additionalHeadersRequest = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
@@ -59,6 +73,7 @@ class RequestHeaderGeneratorTest extends TestCase
         $request = new Request('GET', 'https://commerce-api.payone.com/v1/12345/checkouts', ['Content-Type' => 'application/json', 'Accept' => 'application/json', 'Date' => 'Wed, 03 Apr 2024 10:02:13 GMT']);
         $this->communicatorConfiguration->method('getApiKey')->willReturn('KEY');
         $this->communicatorConfiguration->method('getApiSecret')->willReturn('SECRET');
+        $this->communicatorConfiguration->method('getServerMetaInfo')->willReturn([]);
 
         // act
         $additionalHeadersRequest = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
@@ -70,8 +85,8 @@ class RequestHeaderGeneratorTest extends TestCase
                 'Accept'               => ['application/json'],
                 'Host'                 => ['commerce-api.payone.com'],
                 'Date'                 => ['Wed, 03 Apr 2024 10:02:13 GMT'],
-                'X-GCS-ServerMetaInfo' => ['eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJEYXJ3aW4gTUJQLXZvbi1MdWthcy5mcml0ei5ib3ggMjMuNS4wIERhcndpbiBLZXJuZWwgVmVyc2lvbiAyMy41LjA6IFdlZCBNYXkgIDEgMjA6MTQ6MzggUERUIDIwMjQ7IHJvb3Q6eG51LTEwMDYzLjEyMS4zfjUvUkVMRUFTRV9BUk02NF9UNjAyMCBhcm02NDsgcGhwIHZlcnNpb24gOC4zLjkiLCJzZGtJZGVudGlmaWVyIjoiUEhQU2VydmVyU0RLL3YwLjAuMSIsInNka0NyZWF0b3IiOiJQQVlPTkUgR21iSCJ9'],
-                'Authorization'        => ['GCS v1HMAC:KEY:sdztnE3Gsfm2Xdlp9UgGhGiVrrjF/mQx4n/YuuS4Iw4=']
+                'X-GCS-ServerMetaInfo' => ['W10='],
+                'Authorization'        => ['GCS v1HMAC:KEY:eoweeXWhFJASue4mQJk0oeR0pc1lFVT42yr/gmHC9GQ=']
             ],
             $additionalHeadersRequest->getHeaders()
         );
@@ -84,6 +99,7 @@ class RequestHeaderGeneratorTest extends TestCase
         $this->communicatorConfiguration->method('getApiKey')->willReturn('KEY');
         $this->communicatorConfiguration->method('getApiSecret')->willReturn('SECRET');
         $this->communicatorConfiguration->method('getClientMetaInfo')->willReturn(['key' => 'value']);
+        $this->communicatorConfiguration->method('getServerMetaInfo')->willReturn([]);
 
         // act
         $additionalHeadersRequest = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
@@ -95,9 +111,9 @@ class RequestHeaderGeneratorTest extends TestCase
                 'Accept'               => ['application/json'],
                 'Host'                 => ['commerce-api.payone.com'],
                 'Date'                 => ['Wed, 03 Apr 2024 10:02:13 GMT'],
-                'X-GCS-ServerMetaInfo' => ['eyJwbGF0Zm9ybUlkZW50aWZpZXIiOiJEYXJ3aW4gTUJQLXZvbi1MdWthcy5mcml0ei5ib3ggMjMuNS4wIERhcndpbiBLZXJuZWwgVmVyc2lvbiAyMy41LjA6IFdlZCBNYXkgIDEgMjA6MTQ6MzggUERUIDIwMjQ7IHJvb3Q6eG51LTEwMDYzLjEyMS4zfjUvUkVMRUFTRV9BUk02NF9UNjAyMCBhcm02NDsgcGhwIHZlcnNpb24gOC4zLjkiLCJzZGtJZGVudGlmaWVyIjoiUEhQU2VydmVyU0RLL3YwLjAuMSIsInNka0NyZWF0b3IiOiJQQVlPTkUgR21iSCJ9'],
+                'X-GCS-ServerMetaInfo' => ['W10='],
                 'X-GCS-ClientMetaInfo' => ['eyJrZXkiOiJ2YWx1ZSJ9'],
-                'Authorization'        => ['GCS v1HMAC:KEY:sY+UnSLV8EShnjU4smo+evzCJg3gnjkadY+kv6AfEtI=']
+                'Authorization'        => ['GCS v1HMAC:KEY:JpeByBFvXI3YyDc53UjcKd0M44eo+4mWDaCW777mEz0=']
             ],
             $additionalHeadersRequest->getHeaders()
         );

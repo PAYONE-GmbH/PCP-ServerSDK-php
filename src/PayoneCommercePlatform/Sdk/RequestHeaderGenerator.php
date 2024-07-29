@@ -6,8 +6,6 @@ use GuzzleHttp\Psr7\Request;
 
 class RequestHeaderGenerator
 {
-    public const SDK_VERSION = '0.0.1';
-
     public const AUTHORIZATION_ID = 'GCS';
 
     public const DATE_RFC2616 = 'D, d M Y H:i:s T';
@@ -58,12 +56,7 @@ class RequestHeaderGenerator
 
     protected function getServerMetaInfoValue(): string
     {
-        $serverMetaInfo = [
-            "platformIdentifier" => sprintf('%s; php version %s', php_uname(), phpversion()),
-            "sdkIdentifier"      => 'PHPServerSDK/v'.static::SDK_VERSION,
-            "sdkCreator"         => 'PAYONE GmbH'
-        ];
-
+        $serverMetaInfo = $this->communicatorConfiguration->getServerMetaInfo();
         $integrator = $this->communicatorConfiguration->getIntegrator();
         if (!is_null($integrator)) {
             $serverMetaInfo["integrator"] = $integrator;
@@ -72,7 +65,7 @@ class RequestHeaderGenerator
         $json = json_encode($serverMetaInfo, JSON_UNESCAPED_SLASHES);
         // assert json_encode succeeded
         if (!$json) {
-            throw new \LogicException('ServerMetaInfo is not a valid JSON');
+            throw new \LogicException('ServerMetaInfo is not valid JSON');
         }
 
         return base64_encode($json);
