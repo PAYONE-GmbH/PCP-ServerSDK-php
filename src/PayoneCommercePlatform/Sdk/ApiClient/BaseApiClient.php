@@ -133,7 +133,6 @@ class BaseApiClient
         $contents = "";
         try {
             $contents = $response->getBody()->getContents();
-            fwrite(\STDERR, $contents . "\n\n");
             // @phpstan-ignore-next-line
             return [
                 self::$serializer->deserialize($contents, $type, 'json'),
