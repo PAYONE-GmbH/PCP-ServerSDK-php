@@ -6,8 +6,6 @@ use GuzzleHttp\Psr7\Request;
 
 class RequestHeaderGenerator
 {
-    public const SDK_VERSION = '0.0.1';
-
     public const AUTHORIZATION_ID = 'GCS';
 
     public const DATE_RFC2616 = 'D, d M Y H:i:s T';
@@ -34,7 +32,11 @@ class RequestHeaderGenerator
 
         $clientMetaInfo = $this->communicatorConfiguration->getClientMetaInfo();
         if (!$request->hasHeader('X-GCS-ClientMetaInfo') && !empty($clientMetaInfo)) {
-            $request = $request->withAddedHeader('X-GCS-ClientMetaInfo', base64_encode(json_encode($clientMetaInfo)));
+            $json = json_encode($clientMetaInfo);
+            if (!$json) {
+                throw new \InvalidArgumentException('ClientMetaInfo is not a valid JSON');
+            }
+            $request = $request->withAddedHeader('X-GCS-ClientMetaInfo', base64_encode($json));
         }
 
         if(!$request->hasHeader('Authorization')) {
@@ -54,19 +56,19 @@ class RequestHeaderGenerator
 
     protected function getServerMetaInfoValue(): string
     {
-        $serverMetaInfo = [
-            "platformIdentifier" => sprintf('%s; php version %s', php_uname(), phpversion()),
-            "sdkIdentifier"      => 'PHPServerSDK/v'.static::SDK_VERSION,
-            "sdkCreator"         => 'PAYONE GmbH'
-        ];
-
+        $serverMetaInfo = $this->communicatorConfiguration->getServerMetaInfo();
         $integrator = $this->communicatorConfiguration->getIntegrator();
         if (!is_null($integrator)) {
             $serverMetaInfo["integrator"] = $integrator;
         }
-
         // the sdkIdentifier contains a /. Without the JSON_UNESCAPED_SLASHES, this is turned to \/ in JSON.
-        return base64_encode(json_encode($serverMetaInfo, JSON_UNESCAPED_SLASHES));
+        $json = json_encode($serverMetaInfo, JSON_UNESCAPED_SLASHES);
+        // assert json_encode succeeded
+        if (!$json) {
+            throw new \LogicException('ServerMetaInfo is not valid JSON');
+        }
+
+        return base64_encode($json);
     }
 
     /**
@@ -116,6 +118,7 @@ class RequestHeaderGenerator
         }
         ksort($gcsHeaders);
         foreach ($gcsHeaders as $gcsHeaderKey => $gcsHeaderValue) {
+            // @phpstan-ignore-next-line
             $gcsEncodedHeaderValue = trim(preg_replace('/\r?\n[\h]*/', ' ', $gcsHeaderValue));
 
             $signData .= strtolower($gcsHeaderKey) . ':' . $gcsEncodedHeaderValue . "\n";

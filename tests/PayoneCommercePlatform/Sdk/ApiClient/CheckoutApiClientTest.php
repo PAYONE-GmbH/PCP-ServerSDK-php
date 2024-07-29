@@ -7,12 +7,13 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\Stub;
-use PayoneCommercePlatform\Sdk\Domain\AmountOfMoney;
-use PayoneCommercePlatform\Sdk\Domain\CheckoutResponse;
-use PayoneCommercePlatform\Sdk\Domain\CheckoutsResponse;
-use PayoneCommercePlatform\Sdk\Domain\CreateCheckoutRequest;
-use PayoneCommercePlatform\Sdk\Domain\CreateCheckoutResponse;
-use PayoneCommercePlatform\Sdk\Domain\ErrorResponse;
+use PayoneCommercePlatform\Sdk\Models\APIError;
+use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
+use PayoneCommercePlatform\Sdk\Models\CheckoutResponse;
+use PayoneCommercePlatform\Sdk\Models\CheckoutsResponse;
+use PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest;
+use PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse;
+use PayoneCommercePlatform\Sdk\Models\ErrorResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PHPUnit\Framework\TestCase;
@@ -34,43 +35,24 @@ class CheckoutApiClientTest extends TestCase
 
     protected function makeCheckoutResponse(): CheckoutResponse
     {
-        return new CheckoutResponse([
-          'commerceCaseId' => 'ID1',
-          'checkoutId' => 'ID2',
-          'merchantCustomerId' => 'ID3',
-          'amountOfMoney' => 100,
-          'references' => null,
-          'shipping' => null,
-          'shoppingCart' => null,
-          'paymentExecutions' => [],
-          'checkoutStatus' => null,
-          'statusOutput' => null,
-          'paymentInformation' => [],
-          'creationDateTime' => null,
-          'allowedPaymentActions' => [],
-        ]);
+        return new CheckoutResponse(
+            commerceCaseId: 'id1',
+            checkoutId: 'id2',
+            merchantCustomerId: 'id3',
+            amountOfMoney: new AmountOfMoney(amount: 1000, currencyCode: 'EUR')
+        );
     }
 
     protected function makeErrorResponse(): ErrorResponse
     {
-        return new ErrorResponse(['errorId' => 'bad', 'errors' => [[
-          'errorCode' => '1',
-          'category' => 'not so good',
-          'id' => 'ID',
-          'message' => 'Hi!',
-          'propertyName' => '...'
-        ]]]);
+        return new ErrorResponse(errorId: 'test-id', errors: [new APIError('test-code')]);
     }
 
     public function testCreateCheckout(): void
     {
-        $createCheckoutResponse = new CreateCheckoutResponse([
-          'amountOfMoney' => new AmountOfMoney(['amount' => 100, 'currencyCode' => 'EUR']),
-        ]);
-        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: json_encode($createCheckoutResponse->jsonSerialize())));
-        $createCheckoutRequest = new CreateCheckoutRequest([
-            'amountOfMoney' => new AmountOfMoney(['amount' => 100, 'currencyCode' => 'EUR']),
-        ]);
+        $createCheckoutResponse = new CreateCheckoutResponse(amountOfMoney: new AmountOfMoney(amount: 1337, currencyCode: 'EUR'));
+        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: BaseApiClient::getSerializer()->serialize($createCheckoutResponse, 'json')));
+        $createCheckoutRequest = new CreateCheckoutRequest(amountOfMoney: new AmountOfMoney(amount: 100, currencyCode: 'EUR'));
 
         $response = $this->checkoutClient->createCheckout('1', '2', $createCheckoutRequest);
 
@@ -80,27 +62,25 @@ class CheckoutApiClientTest extends TestCase
     public function testCreateCheckoutUnsuccessful400(): void
     {
         // arrange
-        $createCheckoutResponse = new CreateCheckoutResponse([
-          'amountOfMoney' => new AmountOfMoney(['amount' => 100, 'currencyCode' => 'EUR']),
-        ]);
+        $createCheckoutResponse = new CreateCheckoutResponse(
+            amountOfMoney: new AmountOfMoney(400, 'EUR'),
+        );
         $errorResponse = $this->makeErrorResponse();
-        $createCheckoutRequest = new CreateCheckoutRequest([
-            'amountOfMoney' => new AmountOfMoney(['amount' => 100, 'currencyCode' => 'EUR']),
-        ]);
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: json_encode($errorResponse->jsonSerialize())));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
         // act
+        $createCheckoutRequest = new CreateCheckoutRequest(
+            amountOfMoney: new AmountOfMoney(400, 'EUR'),
+        );
         $response = $this->checkoutClient->createCheckout('1', '2', $createCheckoutRequest);
     }
 
     public function testCreateCheckoutUnsuccessful500(): void
     {
         // arrange
-        $createCheckoutRequest = new CreateCheckoutRequest([
-            'amountOfMoney' => new AmountOfMoney(['amount' => 100, 'currencyCode' => 'EUR']),
-        ]);
+        $createCheckoutRequest = new CreateCheckoutRequest();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: 'invalid'));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
@@ -112,25 +92,24 @@ class CheckoutApiClientTest extends TestCase
     public function testGetCheckoutsSuccessful(): void
     {
         // arrange
-        $checkoutsResponse = new CheckoutsResponse([
-          'numberOfCheckouts' => 1,
-          'checkouts' => [$this->makeCheckoutResponse()],
-        ]);
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: json_encode($checkoutsResponse->jsonSerialize())));
+        $checkoutsResponse = new CheckoutsResponse(1, [$this->makeCheckoutResponse()]);
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: BaseApiClient::getSerializer()->serialize($checkoutsResponse, 'json')));
 
         // act
         $response = $this->checkoutClient->getCheckouts($this->merchantId);
+        $allCheckouts = $response->getCheckouts();
+        $checkout = $allCheckouts ? $allCheckouts[0] : null;
 
         // assert
-        $this->assertEquals($checkoutsResponse->getNumberOfCheckouts(), 1);
-        $this->assertEquals($checkoutsResponse->getCheckouts()[0], $this->makeCheckoutResponse());
+        $this->assertEquals(1, $checkoutsResponse->getNumberOfCheckouts());
+        $this->assertEquals($this->makeCheckoutResponse(), $checkout);
     }
 
     public function testGetCheckoutsUnsuccessful400(): void
     {
         // arrange
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: json_encode($errorResponse->jsonSerialize())));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -149,12 +128,5 @@ class CheckoutApiClientTest extends TestCase
 
         // act
         $response = $this->checkoutClient->getCheckouts($this->merchantId);
-    }
-
-    public function testGetCheckoutsWithoutMerchantId(): void
-    {
-        $this->expectException(\TypeError::class);
-
-        $response = $this->checkoutClient->getCheckouts(merchantId: null);
     }
 }

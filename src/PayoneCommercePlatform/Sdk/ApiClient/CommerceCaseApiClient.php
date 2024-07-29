@@ -5,11 +5,13 @@ namespace PayoneCommercePlatform\Sdk\ApiClient;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
-use PayoneCommercePlatform\Sdk\Domain\CommerceCaseResponse;
-use PayoneCommercePlatform\Sdk\Domain\CreateCommerceCaseRequest;
-use PayoneCommercePlatform\Sdk\Domain\CreateCommerceCaseResponse;
-use PayoneCommercePlatform\Sdk\Domain\Customer;
-use PayoneCommercePlatform\Sdk\ObjectSerializer;
+use PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse;
+use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest;
+use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseResponse;
+use PayoneCommercePlatform\Sdk\Models\Customer;
+use PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery;
+use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
+use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
 /**
  * CommerceCaseApi Class Doc Comment
@@ -21,33 +23,16 @@ use PayoneCommercePlatform\Sdk\ObjectSerializer;
  */
 class CommerceCaseApiClient extends BaseApiClient
 {
-    /** @var string[] $contentTypes **/
-    public const contentTypes = [
-        'createCommerceCase' => [
-            'application/json',
-        ],
-        'getCommerceCase' => [
-            'application/json',
-        ],
-        'getCommerceCases' => [
-            'application/json',
-        ],
-        'updateCommerceCase' => [
-            'application/json',
-        ],
-    ];
-
     /**
      * Operation createCommerceCase
      *
      * Create a Commerce Case
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CreateCommerceCaseRequest $createCommerceCaseRequest createCommerceCaseRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest $createCommerceCaseRequest createCommerceCaseRequest (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CreateCommerceCaseResponse
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
+     * @return \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseResponse
      */
     public function createCommerceCase($merchantId, $createCommerceCaseRequest): CreateCommerceCaseResponse
     {
@@ -62,13 +47,11 @@ class CommerceCaseApiClient extends BaseApiClient
      * Create a Commerce Case
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CreateCommerceCaseRequest $createCommerceCaseRequest (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createCommerceCase'] to see the possible values for this operation
+     * @param  \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest $createCommerceCaseRequest (required)
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createCommerceCaseAsync($merchantId, $createCommerceCaseRequest, string $contentType = self::contentTypes['createCommerceCase'][0])
+    public function createCommerceCaseAsync($merchantId, $createCommerceCaseRequest): PromiseInterface
     {
         $returnType = CreateCommerceCaseResponse::class;
         $request = $this->createCommerceCaseRequest($merchantId, $createCommerceCaseRequest);
@@ -85,52 +68,35 @@ class CommerceCaseApiClient extends BaseApiClient
      * Create request for operation 'createCommerceCase'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\CreateCommerceCaseRequest $createCommerceCaseRequest (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest $createCommerceCaseRequest (required)
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function createCommerceCaseRequest(string $merchantId, CreateCommerceCaseRequest $createCommerceCaseRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases';
-        $contentType = 'application/json';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
         $multipart = false;
 
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        # if Content-Type contains "application/json", json_encode the body
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createCommerceCaseRequest));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($createCommerceCaseRequest, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );
@@ -144,9 +110,8 @@ class CommerceCaseApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CommerceCaseResponse
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
+     * @return \PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse
      */
     public function getCommerceCase(string $merchantId, string $commerceCaseId): CommerceCaseResponse
     {
@@ -181,57 +146,37 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getCommerceCase'] to see the possible values for this operation
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function getCommerceCaseRequest(string $merchantId, string $commerceCaseId): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}';
-        $contentType = 'application/json';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $multipart = false;
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         // path params
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
 
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'GET',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
         );
     }
@@ -242,34 +187,21 @@ class CommerceCaseApiClient extends BaseApiClient
      * Get a list of Commerce Cases based on Search Parameters
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  int $offset The offset to load Commerce Cases starting with 0. (optional, default to 0)
-     * @param  int $size The number of Commerce Cases loaded per page. (optional, default to 25)
-     * @param  \DateTime $fromDate Date and time in ISO 8601 format a Commerce Cases should be included in the request. Excepted formats are:  * YYYY-MM-DDThh:mm:ssZ * YYYY-MM-DDThh:mm:ss+XX:XX All other formats are ignored or may not be handled properly. (optional)
-     * @param  \DateTime $toDate Date and time in ISO 8601 format a Commerce Cases should be included in the request. Excepted formats are:  * YYYY-MM-DDThh:mm:ssZ * YYYY-MM-DDThh:mm:ss+XX:XX All other formats are ignored or may not be handled properly. (optional)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (optional)
-     * @param  string $merchantReference Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes. (optional)
-     * @param  string $merchantCustomerId Unique identifier for the customer. (optional)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\StatusCheckout[] $includeCheckoutStatus Filter your results by the Checkout Status. The response will only return Commerce Cases with Checkouts with the provided Checkout Statuses. (optional)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentChannel[] $includePaymentChannel Filter your results by Payment Channel. The response will only return Commerce Cases with Checkouts for the provided Payment Channel. (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery $query filter parameters (optional)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Domain\CommerceCaseResponse[]
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
+     * @return \PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse[]
      */
     public function getCommerceCases(
         string $merchantId,
-        int $offset = 0,
-        int $size = 25,
-        ?\DateTime $fromDate = null,
-        ?\DateTime $toDate = null,
-        ?string $commerceCaseId = null,
-        ?string $merchantReference = null,
-        ?string $merchantCustomerId = null,
-        ?array $includeCheckoutStatus = null,
-        ?array $includePaymentChannel = null
+        GetCommerceCasesQuery $query = new GetCommerceCasesQuery(),
     ): array {
-        $request = $this->getCommerceCasesRequest($merchantId, $offset, $size, $fromDate, $toDate, $commerceCaseId, $merchantReference, $merchantCustomerId, $includeCheckoutStatus, $includePaymentChannel);
+        $request = $this->getCommerceCasesRequest($merchantId, $query);
+        // The underlying of `makeApiCall` is to strict as it has to be an resolvable class name
+        // but the underlying call to symfony/serialize also allows for an array of classes
+        // @phpstan-ignore-next-line
         list($response) = $this->makeApiCall($request, CommerceCaseResponse::class . '[]');
+        /** @var \PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse[] */
         return $response;
     }
 
@@ -279,31 +211,15 @@ class CommerceCaseApiClient extends BaseApiClient
      * Get a list of Commerce Cases based on Search Parameters
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  int $offset The offset to load Commerce Cases starting with 0. (optional, default to 0)
-     * @param  int $size The number of Commerce Cases loaded per page. (optional, default to 25)
-     * @param  \DateTime $fromDate Date and time in ISO 8601 format a Commerce Cases should be included in the request. Excepted formats are:  * YYYY-MM-DDThh:mm:ssZ * YYYY-MM-DDThh:mm:ss+XX:XX All other formats are ignored or may not be handled properly. (optional)
-     * @param  \DateTime $toDate Date and time in ISO 8601 format a Commerce Cases should be included in the request. Excepted formats are:  * YYYY-MM-DDThh:mm:ssZ * YYYY-MM-DDThh:mm:ss+XX:XX All other formats are ignored or may not be handled properly. (optional)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (optional)
-     * @param  string $merchantReference Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes. (optional)
-     * @param  string $merchantCustomerId Unique identifier for the customer. (optional)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\StatusCheckout[] $includeCheckoutStatus Filter your results by the Checkout Status. The response will only return Commerce Cases with Checkouts with the provided Checkout Statuses. (optional)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentChannel[] $includePaymentChannel Filter your results by Payment Channel. The response will only return Commerce Cases with Checkouts for the provided Payment Channel. (optional)
+     * @param  \PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery $query
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function getCommerceCasesAsync(
         string $merchantId,
-        int $offset = 0,
-        int $size = 25,
-        ?\DateTime $fromDate = null,
-        ?\DateTime $toDate = null,
-        string $commerceCaseId = null,
-        string $merchantReference = null,
-        string $merchantCustomerId = null,
-        array $includeCheckoutStatus = null,
-        array $includePaymentChannel = null
-    ) {
-        $request = $this->getCommerceCasesRequest($merchantId, $offset, $size, $fromDate, $toDate, $commerceCaseId, $merchantReference, $merchantCustomerId, $includeCheckoutStatus, $includePaymentChannel);
+        GetCommerceCasesQuery $query = new GetCommerceCasesQuery(),
+    ): PromiseInterface {
+        $request = $this->getCommerceCasesRequest($merchantId, $query);
         return $this->makeAsyncApiCall($request, CommerceCaseResponse::class . '[]')
             ->then(
                 function ($response) {
@@ -316,148 +232,34 @@ class CommerceCaseApiClient extends BaseApiClient
      * Create request for operation 'getCommerceCases'
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Commerce Case has exactly one merchant. (required)
-     * @param  int $offset The offset to load Commerce Cases starting with 0. (optional, default to 0)
-     * @param  int $size The number of Commerce Cases loaded per page. (optional, default to 25)
-     * @param  \DateTime $fromDate Date and time in ISO 8601 format a Commerce Cases should be included in the request. Excepted formats are:  * YYYY-MM-DDThh:mm:ssZ * YYYY-MM-DDThh:mm:ss+XX:XX All other formats are ignored or may not be handled properly. (optional)
-     * @param  \DateTime $toDate Date and time in ISO 8601 format a Commerce Cases should be included in the request. Excepted formats are:  * YYYY-MM-DDThh:mm:ssZ * YYYY-MM-DDThh:mm:ss+XX:XX All other formats are ignored or may not be handled properly. (optional)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (optional)
-     * @param  string $merchantReference Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes. (optional)
-     * @param  string $merchantCustomerId Unique identifier for the customer. (optional)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\StatusCheckout[] $includeCheckoutStatus Filter your results by the Checkout Status. The response will only return Commerce Cases with Checkouts with the provided Checkout Statuses. (optional)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\PaymentChannel[] $includePaymentChannel Filter your results by Payment Channel. The response will only return Commerce Cases with Checkouts for the provided Payment Channel. (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['getCommerceCases'] to see the possible values for this operation
+     * @param \PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery $query
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function getCommerceCasesRequest(
         string $merchantId,
-        int $offset = 0,
-        int $size = 25,
-        ?\DateTime $fromDate = null,
-        ?\DateTime $toDate = null,
-        string $commerceCaseId = null,
-        string $merchantReference = null,
-        string $merchantCustomerId = null,
-        array $includeCheckoutStatus = null,
-        array $includePaymentChannel = null
+        GetCommerceCasesQuery $query,
     ): Request {
         $resourcePath = '/v1/{merchantId}/commerce-cases';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
-        $multipart = false;
-
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $offset,
-            'offset', // param base name
-            'integer', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $size,
-            'size', // param base name
-            'integer', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $fromDate,
-            'fromDate', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $toDate,
-            'toDate', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $commerceCaseId,
-            'commerceCaseId', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $merchantReference,
-            'merchantReference', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $merchantCustomerId,
-            'merchantCustomerId', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $includeCheckoutStatus,
-            'includeCheckoutStatus', // param base name
-            'array', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $includePaymentChannel,
-            'includePaymentChannel', // param base name
-            'array', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
 
 
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
+        $query = http_build_query($query->toQueryMap(), '', '&', PHP_QUERY_RFC3986);
         return new Request(
             'GET',
             $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
@@ -472,10 +274,9 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\Customer $customer customer (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer customer (required)
      *
-     * @throws \PayoneCommercePlatform\Sdk\ApiErrorResponseException
-     * @throws \PayoneCommercePlatform\Sdk\ApiResponseRetrievalException
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return void
      */
     public function updateCommerceCase($merchantId, $commerceCaseId, $customer): void
@@ -491,10 +292,8 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\Customer $customer (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateCommerceCase'] to see the possible values for this operation
+     * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function updateCommerceCaseAsync($merchantId, $commerceCaseId, $customer): PromiseInterface
@@ -513,60 +312,40 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Domain\Customer $customer (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateCommerceCase'] to see the possible values for this operation
+     * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
      *
-     * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
     public function updateCommerceCaseRequest(string $merchantId, string $commerceCaseId, Customer $customer): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}';
-        $contentType = 'application/json';
-        $queryParams = [];
-        $headerParams = [];
         $httpBody = '';
-        $multipart = false;
-
-
 
         // path params
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
-            ObjectSerializer::toPathValue($merchantId),
+            rawurlencode($merchantId),
             $resourcePath
         );
         $resourcePath = str_replace(
             '{' . 'commerceCaseId' . '}',
-            ObjectSerializer::toPathValue($commerceCaseId),
+            rawurlencode($commerceCaseId),
             $resourcePath
         );
 
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($customer));
-
-        $defaultHeaders = [];
+        /** @var array<string, string> */
+        $headers = [];
         if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+            $headers['User-Agent'] = $this->config->getUserAgent();
         }
+        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
 
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
+        $httpBody = self::$serializer->serialize($customer, 'json');
 
         $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
             'PATCH',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $operationHost . $resourcePath,
             $headers,
             $httpBody
         );

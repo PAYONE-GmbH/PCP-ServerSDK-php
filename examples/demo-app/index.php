@@ -5,7 +5,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 use PayoneCommercePlatform\Sdk\ApiClient\CheckoutApiClient;
 use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
-use PayoneCommercePlatform\Sdk\Domain\CreateCheckoutRequest;
+use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
+use PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest;
 
 // load your config
 $key = getenv('API_KEY');
@@ -26,14 +27,8 @@ $res = $commerceCaseClient->getCommerceCases($merchantId);
 $commerceCase = $res[0];
 
 
-$request = new CreateCheckoutRequest([
-  'amountOfMoney' => [
-    'amount' => 1200,
-    'currencyCode' => 'EUR',
-  ],
-]);
-
+$request = new CreateCheckoutRequest(amountOfMoney: new AmountOfMoney(1200, 'EUR'));
 
 $res = $checkoutApiClient->createCheckout($merchantId, $commerceCase->getCommerceCaseId(), $request);
 $checkoutApiClient->deleteCheckout($merchantId, $commerceCase->getCommerceCaseId(), $res->getCheckoutId());
-var_dump($res->jsonSerialize());
+var_dump($res);
