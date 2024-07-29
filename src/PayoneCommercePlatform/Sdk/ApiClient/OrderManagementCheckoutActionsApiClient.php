@@ -46,7 +46,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function cancelOrderRequest(
+    protected function cancelOrderRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -119,7 +119,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createOrderRequest(
+    protected function createOrderRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -194,7 +194,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deliverOrderRequest(
+    protected function deliverOrderRequest(
         string $merchantId,
         string $commerceCaseId,
         string  $checkoutId,
@@ -265,7 +265,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function returnOrderRequest(
+    protected function returnOrderRequest(
         string $merchantId,
         string  $commerceCaseId,
         string $checkoutId,

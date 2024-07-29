@@ -43,7 +43,7 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createCheckoutRequest(
+    protected function createCheckoutRequest(
         string $merchantId,
         string $commerceCaseId,
         CreateCheckoutRequest $createCheckoutRequest,
@@ -106,7 +106,7 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
+    protected function deleteCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
         $contentType = 'application/json';
@@ -169,7 +169,7 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function getCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
+    protected function getCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
     {
 
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
@@ -283,7 +283,7 @@ class CheckoutApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updateCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PatchCheckoutRequest $patchCheckoutRequest): Request
+    protected function updateCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PatchCheckoutRequest $patchCheckoutRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
         $httpBody = '';

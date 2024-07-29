@@ -41,7 +41,7 @@ class PaymentInformationApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createPaymentInformationRequest(
+    protected function createPaymentInformationRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -114,7 +114,7 @@ class PaymentInformationApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function getPaymentInformationRequest(
+    protected function getPaymentInformationRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,

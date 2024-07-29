@@ -55,7 +55,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function cancelPaymentExecutionRequest(
+    protected function cancelPaymentExecutionRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -138,7 +138,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function capturePaymentExecutionRequest(
+    protected function capturePaymentExecutionRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -215,7 +215,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function completePaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): Request
+    protected function completePaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/complete';
         $httpBody = '';
@@ -285,7 +285,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createPaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): Request
+    protected function createPaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions';
         $httpBody = '';
@@ -353,7 +353,7 @@ class PaymentExecutionApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function refundPaymentExecutionRequest(
+    protected function refundPaymentExecutionRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,

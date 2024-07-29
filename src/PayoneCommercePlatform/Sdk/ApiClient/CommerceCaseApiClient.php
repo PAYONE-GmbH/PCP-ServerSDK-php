@@ -40,7 +40,7 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createCommerceCaseRequest(string $merchantId, CreateCommerceCaseRequest $createCommerceCaseRequest): Request
+    protected function createCommerceCaseRequest(string $merchantId, CreateCommerceCaseRequest $createCommerceCaseRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases';
         $httpBody = '';
@@ -92,7 +92,7 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function getCommerceCaseRequest(string $merchantId, string $commerceCaseId): Request
+    protected function getCommerceCaseRequest(string $merchantId, string $commerceCaseId): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}';
 
@@ -153,7 +153,7 @@ class CommerceCaseApiClient extends BaseApiClient
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function getCommerceCasesRequest(
+    protected function getCommerceCasesRequest(
         string $merchantId,
         GetCommerceCasesQuery $query,
     ): Request {
@@ -206,7 +206,7 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updateCommerceCaseRequest(string $merchantId, string $commerceCaseId, Customer $customer): Request
+    protected function updateCommerceCaseRequest(string $merchantId, string $commerceCaseId, Customer $customer): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}';
         $httpBody = '';
