@@ -128,6 +128,7 @@ class PaymentInformationApiClient extends BaseApiClient
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentInformationId Unique identifier of a paymentInformation (required)
      *
      * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\PaymentInformationResponse

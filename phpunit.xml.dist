@@ -8,7 +8,10 @@
   <source>
     <include>
       <directory suffix=".php">src</directory>
-      <directory suffix=".php">lib</directory>
     </include>
+
+    <exclude>
+      <directory suffix=".php">src/PayoneCommercePlatform/Sdk/Models</directory>
+    </exclude>
   </source>
 </phpunit>
