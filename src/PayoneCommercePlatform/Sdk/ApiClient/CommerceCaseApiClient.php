@@ -55,7 +55,7 @@ class CommerceCaseApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = self::$serializer->serialize($createCommerceCaseRequest, 'json');
+        $httpBody = $this->serialize($createCommerceCaseRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -226,7 +226,7 @@ class CommerceCaseApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = self::$serializer->serialize($customer, 'json');
+        $httpBody = $this->serialize($customer);
 
         $operationHost = $this->config->getHost();
         return new Request(

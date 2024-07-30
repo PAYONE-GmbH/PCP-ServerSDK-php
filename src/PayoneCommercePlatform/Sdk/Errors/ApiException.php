@@ -8,6 +8,19 @@ use Throwable;
 class ApiException extends Exception
 {
     /**
+     * The URI of the request
+     *
+     * @var string
+     */
+    protected string $uri;
+
+    /**
+     * The HTTP method of the request
+     *
+     * @var string
+     */
+    protected string $httpMethod;
+    /**
      * The HTTP body of the server response as string
      *
      * @var string
@@ -25,12 +38,16 @@ class ApiException extends Exception
      * Constructor
      *
      * @param int                   $statusCode      HTTP status code
+     * @param string                $uri             The URI of the request
+     * @param string                $httpMethod      The HTTP method of the request
      * @param string|null           $responseBody    HTTP decoded body of the server response as string
      * @param string|null           $message         Custom error message
      * @param Throwable|null        $previous        The previous throwable used for the exception chaining.
      */
     public function __construct(
         int $statusCode,
+        string $uri,
+        string $httpMethod,
         ?string $responseBody = null,
         ?string $message = null,
         ?Throwable $previous = null,
@@ -39,6 +56,8 @@ class ApiException extends Exception
             $message = sprintf('[%d] Error communicating with the API', $statusCode);
         }
         parent::__construct($message, $statusCode, $previous);
+        $this->uri = $uri;
+        $this->httpMethod = $httpMethod;
         $this->statusCode = $statusCode;
         $this->responseBody = $responseBody;
     }
@@ -51,6 +70,26 @@ class ApiException extends Exception
     public function getStatusCode(): int
     {
         return $this->statusCode;
+    }
+
+    /**
+     * Gets the URI of the request
+     *
+     * @return string URI of the request
+     */
+    public function getUri(): string
+    {
+        return $this->uri;
+    }
+
+    /**
+     * Gets the HTTP method of the request
+     *
+     * @return string HTTP method of the request
+     */
+    public function getHttpMethod(): string
+    {
+        return $this->httpMethod;
     }
 
     /**

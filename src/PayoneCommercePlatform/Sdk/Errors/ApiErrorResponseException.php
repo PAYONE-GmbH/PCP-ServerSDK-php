@@ -26,12 +26,21 @@ class ApiErrorResponseException extends ApiException
      */
     public function __construct(
         int $statusCode,
+        string $uri,
+        string $httpMethod,
         string $responseBody,
         array $errors,
         ?string $message = null,
         ?Throwable $previous = null,
     ) {
-        parent::__construct($statusCode, $responseBody, $message, $previous);
+        parent::__construct(
+            statusCode: $statusCode,
+            uri: $uri,
+            httpMethod: $httpMethod,
+            responseBody: $responseBody,
+            message: $message,
+            previous: $previous
+        );
         $this->errors = $errors;
     }
 
