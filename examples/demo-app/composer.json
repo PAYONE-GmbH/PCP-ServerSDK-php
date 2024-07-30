@@ -8,5 +8,12 @@
       "type": "path",
       "url": "../../"
     }
-  ]
+  ],
+  "autoload": {
+    "psr-4": {
+      "DemoApp\\": [
+        "src/"
+      ]
+    }
+  }
 }
