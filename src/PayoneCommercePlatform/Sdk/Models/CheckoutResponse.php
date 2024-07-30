@@ -31,10 +31,10 @@ class CheckoutResponse
     protected string $checkoutId;
 
     /**
-     * @var string Unique identifier for the customer.
+     * @var string|null Unique identifier for the customer.
      */
     #[SerializedName('merchantCustomerId')]
-    protected string $merchantCustomerId;
+    protected ?string $merchantCustomerId;
 
     /**
      * @var AmountOfMoney|null The amount of money for the checkout.
@@ -99,7 +99,7 @@ class CheckoutResponse
     /**
      * @param string $commerceCaseId Reference to the Commerce Case.
      * @param string $checkoutId Reference to the Checkout.
-     * @param string $merchantCustomerId Unique identifier for the customer.
+     * @param string|null $merchantCustomerId Unique identifier for the customer.
      * @param AmountOfMoney|null $amountOfMoney The amount of money for the checkout.
      * @param CheckoutReferences|null $references References for the checkout.
      * @param Shipping|null $shipping Shipping information for the checkout.
@@ -114,7 +114,7 @@ class CheckoutResponse
     public function __construct(
         string $commerceCaseId,
         string $checkoutId,
-        string $merchantCustomerId,
+        ?string $merchantCustomerId = null,
         ?AmountOfMoney $amountOfMoney = null,
         ?CheckoutReferences $references = null,
         ?Shipping $shipping = null,
@@ -164,12 +164,12 @@ class CheckoutResponse
         return $this;
     }
 
-    public function getMerchantCustomerId(): string
+    public function getMerchantCustomerId(): ?string
     {
         return $this->merchantCustomerId;
     }
 
-    public function setMerchantCustomerId(string $merchantCustomerId): self
+    public function setMerchantCustomerId(?string $merchantCustomerId): self
     {
         $this->merchantCustomerId = $merchantCustomerId;
         return $this;
