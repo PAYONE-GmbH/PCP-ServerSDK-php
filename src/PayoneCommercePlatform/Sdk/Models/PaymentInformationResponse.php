@@ -25,10 +25,10 @@ class PaymentInformationResponse
     protected string $checkoutId;
 
     /**
-     * @var string Unique identifier of the customer.
+     * @var string|null Unique identifier of the customer.
      */
     #[SerializedName('merchantCustomerId')]
-    protected string $merchantCustomerId;
+    protected ?string $merchantCustomerId;
 
     /**
      * @var string Unique ID of the Payment Information.
@@ -49,22 +49,22 @@ class PaymentInformationResponse
     protected int $paymentProductId;
 
     /**
-     * @var string Unique identifier of the POS terminal of the payment transaction.
+     * @var string|null Unique identifier of the POS terminal of the payment transaction.
      */
     #[SerializedName('terminalId')]
-    protected string $terminalId;
+    protected ?string $terminalId;
 
     /**
-     * @var string Unique ID that identifies a store location or transaction point and which refers to the contract number of the merchant accepting the card.
+     * @var string|null Unique ID that identifies a store location or transaction point and which refers to the contract number of the merchant accepting the card.
      */
     #[SerializedName('cardAcceptorId')]
-    protected string $cardAcceptorId;
+    protected ?string $cardAcceptorId;
 
     /**
-     * @var string Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR or terminal will be used. It is always the reference for external transactions. (e.g. card present payments, cash payments or payments processed by other payment providers).
+     * @var string|null Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR or terminal will be used. It is always the reference for external transactions. (e.g. card present payments, cash payments or payments processed by other payment providers).
      */
     #[SerializedName('merchantReference')]
-    protected string $merchantReference;
+    protected ?string $merchantReference;
 
     /**
      * @var CardPaymentDetails|null Card payment details.
@@ -81,25 +81,25 @@ class PaymentInformationResponse
     /**
      * @param string $commerceCaseId Unique ID of the Commerce Case.
      * @param string $checkoutId Unique ID of the Checkout.
-     * @param string $merchantCustomerId Unique identifier of the customer.
      * @param string $paymentInformationId Unique ID of the Payment Information.
      * @param PaymentChannel|null $paymentChannel Payment channel.
      * @param int $paymentProductId Payment product identifier.
-     * @param string $terminalId Unique identifier of the POS terminal of the payment transaction.
-     * @param string $cardAcceptorId Unique ID that identifies a store location or transaction point and which refers to the contract number of the merchant accepting the card.
-     * @param string $merchantReference Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR or terminal will be used. It is always the reference for external transactions. (e.g. card present payments, cash payments or payments processed by other payment providers).
+     * @param string|null $cardAcceptorId Unique ID that identifies a store location or transaction point and which refers to the contract number of the merchant accepting the card.
+     * @param string|null $merchantReference Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR or terminal will be used. It is always the reference for external transactions. (e.g. card present payments, cash payments or payments processed by other payment providers).
+     * @param string|null $terminalId Unique identifier of the POS terminal of the payment transaction.
+     * @param string|null $merchantCustomerId Unique identifier of the customer.
      * @param CardPaymentDetails|null $cardPaymentDetails Card payment details.
      * @param PaymentEvent[]|null $events List of payment events.
      */
     public function __construct(
         string $commerceCaseId,
         string $checkoutId,
-        string $merchantCustomerId,
         string $paymentInformationId,
         int $paymentProductId,
-        string $terminalId,
-        string $cardAcceptorId,
-        string $merchantReference,
+        ?string $cardAcceptorId = null,
+        ?string $merchantReference = null,
+        ?string $terminalId = null,
+        ?string $merchantCustomerId = null,
         ?PaymentChannel $paymentChannel = null,
         ?CardPaymentDetails $cardPaymentDetails = null,
         ?array $events = null
@@ -140,12 +140,12 @@ class PaymentInformationResponse
         return $this;
     }
 
-    public function getMerchantCustomerId(): string
+    public function getMerchantCustomerId(): ?string
     {
         return $this->merchantCustomerId;
     }
 
-    public function setMerchantCustomerId(string $merchantCustomerId): self
+    public function setMerchantCustomerId(?string $merchantCustomerId): self
     {
         $this->merchantCustomerId = $merchantCustomerId;
         return $this;
@@ -184,12 +184,12 @@ class PaymentInformationResponse
         return $this;
     }
 
-    public function getTerminalId(): string
+    public function getTerminalId(): ?string
     {
         return $this->terminalId;
     }
 
-    public function setTerminalId(string $terminalId): self
+    public function setTerminalId(?string $terminalId): self
     {
         $this->terminalId = $terminalId;
         return $this;
