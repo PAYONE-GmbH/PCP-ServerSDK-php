@@ -30,8 +30,7 @@ class CheckoutApiClient extends BaseApiClient
     {
         $request = $this->createCheckoutRequest($merchantId, $commerceCaseId, $createCheckoutRequest);
 
-        list($response) = $this->makeApiCall($request, CreateCheckoutResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CreateCheckoutResponse::class)[0];
     }
 
     /**
@@ -109,7 +108,6 @@ class CheckoutApiClient extends BaseApiClient
     protected function deleteCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
-        $contentType = 'application/json';
 
         // path params
         $resourcePath = str_replace(
@@ -156,8 +154,7 @@ class CheckoutApiClient extends BaseApiClient
     {
         $request = $this->getCheckoutRequest($merchantId, $commerceCaseId, $checkoutId);
 
-        list($response) = $this->makeApiCall($request, CheckoutResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CheckoutResponse::class)[0];
     }
 
     /**
@@ -218,8 +215,7 @@ class CheckoutApiClient extends BaseApiClient
         GetCheckoutsQuery $query = new GetCheckoutsQuery(),
     ): CheckoutsResponse {
         $request = $this->getCheckoutsRequest($merchantId, $query);
-        list($response) = $this->makeApiCall($request, CheckoutsResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CheckoutsResponse::class)[0];
     }
 
     /**

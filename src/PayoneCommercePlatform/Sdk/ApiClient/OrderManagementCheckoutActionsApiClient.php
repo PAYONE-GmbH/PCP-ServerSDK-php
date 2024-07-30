@@ -32,8 +32,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
     public function cancelOrder(string $merchantId, string $commerceCaseId, string $checkoutId, ?CancelRequest $cancelRequest = null): CancelResponse
     {
         $request = $this->cancelOrderRequest($merchantId, $commerceCaseId, $checkoutId, $cancelRequest);
-        list($response) = $this->makeApiCall($request, CancelResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CancelResponse::class)[0];
     }
 
     /**
@@ -105,8 +104,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
     public function createOrder(string $merchantId, string $commerceCaseId, string $checkoutId, OrderRequest $orderRequest): OrderResponse
     {
         $request = $this->createOrderRequest($merchantId, $commerceCaseId, $checkoutId, $orderRequest);
-        list($response) = $this->makeApiCall($request, OrderResponse::class);
-        return $response;
+        return $this->makeApiCall($request, OrderResponse::class)[0];
     }
 
     /**
@@ -180,8 +178,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         DeliverRequest $deliverRequest
     ): DeliverResponse {
         $request = $this->deliverOrderRequest($merchantId, $commerceCaseId, $checkoutId, $deliverRequest);
-        list($response) = $this->makeApiCall($request, DeliverResponse::class);
-        return $response;
+        return $this->makeApiCall($request, DeliverResponse::class)[0];
     }
 
     /**
@@ -251,8 +248,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
     public function returnOrder(string $merchantId, string  $commerceCaseId, string $checkoutId, ?ReturnRequest $returnRequest = null): ReturnResponse
     {
         $request = $this->returnOrderRequest($merchantId, $commerceCaseId, $checkoutId, $returnRequest);
-        list($response) = $this->makeApiCall($request, ReturnResponse::class);
-        return $response;
+        return $this->makeApiCall($request, ReturnResponse::class)[0];
     }
 
     /**

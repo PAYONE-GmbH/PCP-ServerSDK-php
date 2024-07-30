@@ -40,8 +40,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         CancelPaymentRequest $cancelPaymentRequest
     ): CancelPaymentResponse {
         $request = $this->cancelPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $cancelPaymentRequest);
-        list($response) = $this->makeApiCall($request, CancelPaymentResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CancelPaymentResponse::class)[0];
     }
 
     /**
@@ -123,8 +122,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         CapturePaymentRequest $capturePaymentRequest
     ): CapturePaymentResponse {
         $request = $this->capturePaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $capturePaymentRequest);
-        list($response) = $this->makeApiCall($request, CapturePaymentResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CapturePaymentResponse::class)[0];
     }
 
     /**
@@ -200,8 +198,7 @@ class PaymentExecutionApiClient extends BaseApiClient
     public function completePayment(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, CompletePaymentRequest $completePaymentRequest): CompletePaymentResponse
     {
         $request = $this->completePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $completePaymentRequest);
-        list($response) = $this->makeApiCall($request, CompletePaymentResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CompletePaymentResponse::class)[0];
     }
 
     /**
@@ -271,8 +268,7 @@ class PaymentExecutionApiClient extends BaseApiClient
     public function createPayment(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentExecutionRequest $paymentExecutionRequest): CreatePaymentResponse
     {
         $request = $this->createPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionRequest);
-        list($response) = $this->makeApiCall($request, CreatePaymentResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CreatePaymentResponse::class)[0];
     }
 
     /**
@@ -338,8 +334,7 @@ class PaymentExecutionApiClient extends BaseApiClient
     public function refundPaymentExecution(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, RefundRequest $refundRequest): RefundPaymentResponse
     {
         $request = $this->refundPaymentExecutionRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $refundRequest);
-        list($response) = $this->makeApiCall($request, RefundPaymentResponse::class);
-        return $response;
+        return $this->makeApiCall($request, RefundPaymentResponse::class)[0];
     }
 
     /**
