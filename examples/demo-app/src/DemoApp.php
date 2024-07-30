@@ -4,8 +4,11 @@ namespace DemoApp;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use DemoApp\Examples\CheckoutApiExample;
 use DemoApp\Examples\CommerceCaseApiExample;
+use DemoApp\Examples\PaymentInformationApiExample;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
+use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 
 class DemoApp
 {
@@ -35,6 +38,15 @@ class DemoApp
         $commerceCaseApiExample->runGetAll();
         $commerceCaseApiExample->runGetOne();
         $commerceCaseApiExample->runUpdateOne();
+
+        $checkoutApiExample = new CheckoutApiExample($this->config);
+        $checkoutApiExample->runPostOne();
+        $checkoutApiExample->runFilterAll();
+        $checkoutApiExample->runUpdateOne();
+        $checkoutApiExample->runDeleteOne();
+        
+        $paymentInformationApiExample = new PaymentInformationApiExample($this->config);
+        $paymentInformationApiExample->postOne();
     }
 
     public static function run(): void
