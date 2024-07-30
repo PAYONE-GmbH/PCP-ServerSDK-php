@@ -13,7 +13,6 @@ use PayoneCommercePlatform\Sdk\Models\CheckoutResponse;
 use PayoneCommercePlatform\Sdk\Models\CheckoutsResponse;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse;
-use PayoneCommercePlatform\Sdk\Models\ErrorResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 use PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest;
@@ -45,9 +44,6 @@ class CheckoutApiClientTest extends TestCase
     public function testCreateCheckoutUnsuccessful400(): void
     {
         // arrange
-        $createCheckoutResponse = new CreateCheckoutResponse(
-            amountOfMoney: new AmountOfMoney(400, 'EUR'),
-        );
         $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
         $this->expectException(ApiErrorResponseException::class);
@@ -63,13 +59,13 @@ class CheckoutApiClientTest extends TestCase
     public function testCreateCheckoutUnsuccessful500(): void
     {
         // arrange
-        $createCheckoutRequest = new CreateCheckoutRequest();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: 'invalid'));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
 
         // act
-        $response = $this->checkoutClient->createCheckout('1', '2', $createCheckoutRequest);
+        $createCheckoutRequest = new CreateCheckoutRequest();
+        $this->checkoutClient->createCheckout('1', '2', $createCheckoutRequest);
     }
 
     public function testGetCheckoutsSuccessful(): void
@@ -104,7 +100,7 @@ class CheckoutApiClientTest extends TestCase
         $this->expectExceptionCode(400);
 
         // act
-        $response = $this->checkoutClient->getCheckouts($this->merchantId);
+        $this->checkoutClient->getCheckouts($this->merchantId);
     }
 
     public function testGetCheckoutsUnsuccessful500(): void
@@ -140,7 +136,6 @@ class CheckoutApiClientTest extends TestCase
 
     public function testDeleteCheckoutUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
@@ -175,7 +170,6 @@ class CheckoutApiClientTest extends TestCase
 
     public function testGetCheckoutUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
@@ -208,7 +202,6 @@ class CheckoutApiClientTest extends TestCase
 
     public function testUpdateCheckoutUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
