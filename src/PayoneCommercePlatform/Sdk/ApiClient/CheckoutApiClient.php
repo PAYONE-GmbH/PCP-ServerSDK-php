@@ -14,6 +14,8 @@ use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
 class CheckoutApiClient extends BaseApiClient
 {
+    protected const CHECKOUT_BY_ID_URI = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
+
     /**
      * Operation createCheckout
      *
@@ -107,7 +109,7 @@ class CheckoutApiClient extends BaseApiClient
      */
     protected function deleteCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
     {
-        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
+        $resourcePath = self::CHECKOUT_BY_ID_URI;
 
         // path params
         $resourcePath = str_replace(
@@ -169,7 +171,7 @@ class CheckoutApiClient extends BaseApiClient
     protected function getCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId): Request
     {
 
-        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
+        $resourcePath = self::CHECKOUT_BY_ID_URI;
 
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
@@ -281,7 +283,7 @@ class CheckoutApiClient extends BaseApiClient
      */
     protected function updateCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId, PatchCheckoutRequest $patchCheckoutRequest): Request
     {
-        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}';
+        $resourcePath = self::CHECKOUT_BY_ID_URI;
         $httpBody = '';
 
         // path params
