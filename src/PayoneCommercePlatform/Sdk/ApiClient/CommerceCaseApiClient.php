@@ -43,7 +43,6 @@ class CommerceCaseApiClient extends BaseApiClient
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases';
         $httpBody = '';
-        $multipart = false;
 
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
