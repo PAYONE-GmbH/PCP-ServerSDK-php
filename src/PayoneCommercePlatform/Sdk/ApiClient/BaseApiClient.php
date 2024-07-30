@@ -180,11 +180,9 @@ class BaseApiClient
     {
         // by default an object with all properties set to null, is encoded as `[]`
         // php can't figure out if this is an list of things or an empty associative array
-        // so we enforce `{}`
-        if (is_object($data)) {
-            return self::$serializer->serialize($data, 'json', ['json_encode_options' => JSON_FORCE_OBJECT]);
-        }
-        return self::$serializer->serialize($data, 'json');
+        // so we enforce `{}` for empty objects. Do not use JSON_FORCE_OBJECT, as it will
+        // convert every array into an object
+        return self::$serializer->serialize($data, 'json', ['preserve_empty_objects' => true]);
     }
 
     public static function init(): void
