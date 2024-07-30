@@ -55,9 +55,6 @@ class BaseApiClient
         CommunicatorConfiguration $config,
         ClientInterface $client = null,
     ) {
-        $normalizers = [new GetSetMethodNormalizer(), new DateTimeNormalizer()];
-        $encoders = [new JsonEncoder()];
-
         $this->config = $config;
         $this->client = $client ?: new Client();
         $this->requestHeaderGenerator = new RequestHeaderGenerator($this->config);
