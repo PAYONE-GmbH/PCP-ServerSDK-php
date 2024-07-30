@@ -28,8 +28,7 @@ class CommerceCaseApiClient extends BaseApiClient
     public function createCommerceCase($merchantId, $createCommerceCaseRequest): CreateCommerceCaseResponse
     {
         $request = $this->createCommerceCaseRequest($merchantId, $createCommerceCaseRequest);
-        list($response) = $this->makeApiCall($request, CreateCommerceCaseResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CreateCommerceCaseResponse::class)[0];
     }
 
     /**
@@ -44,7 +43,6 @@ class CommerceCaseApiClient extends BaseApiClient
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases';
         $httpBody = '';
-        $multipart = false;
 
         $resourcePath = str_replace(
             '{' . 'merchantId' . '}',
@@ -80,8 +78,7 @@ class CommerceCaseApiClient extends BaseApiClient
     public function getCommerceCase(string $merchantId, string $commerceCaseId): CommerceCaseResponse
     {
         $request = $this->getCommerceCaseRequest($merchantId, $commerceCaseId);
-        list($response) = $this->makeApiCall($request, CommerceCaseResponse::class);
-        return $response;
+        return $this->makeApiCall($request, CommerceCaseResponse::class)[0];
     }
 
     /**
@@ -139,9 +136,7 @@ class CommerceCaseApiClient extends BaseApiClient
         // The underlying of `makeApiCall` is to strict as it has to be an resolvable class name
         // but the underlying call to symfony/serialize also allows for an array of classes
         // @phpstan-ignore-next-line
-        list($response) = $this->makeApiCall($request, CommerceCaseResponse::class . '[]');
-        /** @var \PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse[] */
-        return $response;
+        return $this->makeApiCall($request, CommerceCaseResponse::class . '[]')[0];
     }
 
     /**

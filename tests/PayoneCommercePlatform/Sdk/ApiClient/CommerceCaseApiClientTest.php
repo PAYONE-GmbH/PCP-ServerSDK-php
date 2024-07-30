@@ -121,7 +121,6 @@ class CommerceCaseApiClientTest extends TestCase
 
     public function testGetCommerceCaseUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
@@ -192,7 +191,6 @@ class CommerceCaseApiClientTest extends TestCase
 
     public function testUpdateCommerceCaseUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);

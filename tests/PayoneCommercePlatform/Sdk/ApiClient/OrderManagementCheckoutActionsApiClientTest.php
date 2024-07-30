@@ -115,7 +115,6 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
 
     public function testCreateOrderUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
@@ -146,18 +145,17 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
         $this->expectExceptionCode(400);
 
         $payload = new DeliverRequest(deliverType: DeliverType::PARTIAL, isFinal: false);
-        $response = $this->orderManagementCheckoutActionsApiClient->deliverOrder('1', '2', '3', $payload);
+        $this->orderManagementCheckoutActionsApiClient->deliverOrder('1', '2', '3', $payload);
     }
 
     public function testDeliverOrderUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
 
         $payload = new DeliverRequest(deliverType: DeliverType::PARTIAL, isFinal: false);
-        $response = $this->orderManagementCheckoutActionsApiClient->deliverOrder('1', '2', '3', $payload);
+        $this->orderManagementCheckoutActionsApiClient->deliverOrder('1', '2', '3', $payload);
     }
 
     public function testReturnOrderSuccessful(): void
@@ -188,7 +186,6 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
 
     public function testReturnOrderUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
