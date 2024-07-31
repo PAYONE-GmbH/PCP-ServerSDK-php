@@ -4,6 +4,16 @@ namespace DemoApp\Examples;
 
 use PayoneCommercePlatform\Sdk\ApiClient\PaymentExecutionApiClient;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
+use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
+use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
+use PayoneCommercePlatform\Sdk\Models\FinancingPaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
+use PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest;
+use PayoneCommercePlatform\Sdk\Models\PaymentExecutionSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\PaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct3392SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\PaymentType;
+use PayoneCommercePlatform\Sdk\Models\References;
 
 class PaymentExecutionApiExample
 {
@@ -24,7 +34,7 @@ class PaymentExecutionApiExample
 
         $this->client = new PaymentExecutionApiClient($config);
     }
-    
+
     protected function getCommerceCaseId(): string
     {
         if (empty($this->commerceCaseId)) {
@@ -49,4 +59,26 @@ class PaymentExecutionApiExample
         return $this->paymentId;
     }
 
+    public function createOne(): void
+    {
+        $request = new PaymentExecutionRequest(
+            paymentMethodSpecificInput: new PaymentMethodSpecificInput(
+                financingPaymentMethodSpecificInput: new FinancingPaymentMethodSpecificInput(
+                    paymentProductId: 3392,
+                    requiresApproval: false,
+                    paymentProduct3392SpecificInput: new PaymentProduct3392SpecificInput(
+                        new BankAccountInformation(
+                            iban: 'DE05500105178431848295',
+                            accountHolder: 'Robert Jordan',
+                        ),
+                    ),
+                )
+            ),
+            paymentExecutionSpecificInput: new PaymentExecutionSpecificInput(
+                paymentReferences: new References('order-1234'),
+                amountOfMoney: new AmountOfMoney(36000, 'USD')
+            ),
+        );
+        $this->client->createPayment($this->merchantId, $this->getCommerceCaseId(), $this->getCheckoutId(), $request);
+    }
 }

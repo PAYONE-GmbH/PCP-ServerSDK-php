@@ -2,7 +2,6 @@
 
 namespace DemoApp\Examples;
 
-use PayoneCommercePlatform\Sdk\ApiClient\CheckoutApiClient;
 use PayoneCommercePlatform\Sdk\ApiClient\PaymentInformationApiClient;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
