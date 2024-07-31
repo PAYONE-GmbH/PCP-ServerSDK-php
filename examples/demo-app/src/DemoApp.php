@@ -77,28 +77,6 @@ class DemoApp
         $this->orderManagementCheckoutClient = new OrderManagementCheckoutActionsApiClient($this->config);
     }
 
-    protected function getOrCreateCommerCaseByReference(string $merchantReference): CommerceCaseResponse
-    {
-        $query = (new GetCommerceCasesQuery())
-          ->setMerchantReference($merchantReference);
-
-        try {
-            $commerceCases = $this->commerceCaseClient->getCommerceCases($this->merchantId, $query);
-            if (count($commerceCases) > 0) {
-                return $this->commerceCaseClient->getCommerceCase($this->merchantId, $commerceCases[0]->getCommerceCaseId());
-            }
-
-            $createdCommerceCase = $this->commerceCaseClient->createCommerceCase(
-                $this->merchantId,
-                new CreateCommerceCaseRequest(merchantReference: $merchantReference),
-            );
-            return $this->commerceCaseClient->getCommerceCase($this->merchantId, $createdCommerceCase->getCommerceCaseId());
-        } catch (ApiException $e) {
-            fwrite(\STDERR, print_r("{$e->getHttpMethod()} {$e->getUri()} failed({$e->getCode}): {$e->getMessage()}\n", true));
-            exit(6);
-        }
-    }
-
     protected function runMultistepCheckout(string $commercaseMerchantReference): void
     {
         // create the commercase
