@@ -9,6 +9,7 @@
             "name": "PAYONE GmbH"
         }
     ],
+    "version": "0.0.1",
     "require": {
         "php": "~8.2||~8.3",
         "ext-curl": "*",
