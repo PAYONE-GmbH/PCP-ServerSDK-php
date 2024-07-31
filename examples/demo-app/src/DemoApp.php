@@ -10,7 +10,6 @@ use PayoneCommercePlatform\Sdk\ApiClient\OrderManagementCheckoutActionsApiClient
 use PayoneCommercePlatform\Sdk\ApiClient\PaymentExecutionApiClient;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
-use PayoneCommercePlatform\Sdk\Errors\ApiException;
 use PayoneCommercePlatform\Sdk\Models\Address;
 use PayoneCommercePlatform\Sdk\Models\AddressPersonal;
 use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
@@ -18,7 +17,6 @@ use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
 use PayoneCommercePlatform\Sdk\Models\CartItemInput;
 use PayoneCommercePlatform\Sdk\Models\CartItemInvoiceData;
 use PayoneCommercePlatform\Sdk\Models\CheckoutReferences;
-use PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse;
 use PayoneCommercePlatform\Sdk\Models\ContactDetails;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest;
 use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest;
@@ -41,7 +39,6 @@ use PayoneCommercePlatform\Sdk\Models\SepaDirectDebitPaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\SepaDirectDebitPaymentProduct771SpecificInput;
 use PayoneCommercePlatform\Sdk\Models\Shipping;
 use PayoneCommercePlatform\Sdk\Models\ShoppingCartInput;
-use PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery;
 
 class DemoApp
 {

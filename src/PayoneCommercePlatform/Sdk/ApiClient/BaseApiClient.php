@@ -2,9 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-// needed to allow usage of symfony/serializer
-require_once __DIR__.'/../../../../vendor/autoload.php';
-
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
