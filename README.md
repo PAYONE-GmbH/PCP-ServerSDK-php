@@ -91,12 +91,12 @@ This SDK is currently not released on [packagist](https://packagist.org/). You c
         }
     ],
     "require": {
-        "payone-gmbh/pcp-serversdk-php": "main"
+        "payone-gmbh/pcp-serversdk-php": "dev-main"
     }
 }
 ```
 
-This snippets specify the main branch which contains the latest release. You can specify a version by inserting a git tag `vX.Y.Z` instead of `main`.
+This snippets specify the main branch which contains the latest release. You can specify a version by inserting a git tag `vX.Y.Z` instead of `main`. Make sure to prepend the git branch or tag with `dev-`. For a in depth explanation take a look at the [composer documentation](https://getcomposer.org/doc/05-repositories.md#vcs).
 
 ## Demo App
 
