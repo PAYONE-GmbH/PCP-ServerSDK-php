@@ -56,7 +56,7 @@ class ProcessingMandateInformation
     }
 
     // Getters and Setters
-    public function getBankAccountIban(): BankAccountInformation
+    public function getBankAccountIban(): ?BankAccountInformation
     {
         return $this->bankAccountIban;
     }
@@ -67,7 +67,7 @@ class ProcessingMandateInformation
         return $this;
     }
 
-    public function getRecurrenceType(): MandateRecurrenceType
+    public function getRecurrenceType(): ?MandateRecurrenceType
     {
         return $this->recurrenceType;
     }
@@ -78,7 +78,7 @@ class ProcessingMandateInformation
         return $this;
     }
 
-    public function getUniqueMandateReference(): string
+    public function getUniqueMandateReference(): ?string
     {
         return $this->uniqueMandateReference;
     }
@@ -89,7 +89,7 @@ class ProcessingMandateInformation
         return $this;
     }
 
-    public function getDateOfSignature(): string
+    public function getDateOfSignature(): ?string
     {
         return $this->dateOfSignature;
     }
@@ -100,7 +100,7 @@ class ProcessingMandateInformation
         return $this;
     }
 
-    public function getCreditorId(): string
+    public function getCreditorId(): ?string
     {
         return $this->creditorId;
     }

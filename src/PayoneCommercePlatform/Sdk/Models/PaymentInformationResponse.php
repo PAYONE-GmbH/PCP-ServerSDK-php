@@ -195,7 +195,7 @@ class PaymentInformationResponse
         return $this;
     }
 
-    public function getCardAcceptorId(): string
+    public function getCardAcceptorId(): ?string
     {
         return $this->cardAcceptorId;
     }
@@ -206,7 +206,7 @@ class PaymentInformationResponse
         return $this;
     }
 
-    public function getMerchantReference(): string
+    public function getMerchantReference(): ?string
     {
         return $this->merchantReference;
     }
