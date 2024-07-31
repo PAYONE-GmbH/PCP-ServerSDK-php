@@ -2,27 +2,9 @@
 
 namespace PayoneCommercePlatform\Sdk;
 
-/**
- * Configuration Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class CommunicatorConfiguration
 {
-    public const SDK_VERSION = '0.0.1';
-
-    public const BOOLEAN_FORMAT_INT = 'int';
-    public const BOOLEAN_FORMAT_STRING = 'string';
-
-    /**
-     * Boolean format for query string
-     *
-     * @var string
-     */
-    protected string $booleanFormatForQueryString = self::BOOLEAN_FORMAT_INT;
+    public const SDK_VERSION = '1.0.0';
 
     /**
      * Api key for the PAYONE Commerce Platform
@@ -53,13 +35,6 @@ class CommunicatorConfiguration
     protected string $host;
 
     /**
-     * User agent of the HTTP request, set to "OpenAPI-Generator/{version}/PHP" by default
-     *
-     * @var string
-     */
-    protected string $userAgent = 'OpenAPI-Generator/1.0.0/PHP';
-
-    /**
      * Server meta info used on the PAYONE commerce platform. Should include 3 fields:
      *  - `platformIdentifier`: the OS name, the language name (PHP) and the PHP version.
      *  - `sdkIdentifier`: name of the SDK package and its version
@@ -77,27 +52,6 @@ class CommunicatorConfiguration
     protected array $clientMetaInfo;
 
     /**
-     * Debug switch (default set to false)
-     *
-     * @var bool
-     */
-    protected bool $debug;
-
-    /**
-     * Debug file location (log to STDOUT by default)
-     *
-     * @var string
-     */
-    protected string $debugFile;
-
-    /**
-     * Debug file location (log to STDOUT by default)
-     *
-     * @var string
-     */
-    protected string $tempFolderPath;
-
-    /**
      * Constructor
      *
      * @param string                  $apiKey
@@ -106,8 +60,6 @@ class CommunicatorConfiguration
      * @param string|null             $integrator
      * @param array<string, string>   $serverMetaInfo
      * @param array<string, string>   $clientMetaInfo
-     * @param bool                    $debug
-     * @param string                  $debugFile
      */
     public function __construct(
         string              $apiKey,
@@ -116,10 +68,7 @@ class CommunicatorConfiguration
         ?string             $integrator = null,
         ?array              $serverMetaInfo = null,
         ?array              $clientMetaInfo = null,
-        bool                $debug = false,
-        string              $debugFile = 'php://output'
     ) {
-        $this->tempFolderPath = sys_get_temp_dir();
 
         $this->apiKey = $apiKey;
         $this->apiSecret = $apiSecret;
@@ -135,32 +84,6 @@ class CommunicatorConfiguration
             "sdkCreator"         => 'PAYONE GmbH'
         ];
         $this->clientMetaInfo = $clientMetaInfo !== null ? $clientMetaInfo : [];
-        $this->debug = $debug;
-        $this->debugFile = $debugFile;
-    }
-
-    /**
-     * Sets boolean format for query string.
-     *
-     * @param string $booleanFormat Boolean format for query string
-     *
-     * @return $this
-     */
-    public function setBooleanFormatForQueryString(string $booleanFormat): self
-    {
-        $this->booleanFormatForQueryString = $booleanFormat;
-
-        return $this;
-    }
-
-    /**
-     * Gets boolean format for query string.
-     *
-     * @return string Boolean format for query string
-     */
-    public function getBooleanFormatForQueryString(): string
-    {
-        return $this->booleanFormatForQueryString;
     }
 
     /**
@@ -260,34 +183,6 @@ class CommunicatorConfiguration
     }
 
     /**
-     * Sets the user agent of the api client
-     *
-     * @param string $userAgent the user agent of the api client
-     *
-     * @throws \InvalidArgumentException
-     * @return $this
-     */
-    public function setUserAgent(string $userAgent): self
-    {
-        if (!is_string($userAgent)) {
-            throw new \InvalidArgumentException('User-agent must be a string.');
-        }
-
-        $this->userAgent = $userAgent;
-        return $this;
-    }
-
-    /**
-     * Gets the user agent of the api client
-     *
-     * @return string user agent
-     */
-    public function getUserAgent(): string
-    {
-        return $this->userAgent;
-    }
-
-    /**
      * Gets client meta info
      *
      * @return array<string, string>
@@ -351,91 +246,6 @@ class CommunicatorConfiguration
     {
         $this->serverMetaInfo[$key] = $value;
         return $this;
-    }
-
-    /**
-     * Sets debug flag
-     *
-     * @param bool $debug Debug flag
-     *
-     * @return $this
-     */
-    public function setDebug(bool $debug): self
-    {
-        $this->debug = $debug;
-        return $this;
-    }
-
-    /**
-     * Gets the debug flag
-     *
-     * @return bool
-     */
-    public function getDebug(): bool
-    {
-        return $this->debug;
-    }
-
-    /**
-     * Sets the debug file
-     *
-     * @param string $debugFile Debug file
-     *
-     * @return $this
-     */
-    public function setDebugFile(string $debugFile): self
-    {
-        $this->debugFile = $debugFile;
-        return $this;
-    }
-
-    /**
-     * Gets the debug file
-     *
-     * @return string
-     */
-    public function getDebugFile(): string
-    {
-        return $this->debugFile;
-    }
-
-    /**
-     * Sets the temp folder path
-     *
-     * @param string $tempFolderPath Temp folder path
-     *
-     * @return $this
-     */
-    public function setTempFolderPath(string $tempFolderPath): self
-    {
-        $this->tempFolderPath = $tempFolderPath;
-        return $this;
-    }
-
-    /**
-     * Gets the temp folder path
-     *
-     * @return string Temp folder path
-     */
-    public function getTempFolderPath(): string
-    {
-        return $this->tempFolderPath;
-    }
-
-    /**
-     * Gets the essential information for debugging
-     *
-     * @return string The report for debugging
-     */
-    public function toDebugReport(): string
-    {
-        $report  = 'PHP SDK (PayoneCommercePlatform\Sdk) Debug Report:' . PHP_EOL;
-        $report .= '    OS: ' . php_uname() . PHP_EOL;
-        $report .= '    PHP Version: ' . PHP_VERSION . PHP_EOL;
-        $report .= '    The version of the OpenAPI document: 1.6.0' . PHP_EOL;
-        $report .= '    Temp Folder Path: ' . $this->getTempFolderPath() . PHP_EOL;
-
-        return $report;
     }
 
     /**

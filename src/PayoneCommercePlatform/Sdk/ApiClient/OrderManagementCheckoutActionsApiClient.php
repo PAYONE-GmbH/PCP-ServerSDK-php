@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\Models\CancelRequest;
 use PayoneCommercePlatform\Sdk\Models\CancelResponse;
@@ -15,14 +14,6 @@ use PayoneCommercePlatform\Sdk\Models\ReturnResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
-/**
- * OrderManagementCheckoutActionsApi Class Doc Comment
- *
- * @category Class
- * @package  PayoneCommercePlatform\Sdk
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
- */
 class OrderManagementCheckoutActionsApiClient extends BaseApiClient
 {
     /**
@@ -41,31 +32,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
     public function cancelOrder(string $merchantId, string $commerceCaseId, string $checkoutId, ?CancelRequest $cancelRequest = null): CancelResponse
     {
         $request = $this->cancelOrderRequest($merchantId, $commerceCaseId, $checkoutId, $cancelRequest);
-        list($response) = $this->makeApiCall($request, CancelResponse::class);
-        return $response;
-    }
-
-    /**
-     * Operation cancelOrderAsync
-     *
-     * Mark items of a Checkout as cancelled and automatically cancel the payment for the items
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CancelRequest $cancelRequest (optional)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function cancelOrderAsync(string $merchantId, string $commerceCaseId, string $checkoutId, ?CancelRequest $cancelRequest = null): PromiseInterface
-    {
-        $request = $this->cancelOrderRequest($merchantId, $commerceCaseId, $checkoutId, $cancelRequest);
-        return $this->makeAsyncApiCall($request, CancelResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
+        return $this->makeApiCall($request, CancelResponse::class)[0];
     }
 
     /**
@@ -78,7 +45,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function cancelOrderRequest(
+    protected function cancelOrderRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -106,14 +73,10 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         if ($cancelRequest !== null) {
-            $httpBody = self::$serializer->serialize($cancelRequest, 'json');
+            $httpBody = $this->serialize($cancelRequest);
         }
 
         $operationHost = $this->config->getHost();
@@ -141,35 +104,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
     public function createOrder(string $merchantId, string $commerceCaseId, string $checkoutId, OrderRequest $orderRequest): OrderResponse
     {
         $request = $this->createOrderRequest($merchantId, $commerceCaseId, $checkoutId, $orderRequest);
-        list($response) = $this->makeApiCall($request, OrderResponse::class);
-        return $response;
-    }
-
-    /**
-     * Operation createOrderAsync
-     *
-     * Creates an Order that will automatially execute a Payment
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\OrderRequest $orderRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function createOrderAsync(
-        string $merchantId,
-        string $commerceCaseId,
-        string $checkoutId,
-        OrderRequest $orderRequest
-    ): PromiseInterface {
-        $request = $this->createOrderRequest($merchantId, $commerceCaseId, $checkoutId, $orderRequest);
-        return $this->makeAsyncApiCall($request, OrderResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
+        return $this->makeApiCall($request, OrderResponse::class)[0];
     }
 
     /**
@@ -182,7 +117,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createOrderRequest(
+    protected function createOrderRequest(
         string $merchantId,
         string $commerceCaseId,
         string $checkoutId,
@@ -210,13 +145,9 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = self::$serializer->serialize($orderRequest, 'json');
+        $httpBody = $this->serialize($orderRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -247,31 +178,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         DeliverRequest $deliverRequest
     ): DeliverResponse {
         $request = $this->deliverOrderRequest($merchantId, $commerceCaseId, $checkoutId, $deliverRequest);
-        list($response) = $this->makeApiCall($request, DeliverResponse::class);
-        return $response;
-    }
-
-    /**
-     * Operation deliverOrderAsync
-     *
-     * Mark items of a Checkout as delivered and automatically capture the payment for the items
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\DeliverRequest $deliverRequest (required)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function deliverOrderAsync(string $merchantId, string $commerceCaseId, string $checkoutId, DeliverRequest $deliverRequest): PromiseInterface
-    {
-        $request = $this->deliverOrderRequest($merchantId, $commerceCaseId, $checkoutId, $deliverRequest);
-        return $this->makeAsyncApiCall($request, DeliverResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
+        return $this->makeApiCall($request, DeliverResponse::class)[0];
     }
 
     /**
@@ -284,7 +191,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deliverOrderRequest(
+    protected function deliverOrderRequest(
         string $merchantId,
         string $commerceCaseId,
         string  $checkoutId,
@@ -312,13 +219,9 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
 
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = self::$serializer->serialize($deliverRequest, 'json');
+        $httpBody = $this->serialize($deliverRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -345,35 +248,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
     public function returnOrder(string $merchantId, string  $commerceCaseId, string $checkoutId, ?ReturnRequest $returnRequest = null): ReturnResponse
     {
         $request = $this->returnOrderRequest($merchantId, $commerceCaseId, $checkoutId, $returnRequest);
-        list($response) = $this->makeApiCall($request, ReturnResponse::class);
-        return $response;
-    }
-
-    /**
-     * Operation returnOrderAsync
-     *
-     * Mark items of a Checkout as returned and automatically refund the payment for the items
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\ReturnRequest $returnRequest (optional)
-     *
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function returnOrderAsync(
-        string $merchantId,
-        string  $commerceCaseId,
-        string $checkoutId,
-        ?ReturnRequest $returnRequest = null
-    ): PromiseInterface {
-        $request = $this->returnOrderRequest($merchantId, $commerceCaseId, $checkoutId, $returnRequest);
-        return $this->makeAsyncApiCall($request, ReturnResponse::class)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
+        return $this->makeApiCall($request, ReturnResponse::class)[0];
     }
 
     /**
@@ -386,7 +261,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function returnOrderRequest(
+    protected function returnOrderRequest(
         string $merchantId,
         string  $commerceCaseId,
         string $checkoutId,
@@ -413,14 +288,10 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         );
 
         /** @var array<string, string> */
-        $headers = [];
-        if ($this->config->getUserAgent()) {
-            $headers['User-Agent'] = $this->config->getUserAgent();
-        }
-        $headers['Content-Type'] = self::MEDIA_TYPE_JSON;
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         if ($returnRequest !== null) {
-            $httpBody = self::$serializer->serialize($returnRequest, 'json');
+            $httpBody = $this->serialize($returnRequest);
         }
 
         $operationHost = $this->config->getHost();

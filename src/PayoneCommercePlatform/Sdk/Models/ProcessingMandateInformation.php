@@ -12,41 +12,41 @@ use PayoneCommercePlatform\Sdk\Models\MandateRecurrenceType;
 class ProcessingMandateInformation
 {
     /**
-     * @var BankAccountInformation Bank account IBAN information.
+     * @var BankAccountInformation|null Bank account IBAN information.
      */
     #[SerializedName('bankAccountIban')]
-    protected BankAccountInformation $bankAccountIban;
+    protected ?BankAccountInformation $bankAccountIban;
 
     /**
-     * @var MandateRecurrenceType Recurrence type of the mandate.
+     * @var MandateRecurrenceType|null Recurrence type of the mandate.
      */
     #[SerializedName('recurrenceType')]
-    protected MandateRecurrenceType $recurrenceType;
+    protected ?MandateRecurrenceType $recurrenceType;
 
     /**
-     * @var string The unique identifier of the mandate.
+     * @var string|null The unique identifier of the mandate.
      */
     #[SerializedName('uniqueMandateReference')]
-    protected string $uniqueMandateReference;
+    protected ?string $uniqueMandateReference;
 
     /**
-     * @var string The date of signature of the mandate. Format YYYYMMDD.
+     * @var string|null The date of signature of the mandate. Format YYYYMMDD.
      */
     #[SerializedName('dateOfSignature')]
-    protected string $dateOfSignature;
+    protected ?string $dateOfSignature;
 
     /**
-     * @var string Your unique creditor identifier.
+     * @var string|null Your unique creditor identifier.
      */
     #[SerializedName('creditorId')]
-    protected string $creditorId;
+    protected ?string $creditorId;
 
     public function __construct(
-        BankAccountInformation $bankAccountIban,
-        MandateRecurrenceType $recurrenceType,
-        string $uniqueMandateReference,
-        string $dateOfSignature,
-        string $creditorId
+        ?BankAccountInformation $bankAccountIban = null,
+        ?MandateRecurrenceType $recurrenceType = null,
+        ?string $uniqueMandateReference = null,
+        ?string $dateOfSignature = null,
+        ?string $creditorId = null,
     ) {
         $this->bankAccountIban = $bankAccountIban;
         $this->recurrenceType = $recurrenceType;
@@ -56,7 +56,7 @@ class ProcessingMandateInformation
     }
 
     // Getters and Setters
-    public function getBankAccountIban(): BankAccountInformation
+    public function getBankAccountIban(): ?BankAccountInformation
     {
         return $this->bankAccountIban;
     }
@@ -67,7 +67,7 @@ class ProcessingMandateInformation
         return $this;
     }
 
-    public function getRecurrenceType(): MandateRecurrenceType
+    public function getRecurrenceType(): ?MandateRecurrenceType
     {
         return $this->recurrenceType;
     }
@@ -78,7 +78,7 @@ class ProcessingMandateInformation
         return $this;
     }
 
-    public function getUniqueMandateReference(): string
+    public function getUniqueMandateReference(): ?string
     {
         return $this->uniqueMandateReference;
     }
@@ -89,7 +89,7 @@ class ProcessingMandateInformation
         return $this;
     }
 
-    public function getDateOfSignature(): string
+    public function getDateOfSignature(): ?string
     {
         return $this->dateOfSignature;
     }
@@ -100,7 +100,7 @@ class ProcessingMandateInformation
         return $this;
     }
 
-    public function getCreditorId(): string
+    public function getCreditorId(): ?string
     {
         return $this->creditorId;
     }

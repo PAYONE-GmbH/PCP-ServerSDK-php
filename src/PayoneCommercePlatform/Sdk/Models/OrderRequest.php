@@ -20,10 +20,10 @@ class OrderRequest
     protected ?OrderType $orderType;
 
     /**
-     * @var References References for the order.
+     * @var References|null References for the order.
      */
     #[SerializedName('orderReferences')]
-    protected References $orderReferences;
+    protected ?References $orderReferences;
 
     /**
      * @var OrderItem[]|null List of items for the order, required for orderType = PARTIAL.
@@ -39,12 +39,12 @@ class OrderRequest
 
     /**
      * @param OrderType|null $orderType The orderType refers to the ShoppingCart of the Checkout.
-     * @param References $orderReferences References for the order.
+     * @param References $orderReferences|null References for the order.
      * @param OrderItem[]|null $items List of items for the order, required for orderType = PARTIAL.
      * @param PaymentMethodSpecificInput|null $paymentMethodSpecificInput Specific input details for the payment method.
      */
     public function __construct(
-        References $orderReferences,
+        ?References $orderReferences = null,
         ?OrderType $orderType = null,
         ?array $items = null,
         ?PaymentMethodSpecificInput $paymentMethodSpecificInput = null
@@ -67,12 +67,12 @@ class OrderRequest
         return $this;
     }
 
-    public function getOrderReferences(): References
+    public function getOrderReferences(): ?References
     {
         return $this->orderReferences;
     }
 
-    public function setOrderReferences(References $orderReferences): self
+    public function setOrderReferences(?References $orderReferences): self
     {
         $this->orderReferences = $orderReferences;
         return $this;

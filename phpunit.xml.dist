@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd" bootstrap="tests/bootstrap.php">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd">
   <testsuites>
     <testsuite name="PAYONE Commerce Platform Sdk testsuite">
       <directory>tests/PayoneCommercePlatform/Sdk</directory>
@@ -8,7 +8,10 @@
   <source>
     <include>
       <directory suffix=".php">src</directory>
-      <directory suffix=".php">lib</directory>
     </include>
+
+    <exclude>
+      <directory suffix=".php">src/PayoneCommercePlatform/Sdk/Models</directory>
+    </exclude>
   </source>
 </phpunit>
