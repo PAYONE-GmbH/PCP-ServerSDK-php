@@ -226,7 +226,11 @@ class CommerceCaseApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serialize($customer);
+        // there was a mismatch between the OpenAPI specification file and the actual api
+        //  the customer has to be wrapped in an object containing the customer as the `customer` property
+        // to avoid creating another Model to just wrap the customer we inline that stuff
+        // see: https://docs.payone.com/pcp/commerce-platform-api?fullwidth=1#tag/CommerceCase/operation/updateCommerceCase
+        $httpBody = $this->serialize(["customer" => $customer]);
 
         $operationHost = $this->config->getHost();
         return new Request(
