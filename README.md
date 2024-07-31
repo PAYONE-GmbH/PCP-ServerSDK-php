@@ -15,8 +15,8 @@ For a general introduction to the API and the different checkout flows see the d
 
 ## Table of Contents
 
-- [Introduction](#introduction)
 - [Requirements](#requirements)
+- [Installation](#installation)
 - [Demo App](#demo-app)
 - [API Reference](#api-reference)
 - [CommunicatorConfiguration](#communicatorconfiguration)
@@ -77,6 +77,26 @@ For a general introduction to the API and the different checkout flows see the d
 ## Requirements
 
 PHP 8.2 or above is required.
+
+## Installation
+
+This SDK is currently not released on [packagist](https://packagist.org/). You can install it from GitHub by specifying a `vcs` repository within your `composer.json`:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/igorw/monolog"
+        }
+    ],
+    "require": {
+        "payone-gmbh/pcp-serversdk-php": "main"
+    }
+}
+```
+
+This snippets specify the main branch which contains the latest release. You can specify a version by inserting a git tag `vX.Y.Z` instead of `main`.
 
 ## Demo App
 
@@ -999,3 +1019,9 @@ This repository consists out of the following components:
 1. The source code of the SDK itself: `/src`
 2. The source code of the unit and integration tests (including the examples): `/tests`
 3. The source code for demos is located `examples/*`. Make sure to run `composer install` and `composer dumb-autoload` before. Within the specific demo before launching it.
+
+### Release
+
+This SDK follows semver for versioning. To relase a new version create a branch `release/X.Y.Z` and run `prepare_release.sh X.Y.Z`. The script automatically replaces the `SDK_VERSION` property within the `CommunicatorConfiguration` class and version field in the root `composer.json` file. After that it commits the changes and tags the commit as `vX.Y.Z`.
+
+This branch should then merged into `develop` and immediately into `main` after that.
