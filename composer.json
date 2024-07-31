@@ -37,7 +37,7 @@
         }
     },
     "scripts": {
-      "demo": "php ./examples/demo-app/index.php",
+      "demo": "php ./examples/demo-app/src/DemoApp.php",
       "format-check": "php-cs-fixer check",
       "format": "php-cs-fixer fix",
       "lint": "phpstan analyze -l 9 src tests",

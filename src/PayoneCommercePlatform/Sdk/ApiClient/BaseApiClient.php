@@ -80,11 +80,12 @@ class BaseApiClient
     {
         $request = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
         try {
-            $response = $this->client->send($request, []);
-            $this->handleError($response);
+            $response = $this->client->send($request, ['http_errors' => false]);
         } catch (RequestException $e) {
             throw new ApiResponseRetrievalException(
                 statusCode: (int) $e->getCode(),
+                uri: $request->getUri(),
+                httpMethod: $request->getMethod(),
                 responseBody: $e->getResponse() ? (string) $e->getResponse()->getBody() : "",
                 message: "[{$e->getCode()}] {$e->getMessage()}",
                 previous: $e,
@@ -92,13 +93,15 @@ class BaseApiClient
         } catch (ConnectException $e) {
             throw new ApiResponseRetrievalException(
                 statusCode: (int) $e->getCode(),
+                uri: $request->getUri(),
+                httpMethod: $request->getMethod(),
                 responseBody: "",
                 message: "[{$e->getCode()}] {$e->getMessage()}",
                 previous: $e,
             );
         }
 
-        $this->handleError($response);
+        $this->handleError($request, $response);
 
         if ($type === null) {
             return [$type, $response->getStatusCode(), $response->getHeaders()];
@@ -115,6 +118,8 @@ class BaseApiClient
             ];
         } catch (NotEncodableValueException | UnexpectedValueException  $exception) {
             throw new ApiResponseRetrievalException(
+                uri: $request->getUri(),
+                httpMethod: $request->getMethod(),
                 message: sprintf(
                     'Error JSON decoding server response (%s)',
                     $request->getUri()
@@ -126,7 +131,7 @@ class BaseApiClient
         }
     }
 
-    protected function handleError(ResponseInterface $response): void
+    protected function handleError(Request $request, ResponseInterface $response): void
     {
         $statusCode = (int) ($response->getStatusCode());
         if ($statusCode >= 200 && $statusCode <= 299) {
@@ -140,18 +145,24 @@ class BaseApiClient
             if (get_class($res) !== ErrorResponse::class || $res->getErrors() === null || count($res->getErrors()) === 0) {
                 throw new ApiResponseRetrievalException(
                     statusCode: $statusCode,
+                    uri: $request->getUri(),
+                    httpMethod: $request->getMethod(),
                     message: "failed to retrieve error response or errors are empty",
                     responseBody: $contents,
                 );
             } else {
                 throw new ApiErrorResponseException(
                     statusCode: $statusCode,
+                    uri: $request->getUri(),
+                    httpMethod: $request->getMethod(),
                     responseBody: $contents,
                     errors: $res->getErrors(),
                 );
             }
         } catch (NotEncodableValueException | UnexpectedValueException  $exception) {
             throw new ApiResponseRetrievalException(
+                uri: $request->getUri(),
+                httpMethod: $request->getMethod(),
                 statusCode: $statusCode,
                 message: sprintf(
                     'Error JSON decoding error server response'
@@ -160,6 +171,15 @@ class BaseApiClient
                 previous: $exception
             );
         }
+    }
+
+    protected function serialize(mixed $data): string
+    {
+        // by default an object with all properties set to null, is encoded as `[]`
+        // php can't figure out if this is an list of things or an empty associative array
+        // so we enforce `{}` for empty objects. Do not use JSON_FORCE_OBJECT, as it will
+        // convert every array into an object
+        return self::$serializer->serialize($data, 'json', ['preserve_empty_objects' => true]);
     }
 
     public static function init(): void
@@ -173,10 +193,10 @@ class BaseApiClient
         self::$serializer = new Serializer(
             normalizers: [
               new ArrayDenormalizer(), new DateTimeNormalizer(),
-              new GetSetMethodNormalizer(propertyTypeExtractor: $propertyTypeExtractor),
+              new GetSetMethodNormalizer(propertyTypeExtractor: $propertyTypeExtractor, defaultContext: ['skip_null_values' => true]),
               new BackedEnumNormalizer(),
             ],
-            encoders: [new JsonEncoder()]
+            encoders: [new JsonEncoder()],
         );
     }
 
