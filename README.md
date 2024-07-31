@@ -87,7 +87,7 @@ This SDK is currently not released on [packagist](https://packagist.org/). You c
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/igorw/monolog"
+            "url": "https://github.com/PAYONE-GmbH/PCP-ServerSDK-php"
         }
     ],
     "require": {
