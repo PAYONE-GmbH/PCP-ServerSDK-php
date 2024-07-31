@@ -25,13 +25,13 @@ class PaymentExecutionSpecificInput
     protected ?ShoppingCartInput $shoppingCart;
 
     /**
-     * @var References Payment references linked to this transaction.
+     * @var References|null Payment references linked to this transaction.
      */
     #[SerializedName('paymentReferences')]
-    protected References $paymentReferences;
+    protected ?References $paymentReferences;
 
     public function __construct(
-        References $paymentReferences,
+        ?References $paymentReferences = null,
         ?AmountOfMoney $amountOfMoney = null,
         ?ShoppingCartInput $shoppingCart = null
     ) {
@@ -63,12 +63,12 @@ class PaymentExecutionSpecificInput
         return $this;
     }
 
-    public function getPaymentReferences(): References
+    public function getPaymentReferences(): ?References
     {
         return $this->paymentReferences;
     }
 
-    public function setPaymentReferences(References $paymentReferences): self
+    public function setPaymentReferences(?References $paymentReferences): self
     {
         $this->paymentReferences = $paymentReferences;
         return $this;

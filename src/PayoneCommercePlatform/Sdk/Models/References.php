@@ -16,10 +16,10 @@ class References
     protected ?string $descriptor;
 
     /**
-     * @var string The merchantReference is a unique identifier for a payment and can be used for reporting purposes. The merchantReference is required for the execution of a payment and has to be unique. In case a payment has failed the same merchantReference can be used again. Once a successful payment has been made the same merchantReference can no longer be used and will be rejected.
+     * @var string|null The merchantReference is a unique identifier for a payment and can be used for reporting purposes. The merchantReference is required for the execution of a payment and has to be unique. In case a payment has failed the same merchantReference can be used again. Once a successful payment has been made the same merchantReference can no longer be used and will be rejected.
      */
     #[SerializedName('merchantReference')]
-    protected string $merchantReference;
+    protected ?string $merchantReference;
 
     /**
      * @var string|null It allows you to store additional parameters for the transaction in JSON format. This field must not contain any personal data.
@@ -28,7 +28,7 @@ class References
     protected ?string $merchantParameters;
 
     public function __construct(
-        string $merchantReference,
+        ?string $merchantReference = null,
         ?string $descriptor = null,
         ?string $merchantParameters = null
     ) {
@@ -49,12 +49,12 @@ class References
         return $this;
     }
 
-    public function getMerchantReference(): string
+    public function getMerchantReference(): ?string
     {
         return $this->merchantReference;
     }
 
-    public function setMerchantReference(string $merchantReference): self
+    public function setMerchantReference(?string $merchantReference): self
     {
         $this->merchantReference = $merchantReference;
         return $this;
