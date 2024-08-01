@@ -53,7 +53,7 @@ class CheckoutApiClientTest extends TestCase
         $createCheckoutRequest = new CreateCheckoutRequest(
             amountOfMoney: new AmountOfMoney(400, 'EUR'),
         );
-        $response = $this->checkoutClient->createCheckout('1', '2', $createCheckoutRequest);
+        $this->checkoutClient->createCheckout('1', '2', $createCheckoutRequest);
     }
 
     public function testCreateCheckoutUnsuccessful500(): void

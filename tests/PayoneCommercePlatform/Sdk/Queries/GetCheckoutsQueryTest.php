@@ -124,8 +124,6 @@ class GetCheckoutsQueryTest extends TestCase
         $query->setDateOfBirth("1990-02-01");
         $query->setCompanyInformation("Another Company LLC");
 
-        $queryMap = $query->toQueryMap();
-
         $this->assertEquals(2, $query->getOffset());
         $this->assertEquals(20, $query->getSize());
         $this->assertEquals(new DateTime("2022-02-01"), $query->getFromDate());

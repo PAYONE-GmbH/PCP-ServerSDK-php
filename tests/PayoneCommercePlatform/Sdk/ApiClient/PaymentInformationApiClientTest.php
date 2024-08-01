@@ -140,7 +140,6 @@ class PaymentInformationApiClientTest extends TestCase
 
     public function testGetPaymentInformationUnsuccessful500(): void
     {
-        $errorResponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
