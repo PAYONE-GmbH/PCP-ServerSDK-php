@@ -29,6 +29,8 @@ use PayoneCommercePlatform\Sdk\Models\OrderRequest;
 use PayoneCommercePlatform\Sdk\Models\OrderType;
 use PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest;
 use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
+use PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest;
+use PayoneCommercePlatform\Sdk\Models\PaymentExecutionSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\PaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\PersonalInformation;
 use PayoneCommercePlatform\Sdk\Models\PersonalName;
@@ -72,6 +74,95 @@ class DemoApp
         $this->commerceCaseClient = new CommerceCaseApiClient($this->config);
         $this->paymentExecutionClient = new PaymentExecutionApiClient($this->config);
         $this->orderManagementCheckoutClient = new OrderManagementCheckoutActionsApiClient($this->config);
+    }
+
+    protected function runCheckoutWithPaymentExecution(string $commerceCaseMerchantReference): void
+    {
+        // Create a commerce case, add customer data, put something into the shopping cart
+        /** @var CreateCommerceCaseRequest */
+        $createCommerceCaseRequest = new CreateCommerceCaseRequest(
+            customer: new Customer(
+                personalInformation: new PersonalInformation(
+                    dateOfBirth: "19991112",
+                    name: new PersonalName(firstName: "Ryan", surname: "Carniato"),
+                ),
+                contactDetails: new ContactDetails(
+                    emailAddress: "mail@mail.com",
+                ),
+                billingAddress: new Address(
+                    countryCode: "DE",
+                    zip: "24937",
+                    city: "Flensburg",
+                    street: "Rathausplatz",
+                    houseNumber: "1",
+                ),
+            ),
+            checkout: new CreateCheckoutRequest(
+                amountOfMoney: new AmountOfMoney(amount: 3599, currencyCode: "EUR"),
+                shipping: new Shipping(
+                    address: new AddressPersonal(
+                        countryCode: "DE",
+                        zip: "24937",
+                        city: "Flensburg",
+                        street: "Rathausplatz",
+                        houseNumber: "1"
+                    )
+                ),
+                shoppingCart: new ShoppingCartInput(
+                    items: [new CartItemInput(
+                        invoiceData: new CartItemInvoiceData(
+                            description: "T-Shirt - Scaleshape Logo - S",
+                        ),
+                        orderLineDetails: new OrderLineDetailsInput(
+                            productPrice: 3599,
+                            quantity: 1,
+                            productType: ProductType::GOODS,
+                        ),
+                    )],
+                ),
+            )
+        );
+
+        $commerceCase = $this->commerceCaseClient->createCommerceCase($this->merchantId, $createCommerceCaseRequest);
+
+        $paymentExecutionRequest = new PaymentExecutionRequest(
+            paymentExecutionSpecificInput: new PaymentExecutionSpecificInput(
+                paymentReferences: new References(merchantReference: "p-" . $commerceCaseMerchantReference),
+                amountOfMoney: new AmountOfMoney(amount: 3599, currencyCode: "EUR"),
+            ),
+            paymentMethodSpecificInput: new PaymentMethodSpecificInput(
+                sepaDirectDebitPaymentMethodSpecificInput: new SepaDirectDebitPaymentMethodSpecificInput(
+                    paymentProductId: 771,
+                    paymentProduct771SpecificInput: new SepaDirectDebitPaymentProduct771SpecificInput(
+                        mandate: new ProcessingMandateInformation(
+                            bankAccountIban: new BankAccountInformation(
+                                iban: "DE75512108001245126199",
+                                accountHolder: "Ryan Carniato",
+                            ),
+                            dateOfSignature: "20240730",
+                            recurrenceType: MandateRecurrenceType::UNIQUE,
+                            uniqueMandateReference: "m-" . $commerceCaseMerchantReference,
+                            creditorId: "DE98ZZZ09999999999",
+                        ),
+                    ),
+                ),
+            ),
+        );
+
+        $paymentResponse = $this->paymentExecutionClient->createPayment(
+            $this->merchantId,
+            $commerceCase->getCommerceCaseId(),
+            $commerceCase->getCheckout()->getCheckoutId(),
+            $paymentExecutionRequest
+        );
+        var_dump($paymentResponse);
+
+        $finalCheckout = $this->checkoutClient->getCheckout(
+            $this->merchantId,
+            $commerceCase->getCommerceCaseId(),
+            $commerceCase->getCheckout()->getCheckoutId(),
+        );
+        var_dump($finalCheckout);
     }
 
     protected function runMultistepCheckout(string $commercaseMerchantReference): void
@@ -261,6 +352,8 @@ class DemoApp
         // see: https://docs.payone.com/pcp/checkout-flows/step-by-step-checkout
         // not that the given reference must be unique and has to renewed after each run
         $this->runMultistepCheckout('com1a3b');
+        // creates a checkout and executes the payment in one go
+        $this->runCheckoutWithPaymentExecution("com1a3l");
     }
 
     public static function run(): void
