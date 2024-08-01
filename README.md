@@ -1,5 +1,7 @@
 # PAYONE Commerce Platform Server SDK PHP
 
+**NOTE**: This SDK is still under development. Some things may be broken, features may change in non-compatible ways or will be removed completely.
+
 The PHP SDK helps you to communicate with the PAYONE commerce platform server API. Its primary features are:
 
 * convenient PHP wrapper around the API calls and responses:
