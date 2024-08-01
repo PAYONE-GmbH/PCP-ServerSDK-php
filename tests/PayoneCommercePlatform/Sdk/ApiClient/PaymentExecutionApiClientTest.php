@@ -59,7 +59,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectExceptionCode(400);
 
         $payload = new CancelPaymentRequest(CancellationReason::FRAUDULENT);
-        $response = $this->paymentExecutionClient->cancelPaymentExecution('1', '2', '3', '4', $payload);
+        $this->paymentExecutionClient->cancelPaymentExecution('1', '2', '3', '4', $payload);
     }
 
     public function testCancelPaymentExecutionUnsuccessful500(): void
@@ -70,7 +70,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectExceptionCode(500);
 
         $payload = new CancelPaymentRequest(CancellationReason::CONSUMER_REQUEST);
-        $response = $this->paymentExecutionClient->cancelPaymentExecution('1', '2', '3', '4', $payload);
+        $this->paymentExecutionClient->cancelPaymentExecution('1', '2', '3', '4', $payload);
     }
 
     public function capturePaymentExecutionSuccessful(): void
@@ -90,7 +90,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectExceptionCode(400);
 
         $payload = new CapturePaymentRequest(amount: 20000, isFinal: true, cancellationReason: CancellationReason::DUPLICATE);
-        $response = $this->paymentExecutionClient->capturePaymentExecution('1', '2', '3', '4', $payload);
+        $this->paymentExecutionClient->capturePaymentExecution('1', '2', '3', '4', $payload);
     }
 
     public function capturePaymentExecutionUnsuccessful500(): void
@@ -100,7 +100,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectExceptionCode(500);
 
         $payload = new CapturePaymentRequest(amount: 50000, isFinal: true, cancellationReason: CancellationReason::DUPLICATE);
-        $response = $this->paymentExecutionClient->capturePaymentExecution('1', '2', '3', '4', $payload);
+        $this->paymentExecutionClient->capturePaymentExecution('1', '2', '3', '4', $payload);
     }
 
     public function testCompletePaymentSuccessful(): void
@@ -122,7 +122,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectExceptionCode(400);
 
         $payload = new CompletePaymentRequest(device: new CustomerDevice('127.0.0.1', 'token-2'));
-        $response = $this->paymentExecutionClient->completePayment('1', '2', '3', '4', $payload);
+        $this->paymentExecutionClient->completePayment('1', '2', '3', '4', $payload);
     }
 
     public function testCompletePaymentUnsuccessful500(): void
@@ -133,7 +133,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectExceptionCode(500);
 
         $payload = new CompletePaymentRequest(device: new CustomerDevice('127.0.0.1', 'token-3'));
-        $response = $this->paymentExecutionClient->completePayment('1', '2', '3', '4', $payload);
+        $this->paymentExecutionClient->completePayment('1', '2', '3', '4', $payload);
     }
 
     public function testCreatePaymentSuccessful(): void
@@ -158,7 +158,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectExceptionCode(400);
 
         $payload = new PaymentExecutionRequest(new PaymentMethodSpecificInput());
-        $response = $this->paymentExecutionClient->createPayment('1', '2', '3', $payload);
+        $this->paymentExecutionClient->createPayment('1', '2', '3', $payload);
     }
 
     public function testCreatePaymentUnsuccessful500(): void
@@ -168,7 +168,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectExceptionCode(500);
 
         $payload = new PaymentExecutionRequest(new PaymentMethodSpecificInput());
-        $response = $this->paymentExecutionClient->createPayment('1', '2', '3', $payload);
+        $this->paymentExecutionClient->createPayment('1', '2', '3', $payload);
     }
 
     public function testRefundPaymentSuccessful(): void
@@ -191,7 +191,7 @@ class PaymentExecutionApiClientTest extends TestCase
 
 
         $payload = new RefundRequest(return: new ReturnInformation(returnReason: 'test-reason', items: []));
-        $response = $this->paymentExecutionClient->refundPaymentExecution('1', '2', '3', '4', $payload);
+        $this->paymentExecutionClient->refundPaymentExecution('1', '2', '3', '4', $payload);
     }
 
     public function testRefundPaymentUnsuccessful500(): void
@@ -203,6 +203,6 @@ class PaymentExecutionApiClientTest extends TestCase
 
 
         $payload = new RefundRequest(return: new ReturnInformation(returnReason: 'test-reason', items: []));
-        $response = $this->paymentExecutionClient->refundPaymentExecution('1', '2', '3', '4', $payload);
+        $this->paymentExecutionClient->refundPaymentExecution('1', '2', '3', '4', $payload);
     }
 }
