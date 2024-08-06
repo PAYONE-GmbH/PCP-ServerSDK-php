@@ -3,7 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\PaymentProduct320SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct302SpecificInput;
 use PayoneCommercePlatform\Sdk\Models\AuthorizationMode;
 
 /**
@@ -42,10 +42,10 @@ class MobilePaymentMethodSpecificInput
     protected ?string $ephemeralKey;
 
     /**
-     * @var PaymentProduct320SpecificInput|null Specific input details for payment product 320.
+     * @var PaymentProduct302SpecificInput|null Specific input details for payment product 320.
      */
     #[SerializedName('paymentProduct302SpecificInput')]
-    protected ?PaymentProduct320SpecificInput $paymentProduct302SpecificInput;
+    protected ?PaymentProduct302SpecificInput $paymentProduct302SpecificInput;
 
     public function __construct(
         ?int $paymentProductId = null,
@@ -53,7 +53,7 @@ class MobilePaymentMethodSpecificInput
         ?string $encryptedPaymentData = null,
         ?string $publicKeyHash = null,
         ?string $ephemeralKey = null,
-        ?PaymentProduct320SpecificInput $paymentProduct302SpecificInput = null
+        ?PaymentProduct302SpecificInput $paymentProduct302SpecificInput = null
     ) {
         $this->paymentProductId = $paymentProductId;
         $this->authorizationMode = $authorizationMode;
@@ -119,12 +119,12 @@ class MobilePaymentMethodSpecificInput
         return $this;
     }
 
-    public function getPaymentProduct302SpecificInput(): ?PaymentProduct320SpecificInput
+    public function getPaymentProduct302SpecificInput(): ?PaymentProduct302SpecificInput
     {
         return $this->paymentProduct302SpecificInput;
     }
 
-    public function setPaymentProduct302SpecificInput(?PaymentProduct320SpecificInput $paymentProduct302SpecificInput): self
+    public function setPaymentProduct302SpecificInput(?PaymentProduct302SpecificInput $paymentProduct302SpecificInput): self
     {
         $this->paymentProduct302SpecificInput = $paymentProduct302SpecificInput;
         return $this;

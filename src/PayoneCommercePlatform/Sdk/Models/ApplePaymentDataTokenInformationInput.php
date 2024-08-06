@@ -3,7 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformation;
+use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformationInput;
 
 /**
  * Additional information about the Apple payment data token. This information is needed for checking the validity
@@ -11,7 +11,7 @@ use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformation;
  *
  * @description Additional information about the Apple payment data token. This information is needed for checking the validity of the payment data token before decryption.
  */
-class ApplePaymentDataTokenInformation
+class ApplePaymentDataTokenInformationInput
 {
     /**
      * @var string|null Version information about the payment token. Currently only EC_v1 for ECC-encrypted data is supported.
@@ -31,12 +31,12 @@ class ApplePaymentDataTokenInformation
      * @var ApplePaymentDataTokenHeaderInformation|null Additional information about the Apple payment data token header.
      */
     #[SerializedName('header')]
-    protected ?ApplePaymentDataTokenHeaderInformation $header;
+    protected ?ApplePaymentDataTokenHeaderInformationInput $header;
 
     public function __construct(
         ?string $version = null,
         ?string $signature = null,
-        ?ApplePaymentDataTokenHeaderInformation $header = null
+        ?ApplePaymentDataTokenHeaderInformationInput $header = null
     ) {
         $this->version = $version;
         $this->signature = $signature;
@@ -66,12 +66,12 @@ class ApplePaymentDataTokenInformation
         return $this;
     }
 
-    public function getHeader(): ?ApplePaymentDataTokenHeaderInformation
+    public function getHeader(): ?ApplePaymentDataTokenHeaderInformationInput
     {
         return $this->header;
     }
 
-    public function setHeader(?ApplePaymentDataTokenHeaderInformation $header): self
+    public function setHeader(?ApplePaymentDataTokenHeaderInformationInput $header): self
     {
         $this->header = $header;
         return $this;
