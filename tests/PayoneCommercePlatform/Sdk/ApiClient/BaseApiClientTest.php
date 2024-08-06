@@ -110,7 +110,7 @@ class BaseApiClientTest extends TestCase
             shippingContact: null,
         );
         // json representation of the applepaypayment response above
-        $json = '{"token":{"paymentData":{"data":"data","header":{"applicationData":null,"wrappedKey":"foobar","transactionId":"transaction-101"}},"paymentMethod":{"displayName":"The name is...","network":"MasterCard","type":"credit","paymentPass":null,"billingContact":null},"transactionIdentifier":"transaction-101-cc"},"billingContact":{"phoneNumber":"+1239452324","emailAddress":"mail@imail.com","givenName":"John","familyName":"Michell","phoneticGivenName":"","phoneticFamilyName":"","addressLines":["Alarichstraße 12"],"locality":"Berlin","postalCode":"12105","subAdministrativeArea":""},"spam":"IGNORE THIS"}';
+        $json = '{"token":{"paymentData":{"data":"data","header":{"wrappedKey":"foobar","transactionId":"transaction-101"}},"paymentMethod":{"displayName":"The name is...","network":"MasterCard","type":"credit","billingContact":null},"transactionIdentifier":"transaction-101-cc"},"billingContact":{"phoneNumber":"+1239452324","emailAddress":"mail@imail.com","givenName":"John","familyName":"Michell","phoneticGivenName":"","phoneticFamilyName":"","addressLines":["Alarichstraße 12"],"locality":"Berlin","postalCode":"12105","subAdministrativeArea":""},"spam":"IGNORE THIS"}';
 
         $response = $this->client->deserializeJson($json, ApplePayPayment::class);
 
