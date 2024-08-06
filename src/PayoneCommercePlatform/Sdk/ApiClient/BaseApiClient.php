@@ -170,7 +170,22 @@ class BaseApiClient
         }
     }
 
-    protected function serialize(mixed $data): string
+    /**
+      * @template T
+      * @param string           $data   json string to deserialize
+      * @param class-string<T>  $type   type to deserialize to
+      *
+      * @throws NotEncodableValueException
+      * @throws UnexpectedValueException
+      *
+      * @return T
+      */
+    public static function deserializeJson(string $data, string $type): mixed
+    {
+        return self::$serializer->deserialize($data, $type, 'json');
+    }
+
+    public static function serializeJson(mixed $data): string
     {
         // by default an object with all properties set to null, is encoded as `[]`
         // php can't figure out if this is an list of things or an empty associative array

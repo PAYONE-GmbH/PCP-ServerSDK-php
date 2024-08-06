@@ -43,7 +43,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function testCancelPaymentExecutionSuccessful(): void
     {
         $cancelPaymentResponse = new CancelPaymentResponse(new PaymentResponse());
-        $this->httpClient->method('send')->willReturn(new Response(status: 204, body: BaseApiClient::getSerializer()->serialize($cancelPaymentResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 204, body: PaymentExecutionApiClient::serializeJson($cancelPaymentResponse)));
 
         $payload = new CancelPaymentRequest(CancellationReason::UNDELIVERABLE);
         $response = $this->paymentExecutionClient->cancelPaymentExecution('1', '2', '3', '4', $payload);
@@ -54,7 +54,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function testCancelPaymentExecutionUnsuccessful400(): void
     {
         $errorReponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorReponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: PaymentExecutionApiClient::serializeJson($errorReponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -76,7 +76,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function capturePaymentExecutionSuccessful(): void
     {
         $capturePaymentResponse = new CapturePaymentResponse(statusOutput: new PaymentStatusOutput());
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: BaseApiClient::getSerializer()->serialize($capturePaymentResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: PaymentExecutionApiClient::serializeJson($capturePaymentResponse)));
 
         $payload = new CapturePaymentRequest(amount: 20000, isFinal: true);
         $response = $this->paymentExecutionClient->capturePaymentExecution('1', '2', '3', '4', $payload);
@@ -85,7 +85,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function capturePaymentExecutionUnsuccessful400(): void
     {
         $errorReponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorReponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: PaymentExecutionApiClient::serializeJson($errorReponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -106,7 +106,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function testCompletePaymentSuccessful(): void
     {
         $completePaymentResponse = new CompletePaymentResponse(payment: new PaymentResponse(id: 'unicorn'));
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: BaseApiClient::getSerializer()->serialize($completePaymentResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: PaymentExecutionApiClient::serializeJson($completePaymentResponse)));
 
         $payload = new CompletePaymentRequest(device: new CustomerDevice('127.0.0.1', 'token'));
         $response = $this->paymentExecutionClient->completePayment('1', '2', '3', '4', $payload);
@@ -117,7 +117,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function testCompletePaymentUnsuccessful400(): void
     {
         $errorReponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorReponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: PaymentExecutionApiClient::serializeJson($errorReponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -142,7 +142,7 @@ class PaymentExecutionApiClientTest extends TestCase
             creationOutput: new PaymentCreationOutput('ref-to-something'),
             merchantAction: new MerchantAction('SHOW_FORM', new RedirectData('http://example.com')),
         );
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: BaseApiClient::getSerializer()->serialize($createPaymentResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: PaymentExecutionApiClient::serializeJson($createPaymentResponse)));
 
         $payload = new PaymentExecutionRequest(new PaymentMethodSpecificInput());
         $response = $this->paymentExecutionClient->createPayment('1', '2', '3', $payload);
@@ -153,7 +153,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function testCreatePaymentUnsuccessful400(): void
     {
         $errorReponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorReponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: PaymentExecutionApiClient::serializeJson($errorReponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -174,7 +174,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function testRefundPaymentSuccessful(): void
     {
         $refundPaymentResponse = new RefundPaymentResponse(refundOutput: new RefundOutput(references: new PaymentReferences('test-merchant')));
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: BaseApiClient::getSerializer()->serialize($refundPaymentResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: PaymentExecutionApiClient::serializeJson($refundPaymentResponse)));
 
         $payload = new RefundRequest(return: new ReturnInformation(returnReason: 'test-reason', items: []));
         $response = $this->paymentExecutionClient->refundPaymentExecution('1', '2', '3', '4', $payload);
@@ -185,7 +185,7 @@ class PaymentExecutionApiClientTest extends TestCase
     public function testRefundPaymentUnsuccessful400(): void
     {
         $errorReponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorReponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: PaymentExecutionApiClient::serializeJson($errorReponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
