@@ -17,64 +17,33 @@ For a general introduction to the API and the different checkout flows see the d
 
 ## Table of Contents
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Demo App](#demo-app)
-- [API Reference](#api-reference)
-- [CommunicatorConfiguration](#communicatorconfiguration)
-  - [Setup your configuration](#setup-your-configuration)
-  - [Constants](#constants)
-  - [Methods](#methods)
-    - [`__construct`](#construct)
-    - [`setApiKey`](#setapikey)
-    - [`getApiKey`](#getapikey)
-    - [`setApiSecret`](#setapisecret)
-    - [`getApiSecret`](#getapisecret)
-    - [`getIntegrator`](#getintegrator)
-    - [`setIntegrator`](#setintegrator)
-    - [`setHost`](#sethost)
-    - [`getHost`](#gethost)
-    - [`getClientMetaInfo`](#getclientmetainfo)
-    - [`setClientMetaInfo`](#setclientmetainfo)
-    - [`addClientMetaInfo`](#addclientmetainfo)
-    - [`getServerMetaInfo`](#getservermetainfo)
-    - [`setServerMetaInfo`](#setservermetainfo)
-    - [`addServerMetaInfo`](#addservermetainfo)
-    - [`getPredefinedHosts`](#getpredefinedhosts)
-- [API Clients](#api-clients)
-  - [CheckoutApiClient](#checkoutapiclient)
-    - [Methods](#methods-1)
-      - [`createCheckout`](#createcheckout)
-      - [`deleteCheckout`](#deletecheckout)
-      - [`getCheckout`](#getcheckout)
-      - [`getCheckouts`](#getcheckouts)
-      - [`updateCheckout`](#updatecheckout)
-  - [CommerceCaseApiClient](#commercecaseapiclient)
-    - [Methods](#methods-2)
-      - [`createCommerceCase`](#createcommercecase)
-      - [`getCommerceCase`](#getcommercecase)
-      - [`getCommerceCases`](#getcommercecases)
-      - [`updateCommerceCase`](#updatecommercecase)
-  - [OrderManagementCheckoutActionsApiClient](#ordermanagementcheckoutactionsapiclient)
-    - [Methods](#methods-3)
-      - [`cancelOrder`](#cancelorder)
-      - [`createOrder`](#createorder)
-      - [`deliverOrder`](#deliverorder)
-      - [`returnOrder`](#returnorder)
-  - [PaymentExecutionApiClient](#paymentexecutionapiclient)
-    - [Methods](#methods-4)
-      - [`cancelPaymentExecution`](#cancelpaymentexecution)
-      - [`capturePaymentExecution`](#capturepaymentexecution)
-      - [`completePayment`](#completepayment)
-      - [`createPayment`](#createpayment)
-      - [`refundPaymentExecution`](#refundpaymentexecution)
-  - [PaymentInformationApiClient](#paymentinformationapiclient)
-    - [Methods](#methods-5)
-      - [`createPaymentInformation`](#createpaymentinformation)
-      - [`getPaymentInformation`](#getpaymentinformation)
-- [Contributing](#contributing)
-- [Development](#development)
-- [Structure of this repository](#structure-of-this-repository)
+1. [PAYONE Commerce Platform Server SDK PHP](#payone-commerce-platform-server-sdk-php)
+2. [Requirements](#requirements)
+3. [Installation](#installation)
+4. [Usage](#usage)
+   - [Error Handling](#error-handling)
+   - [Client Side](#client-side)
+   - [Apple Pay](#apple-pay)
+5. [Demo App](#demo-app)
+6. [API Reference](#api-reference)
+   - [CommunicatorConfiguration](#communicatorconfiguration)
+     - [Setup your configuration](#setup-your-configuration)
+     - [Constants](#constants)
+     - [Methods](#methods)
+   - [Queries](#queries)
+     - [GetCommerceCasesQuery](#getcommercecasesquery)
+     - [GetCheckoutsQuery](#getcheckoutsquery)
+   - [API Clients](#api-clients)
+     - [BaseApiClient](#baseapiclient)
+     - [CheckoutApiClient](#checkoutapiclient)
+     - [CommerceCaseApiClient](#commercecaseapiclient)
+     - [OrderManagementCheckoutActionsApiClient](#ordermanagementcheckoutactionsapiclient)
+     - [PaymentExecutionApiClient](#paymentexecutionapiclient)
+     - [PaymentInformationApiClient](#paymentinformationapiclient)
+7. [Contributing](#contributing)
+8. [Development](#development)
+   - [Structure of this repository](#structure-of-this-repository)
+   - [Release](#release)
 
 ## Requirements
 
@@ -100,9 +69,119 @@ This SDK is currently not released on [packagist](https://packagist.org/). You c
 
 This snippets specify the main branch which contains the latest release. You can specify a version by inserting a git tag `vX.Y.Z` instead of `main`. Make sure to prepend the git branch or tag with `dev-`. For a in depth explanation take a look at the [composer documentation](https://getcomposer.org/doc/05-repositories.md#vcs).
 
+## Usage
+
+To use this SDK you need to construct a `CommunicatorConfiguration` which encapsulate everything needed to connect to the PAYONE Commerce Platform.
+
+```php
+<?php
+
+use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
+
+/** @var CommunicatorConfiguration */
+$config = new CommunicatorConfiguration(
+        apiKey: getenv('API_KEY'),
+        apiSecret: getenv('API_SECRET'),
+        host: CommunicatorConfiguration::getPredefinedHosts()['prod']['url'],
+        integrator: 'YOUR COMPANY NAME',
+);
+```
+As shown above, you can use `CommunicatorConfiguration::getPredefinedHosts()` for information on the availble environments. With the configuration you can create an API client for each reource you want to interact with. For example to create a commerce case you can use the `CommerceCaseApiClient`.
+
+```php
+<?php
+
+use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
+
+$client = new CommerceCaseApiClient($config);
+```
+
+ Each client has typed parameters for the payloads and responses. You can use `phpstan` to verify the types of the parameters and return values or look for `TypeError` thrown at runtime. All payloads are availble as PHP classes within the `PayoneCommercePlatform\Sdk\Models` namespace. The SDK will automatically marshal the PHP objects to JSON and send it to the API. The response will be unmarshalled to a PHP object. 
+
+ To create an empty commerce case you can use the `CreateCommerceCaseRequest` class:
+
+```php
+<?php
+
+use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseResponse;
+use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest;
+
+/** @var CreateCommerceCaseResponse */
+$response = $client->createCommerceCase('YOUR_MERCHANT_ID', new CreateCommerceCaseRequest());
+```
+
+The models directly map to the API as described in [PAYONE Commerce Platform API Reference](https://docs.payone.com/pcp/commerce-platform-api). For an in depth example you can take a look at the [demo app](#demo-app).
+
+### Error Handling
+
+When making a request any client may throw a `PayoneCommercePlatform\Sdk\Errors\ApiException`. There two subtypes of this exception:
+
+- `PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException`: This exception is thrown when the API returns an well-formed error response. The given errors are marshalled to `PayoneCommercePlatform\Sdk\Models\APIError` objects which are availble via the `getErrors()` method. They usually contain usual information about what is wrong in your request or the state of the resource.
+- `PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException`: This exception is a catch-all exception for any error that cannot be turned into a helpful error response. This includes network errors, malformed responses or other errors that are not directly related to the API.
+
+### Client Side
+
+For most [payment methods](https://docs.payone.com/pcp/commerce-platform-payment-methods) some information from the client is needed, e.g. payment information given by Apple when a payment via ApplePay suceeds. PAYONE provides client side SDKs which helps you interact the third party payment providers. You can find the SDKs under the [Payone GitHub organization](https://github.com/PAYONE-GmbH). Either way ensure to never store or even send credit card information to your server. The PAYONE Commerce Platform never needs access to the credit card information. The client side is responsible for safely retrieving a credit card token. This token must be used with this SDK.
+
+This SDKs makes no assumption about how the networking between the client and your PHP server is done. If need to serialize a model to JSON or deserialize a client side request from a JSON string to a model you can use the static `serializeJson()` and `deserializeJson()` methods on the `BaseApiClient` class:
+
+```php
+<?php
+
+use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
+use PayoneCommercePlatform\Sdk\Models\ApplePay\AppelPayPayment;
+
+// to json
+// make sure to add some useful data
+$applePayPayment = new ApplePayPayment();
+$json = BaseApiClient::serializeJson($model);
+
+// ...and back
+$applePayPaymentRequest = BaseApiClient::deserializeJson($json, ApplePayPayment::class);
+```
+
+As every API clients inherits from `BaseApiClient` you can use these methods on every client class directly.
+
+```php
+<?php
+
+use PayoneCommercePlatform\Sdk\ApiClient\PaymentInformationApiClient;
+use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
+
+$amountOfMoney = new AmountOfMoney(amount: 3199, currencyCode: 'EUR');
+PaymentInformationApiClient::serializeJson($amountOfMoney);
+// returns:
+//      '{ "amount": 3199, currencyCode: "EUR" }'
+```
+
+### Apple Pay
+
+When a client is successfully made a payment via ApplePay it receives a [ApplePayPayment](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypayment). This structure is accessible as a model as `PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPayment`. You can use this model to create a payment information record for a checkout. The model is a direct representation of the ApplePayPayment object. You can use the `serializeJson()` method to convert the model to a JSON string which can be send to the PAYONE Commerce Platform.
+
+```php
+<?php
+
+use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
+
+// receive json as a string from the client with your favorite networking library or server framework
+/** @var string */
+$json = getJsonStringFromRequestSomehow();
+$applePayPayment = BaseApiClient::deserializeJson($json, ApplePayPayment::class);
+```
+
+You can use the `PayoneCommercePlatform\Sdk\Transformer\ApplePayTransformer` to map an `ApplePayPayment` to a `MobilePaymentMethodSpecificInput` which can be used for payment executions or order requests. The transformer has a static method `transformApplePayPaymentToMobilePaymentMethodSpecificInput()` which takes an `ApplePayPayment` and returns a `MobilePaymentMethodSpecificInput`. The transformer does not check if the reponse is complete, if anything is missing the field will be set to `null`.
+
+```php
+<?php
+
+use PayoneCommercePlatform\Sdk\Transformer\ApplePayTransformer;
+
+$mobilePaymentMethodSpecificInput = ApplePayTransformer::transformApplePayPaymentToMobilePaymentMethodSpecificInput($applePayPayment);
+```
+
 ## Demo App
 
-This repo contains a demo app that showcases how to implement a [Step-by-Step Checkout](https://docs.payone.com/pcp/checkout-flows/step-by-step-checkout) and a [One-Stop-Checkout](https://docs.payone.com/pcp/checkout-flows/one-step-checkout).
+This repo contains a demo app that showcases how to implement common use cases, like a [Step-by-Step Checkout](https://docs.payone.com/pcp/checkout-flows/step-by-step-checkout) and an [One-Stop-Checkout](https://docs.payone.com/pcp/checkout-flows/one-step-checkout). For each use case the demo app contains a protected method in the top level class `DemoApp`. You can run the app to execute the code within in the sandbox API. This is a good way to test, if your setup is correct.
 
 Before running the app ensure you have run `composer install` and `composer dumb-autoload` within the demo app directory (`./examples/demo-app`). By default all API calls are send to the pre-production environment of the PAYONE Commerce Platform. Note that the created entities can't deleted completely.
 
@@ -112,6 +191,7 @@ You can run it within the demo app directory via `php src/DemoApp.php`, make sur
 1. `MERCHANT_ID` the merchant id which is needed to identify entities, e.g. commerce cases and checkouts, that belong to you.
 
 [Jump to the demo app](./examples/demo-app/src/DemoApp.php)
+
 
 ## API Reference
 
@@ -378,6 +458,263 @@ Gets an array of predefined host settings for the PAYONE Commerce Platform.
 **Returns**:  
 `array<string, array{url: string, description: string}>` - An array of predefined host settings.
 
+### Queries
+
+For the `getCommerceCases()` and `getCheckouts()` you set the query parameter by passing a `PayoneCommercePlatform\Sdk\Models\GetCommerceCasesQuery` or `PayoneCommercePlatform\Sdk\Models\GetCheckoutsQuery` respectively. These objects have typed properties which can be set to filter the results. The conversion from the object to a query string is done automatically by the SDK.
+
+#### GetCommerceCasesQuery
+
+The properties are directly mapped to the query parameters of the [commerce case API](https://docs.payone.com/pcp/commerce-platform-api#tag/CommerceCase/operation/getCommerceCases)
+
+The `GetCommerceCasesQuery` class is used to build and structure query parameters when fetching commerce cases via the PAYONE Commerce Platform API. It allows you to filter and limit the results by various criteria such as date range, merchant details, checkout status, and payment channels.
+
+##### `offset`
+- **Type**: `int|null`
+- **Description**: The offset of the first item in the result set. This is used for pagination.
+- **Setter**: `public function setOffset(?int $offset): self`
+- **Getter**: `public function getOffset(): ?int`
+
+##### `size`
+- **Type**: `int|null`
+- **Description**: The maximum number of items to return in the result set. This is used for pagination.
+- **Setter**: `public function setSize(?int $size): self`
+- **Getter**: `public function getSize(): ?int`
+
+##### `fromDate`
+- **Type**: `DateTime|null`
+- **Description**: The start date for filtering commerce cases.
+- **Setter**: `public function setFromDate(?DateTime $fromDate): self`
+- **Getter**: `public function getFromDate(): ?DateTime`
+
+##### `toDate`
+- **Type**: `DateTime|null`
+- **Description**: The end date for filtering commerce cases.
+- **Setter**: `public function setToDate(?DateTime $toDate): self`
+- **Getter**: `public function getToDate(): ?DateTime`
+
+##### `commerceCaseId`
+- **Type**: `string|null`
+- **Description**: The unique identifier for a commerce case.
+- **Setter**: `public function setCommerceCaseId(?string $commerceCaseId): self`
+- **Getter**: `public function getCommerceCaseId(): ?string`
+
+##### `merchantReference`
+- **Type**: `string|null`
+- **Description**: A reference identifier provided by the merchant.
+- **Setter**: `public function setMerchantReference(?string $merchantReference): self`
+- **Getter**: `public function getMerchantReference(): ?string`
+
+##### `merchantCustomerId`
+- **Type**: `string|null`
+- **Description**: The unique identifier of the customer as provided by the merchant.
+- **Setter**: `public function setMerchantCustomerId(?string $merchantCustomerId): self`
+- **Getter**: `public function getMerchantCustomerId(): ?string`
+
+##### `includeCheckoutStatus`
+- **Type**: `array<StatusCheckout>|null`
+- **Description**: An array of `StatusCheckout` enums to filter commerce cases by checkout status.
+- **Setter**: `public function setIncludeCheckoutStatus(?array $includeCheckoutStatus): self`
+- **Getter**: `public function getIncludeCheckoutStatus(): ?array`
+
+##### `includePaymentChannel`
+- **Type**: `array<PaymentChannel>|null`
+- **Description**: An array of `PaymentChannel` enums to filter commerce cases by payment channels.
+- **Setter**: `public function setIncludePaymentChannel(?array $includePaymentChannel): self`
+- **Getter**: `public function getIncludePaymentChannel(): ?array`
+
+#### GetCheckoutsQuery
+
+The properties are directly mapped to the query parameters of the [checkout API](https://docs.payone.com/pcp/commerce-platform-api#tag/Checkout/operation/getCheckouts)
+
+The `GetCheckoutsQuery` class is used to build and structure query parameters when fetching checkout data via the PAYONE Commerce Platform API. It allows you to filter and limit the results by various criteria such as date range, amounts, merchant details, checkout statuses, and payment channels.
+
+##### `offset`
+- **Type**: `int|null`
+- **Description**: The offset of the first item in the result set. This is used for pagination.
+- **Setter**: `public function setOffset(?int $offset): self`
+- **Getter**: `public function getOffset(): ?int`
+
+##### `size`
+- **Type**: `int|null`
+- **Description**: The maximum number of items to return in the result set. This is used for pagination.
+- **Setter**: `public function setSize(?int $size): self`
+- **Getter**: `public function getSize(): ?int`
+
+##### `fromDate`
+- **Type**: `DateTime|null`
+- **Description**: The start date for filtering checkouts.
+- **Setter**: `public function setFromDate(?DateTime $fromDate): self`
+- **Getter**: `public function getFromDate(): ?DateTime`
+
+##### `toDate`
+- **Type**: `DateTime|null`
+- **Description**: The end date for filtering checkouts.
+- **Setter**: `public function setToDate(?DateTime $toDate): self`
+- **Getter**: `public function getToDate(): ?DateTime`
+
+##### `fromCheckoutAmount`
+- **Type**: `int|null`
+- **Description**: The minimum checkout amount for filtering.
+- **Setter**: `public function setFromCheckoutAmount(?int $fromCheckoutAmount): self`
+- **Getter**: `public function getFromCheckoutAmount(): ?int`
+
+##### `toCheckoutAmount`
+- **Type**: `int|null`
+- **Description**: The maximum checkout amount for filtering.
+- **Setter**: `public function setToCheckoutAmount(?int $toCheckoutAmount): self`
+- **Getter**: `public function getToCheckoutAmount(): ?int`
+
+##### `fromOpenAmount`
+- **Type**: `int|null`
+- **Description**: The minimum open amount for filtering.
+- **Setter**: `public function setFromOpenAmount(?int $fromOpenAmount): self`
+- **Getter**: `public function getFromOpenAmount(): ?int`
+
+##### `toOpenAmount`
+- **Type**: `int|null`
+- **Description**: The maximum open amount for filtering.
+- **Setter**: `public function setToOpenAmount(?int $toOpenAmount): self`
+- **Getter**: `public function getToOpenAmount(): ?int`
+
+##### `fromCollectedAmount`
+- **Type**: `int|null`
+- **Description**: The minimum collected amount for filtering.
+- **Setter**: `public function setFromCollectedAmount(?int $fromCollectedAmount): self`
+- **Getter**: `public function getFromCollectedAmount(): ?int`
+
+##### `toCollectedAmount`
+- **Type**: `int|null`
+- **Description**: The maximum collected amount for filtering.
+- **Setter**: `public function setToCollectedAmount(?int $toCollectedAmount): self`
+- **Getter**: `public function getToCollectedAmount(): ?int`
+
+##### `fromCancelledAmount`
+- **Type**: `int|null`
+- **Description**: The minimum cancelled amount for filtering.
+- **Setter**: `public function setFromCancelledAmount(?int $fromCancelledAmount): self`
+- **Getter**: `public function getFromCancelledAmount(): ?int`
+
+##### `toCancelledAmount`
+- **Type**: `int|null`
+- **Description**: The maximum cancelled amount for filtering.
+- **Setter**: `public function setToCancelledAmount(?int $toCancelledAmount): self`
+- **Getter**: `public function getToCancelledAmount(): ?int`
+
+##### `fromRefundAmount`
+- **Type**: `int|null`
+- **Description**: The minimum refund amount for filtering.
+- **Setter**: `public function setFromRefundAmount(?int $fromRefundAmount): self`
+- **Getter**: `public function getFromRefundAmount(): ?int`
+
+##### `toRefundAmount`
+- **Type**: `int|null`
+- **Description**: The maximum refund amount for filtering.
+- **Setter**: `public function setToRefundAmount(?int $toRefundAmount): self`
+- **Getter**: `public function getToRefundAmount(): ?int`
+
+##### `fromChargebackAmount`
+- **Type**: `int|null`
+- **Description**: The minimum chargeback amount for filtering.
+- **Setter**: `public function setFromChargebackAmount(?int $fromChargebackAmount): self`
+- **Getter**: `public function getFromChargebackAmount(): ?int`
+
+##### `toChargebackAmount`
+- **Type**: `int|null`
+- **Description**: The maximum chargeback amount for filtering.
+- **Setter**: `public function setToChargebackAmount(?int $toChargebackAmount): self`
+- **Getter**: `public function getToChargebackAmount(): ?int`
+
+##### `checkoutId`
+- **Type**: `string|null`
+- **Description**: The unique identifier of the checkout.
+- **Setter**: `public function setCheckoutId(?string $checkoutId): self`
+- **Getter**: `public function getCheckoutId(): ?string`
+
+##### `merchantReference`
+- **Type**: `string|null`
+- **Description**: A reference identifier provided by the merchant.
+- **Setter**: `public function setMerchantReference(?string $merchantReference): self`
+- **Getter**: `public function getMerchantReference(): ?string`
+
+##### `merchantCustomerId`
+- **Type**: `string|null`
+- **Description**: The unique identifier of the customer as provided by the merchant.
+- **Setter**: `public function setMerchantCustomerId(?string $merchantCustomerId): self`
+- **Getter**: `public function getMerchantCustomerId(): ?string`
+
+##### `includePaymentProductId`
+- **Type**: `array<string>|null`
+- **Description**: An array of payment product IDs to include in the search.
+- **Setter**: `public function setIncludePaymentProductId(?array $includePaymentProductId): self`
+- **Getter**: `public function getIncludePaymentProductId(): ?array`
+
+##### `includeCheckoutStatus`
+- **Type**: `array<StatusCheckout>|null`
+- **Description**: An array of `StatusCheckout` enums to filter checkouts by status.
+- **Setter**: `public function setIncludeCheckoutStatus(?array $includeCheckoutStatus): self`
+- **Getter**: `public function getIncludeCheckoutStatus(): ?array`
+
+##### `includeExtendedCheckoutStatus`
+- **Type**: `array<ExtendedCheckoutStatus>|null`
+- **Description**: An array of `ExtendedCheckoutStatus` enums to filter checkouts by extended status.
+- **Setter**: `public function setIncludeExtendedCheckoutStatus(?array $includeExtendedCheckoutStatus): self`
+- **Getter**: `public function getIncludeExtendedCheckoutStatus(): ?array`
+
+##### `includePaymentChannel`
+- **Type**: `array<PaymentChannel>|null`
+- **Description**: An array of `PaymentChannel` enums to filter checkouts by payment channel.
+- **Setter**: `public function setIncludePaymentChannel(?array $includePaymentChannel): self`
+- **Getter**: `public function getIncludePaymentChannel(): ?array`
+
+##### `paymentReference`
+- **Type**: `string|null`
+- **Description**: The payment reference for filtering.
+- **Setter**: `public function setPaymentReference(?string $paymentReference): self`
+- **Getter**: `public function getPaymentReference(): ?string`
+
+##### `paymentId`
+- **Type**: `string|null`
+- **Description**: The payment ID for filtering.
+- **Setter**: `public function setPaymentId(?string $paymentId): self`
+- **Getter**: `public function getPaymentId(): ?string`
+
+##### `firstName`
+- **Type**: `string|null`
+- **Description**: The first name of the customer for filtering.
+- **Setter**: `public function setFirstName(?string $firstName): self`
+- **Getter**: `public function getFirstName(): ?string`
+
+##### `surname`
+- **Type**: `string|null`
+- **Description**: The surname of the customer for filtering.
+- **Setter**: `public function setSurname(?string $surname): self`
+- **Getter**: `public function getSurname(): ?string`
+
+##### `email`
+- **Type**: `string|null`
+- **Description**: The email of the customer for filtering.
+- **Setter**: `public function setEmail(?string $email): self`
+- **Getter**: `public function getEmail(): ?string`
+
+##### `phoneNumber`
+- **Type**: `string|null`
+- **Description**: The phone number of the customer for filtering.
+- **Setter**: `public function setPhoneNumber(?string $phoneNumber): self`
+- **Getter**: `public function getPhoneNumber(): ?string`
+
+##### `dateOfBirth`
+- **Type**: `string|null`
+- **Description**: The date of birth of the customer for filtering.
+- **Setter**: `public function setDateOfBirth(?string $dateOfBirth): self`
+- **Getter**: `public function getDateOfBirth(): ?string`
+
+##### `companyInformation`
+- **Type**: `string|null`
+- **Description**: The company information for filtering.
+- **Setter**: `public function setCompanyInformation(?string $companyInformation): self`
+- **Getter**: `public function getCompanyInformation(): ?string`
+
+
 ### API Clients
 
 There's a API client class for each resource:
@@ -387,6 +724,40 @@ There's a API client class for each resource:
 1. [`PayoneCommercePlatform\Sdk\ApiClient\OrderManagementCheckoutActionsApiClient`](#OrderManagementCheckoutActionsApiClient)
 1. [`PayoneCommercePlatform\Sdk\ApiClient\PaymentExecutionApiClient`](#PaymentExecutionApiClient)
 1. [`PayoneCommercePlatform\Sdk\ApiClient\PaymentInformationApiClient`](#PaymentInformationApiClient)
+
+#### BaseApiClient
+
+All clients inherit from `PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient`. You may want to use its static methods to serialize and deserialize JSON strings to models from this SDK. The respective methods `serializeJson()` and `deserializeJson()` are available on every client class as static methods as well. Note that these methods have undefined behavior when used with classes that are not part of this SDK.
+
+##### Static Methods
+
+###### `deserializeJson`
+
+**Description**:  
+A generic function that deserializes a JSON string into an instance of the specified class type.
+
+**Parameters**:
+- `string $data`: The JSON string to deserialize.
+- `class-string<T>`: The fully qualified class name of the type to deserialize the JSON string into.
+
+**Returns**:  
+- `T` - An instance of the specified class type
+
+**Exceptions**:
+
+- `NotEncodableValueException`
+- `UnexpectedValueException`
+
+###### `serializeJson`
+
+**Description**:
+Serializes an object or array into a JSON string. The method ensures that empty objects are serialized as `'{}'` rather than `'[]'`. Any property that itself maybe a model from the `PayoneCommercePlatform\Sdk\Models` namespace or an array of models is resursively serialized. T
+
+**Parameters**:
+- `mixed $data`: The data to be serialized into a JSON string.
+
+**Returns**:
+`string`: A JSON string representing the input data.
 
 #### CheckoutApiClient
 
