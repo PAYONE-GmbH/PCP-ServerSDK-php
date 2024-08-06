@@ -17,15 +17,14 @@ For a general introduction to the API and the different checkout flows see the d
 
 ## Table of Contents
 
-1. [PAYONE Commerce Platform Server SDK PHP](#payone-commerce-platform-server-sdk-php)
-2. [Requirements](#requirements)
-3. [Installation](#installation)
-4. [Usage](#usage)
+1. [Requirements](#requirements)
+1. [Installation](#installation)
+1. [Usage](#usage)
    - [Error Handling](#error-handling)
    - [Client Side](#client-side)
    - [Apple Pay](#apple-pay)
-5. [Demo App](#demo-app)
-6. [API Reference](#api-reference)
+1. [Demo App](#demo-app)
+1. [API Reference](#api-reference)
    - [CommunicatorConfiguration](#communicatorconfiguration)
      - [Setup your configuration](#setup-your-configuration)
      - [Constants](#constants)
@@ -40,8 +39,8 @@ For a general introduction to the API and the different checkout flows see the d
      - [OrderManagementCheckoutActionsApiClient](#ordermanagementcheckoutactionsapiclient)
      - [PaymentExecutionApiClient](#paymentexecutionapiclient)
      - [PaymentInformationApiClient](#paymentinformationapiclient)
-7. [Contributing](#contributing)
-8. [Development](#development)
+1. [Contributing](#contributing)
+1. [Development](#development)
    - [Structure of this repository](#structure-of-this-repository)
    - [Release](#release)
 
