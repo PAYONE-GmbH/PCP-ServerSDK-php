@@ -76,7 +76,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         if ($cancelRequest !== null) {
-            $httpBody = $this->serializeJson($cancelRequest);
+            $httpBody = self::serializeJson($cancelRequest);
         }
 
         $operationHost = $this->config->getHost();
@@ -147,7 +147,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serializeJson($orderRequest);
+        $httpBody = self::serializeJson($orderRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -221,7 +221,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serializeJson($deliverRequest);
+        $httpBody = self::serializeJson($deliverRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -291,7 +291,7 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         if ($returnRequest !== null) {
-            $httpBody = $this->serializeJson($returnRequest);
+            $httpBody = self::serializeJson($returnRequest);
         }
 
         $operationHost = $this->config->getHost();

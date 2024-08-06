@@ -33,7 +33,7 @@ class CheckoutApiClientTest extends TestCase
     public function testCreateCheckout(): void
     {
         $createCheckoutResponse = new CreateCheckoutResponse(amountOfMoney: new AmountOfMoney(amount: 1337, currencyCode: 'EUR'));
-        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: $this->checkoutClient->serializeJson($createCheckoutResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: CheckoutApiClient::serializeJson($createCheckoutResponse)));
         $createCheckoutRequest = new CreateCheckoutRequest(amountOfMoney: new AmountOfMoney(amount: 100, currencyCode: 'EUR'));
 
         $response = $this->checkoutClient->createCheckout('1', '2', $createCheckoutRequest);
@@ -45,7 +45,7 @@ class CheckoutApiClientTest extends TestCase
     {
         // arrange
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->checkoutClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CheckoutApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -78,7 +78,7 @@ class CheckoutApiClientTest extends TestCase
             amountOfMoney: new AmountOfMoney(amount: 1000, currencyCode: 'EUR')
         );
         $checkoutsResponse = new CheckoutsResponse(1, [$checkoutResponse]);
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: $this->checkoutClient->serializeJson($checkoutsResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: CheckoutApiClient::serializeJson($checkoutsResponse)));
 
         // act
         $query = (new GetCheckoutsQuery())->setOffset(0)->setSize(10);
@@ -95,7 +95,7 @@ class CheckoutApiClientTest extends TestCase
     {
         // arrange
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->checkoutClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CheckoutApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -127,7 +127,7 @@ class CheckoutApiClientTest extends TestCase
     public function testDeleteCheckoutUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->checkoutClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CheckoutApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -151,7 +151,7 @@ class CheckoutApiClientTest extends TestCase
             merchantCustomerId: 'id3',
             amountOfMoney: new AmountOfMoney(amount: 1000, currencyCode: 'EUR')
         );
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: $this->checkoutClient->serializeJson($checkoutResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: CheckoutApiClient::serializeJson($checkoutResponse)));
 
         $response = $this->checkoutClient->getCheckout('1', '2', '3');
 
@@ -161,7 +161,7 @@ class CheckoutApiClientTest extends TestCase
     public function testGetCheckoutUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->checkoutClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CheckoutApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -192,7 +192,7 @@ class CheckoutApiClientTest extends TestCase
     public function testUpdateCheckoutUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->checkoutClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CheckoutApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 

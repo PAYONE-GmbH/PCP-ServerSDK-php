@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
-use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
@@ -21,7 +20,6 @@ use DateTime;
 class CommerceCaseApiClientTest extends TestCase
 {
     use TestApiClientTrait;
-
     private CommerceCaseApiClient $commerceCaseClient;
 
     public function setUp(): void
@@ -42,7 +40,7 @@ class CommerceCaseApiClientTest extends TestCase
                 countryCode: 'GER',
             )),
         );
-        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: $this->commerceCaseClient->serializeJson($createCommerceCaseResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: CommerceCaseApiClient::serializeJson($createCommerceCaseResponse)));
 
         $payload = new CreateCommerceCaseRequest(
             merchantReference: 'ref',
@@ -61,7 +59,7 @@ class CommerceCaseApiClientTest extends TestCase
     public function testCreateCommerceCaseUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->commerceCaseClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CommerceCaseApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -102,7 +100,7 @@ class CommerceCaseApiClientTest extends TestCase
             commerceCaseId: '1',
             creationDateTime: new DateTime('2021-01-01T00:00:00+00:00'),
         );
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: $this->commerceCaseClient->serializeJson($commerceCaseResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: CommerceCaseApiClient::serializeJson($commerceCaseResponse)));
 
         $response = $this->commerceCaseClient->getCommerceCase('1', '2');
 
@@ -112,7 +110,7 @@ class CommerceCaseApiClientTest extends TestCase
     public function testGetCommerceCaseUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->commerceCaseClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CommerceCaseApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -134,7 +132,7 @@ class CommerceCaseApiClientTest extends TestCase
           new CommerceCaseResponse('ref', 'id1'),
           new CommerceCaseResponse('ref-alt', 'id2')
         ];
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: $this->commerceCaseClient->serializeJson($commerceCasesResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: CommerceCaseApiClient::serializeJson($commerceCasesResponse)));
 
         $query = (new GetCommerceCasesQuery())
           ->setIncludePaymentChannel([PaymentChannel::POS])
@@ -147,7 +145,7 @@ class CommerceCaseApiClientTest extends TestCase
     public function testGetCommerceCasesUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->commerceCaseClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CommerceCaseApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -181,7 +179,7 @@ class CommerceCaseApiClientTest extends TestCase
     public function testUpdateCommerceCaseUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->commerceCaseClient->serializeJson($errorResponse)));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CommerceCaseApiClient::serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 

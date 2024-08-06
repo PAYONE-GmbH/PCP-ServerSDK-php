@@ -180,12 +180,12 @@ class BaseApiClient
       *
       * @return T
       */
-    public function deserializeJson(string $data, string $type): mixed
+    public static function deserializeJson(string $data, string $type): mixed
     {
         return self::$serializer->deserialize($data, $type, 'json');
     }
 
-    public function serializeJson(mixed $data): string
+    public static function serializeJson(mixed $data): string
     {
         // by default an object with all properties set to null, is encoded as `[]`
         // php can't figure out if this is an list of things or an empty associative array

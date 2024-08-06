@@ -25,12 +25,10 @@ use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
 class BaseApiClientTest extends TestCase
 {
     use TestApiClientTrait;
-    private BaseApiClient $client;
 
     public function setUp(): void
     {
         $this->initTestConfig();
-        $this->client = new BaseApiClient($this->communicatorConfiguration, client: $this->httpClient);
     }
 
     public function testSerializeJson(): void
@@ -69,7 +67,7 @@ class BaseApiClientTest extends TestCase
         );
         $expected = '{"amountOfMoney":{"amount":6099,"currencyCode":"USD"},"shipping":{"address":{"city":"Berlin","countryCode":"DE","houseNumber":"12","street":"Alarichstra\u00dfe","zip":"12105"}},"shoppingCart":{"items":[{"invoiceData":{"description":"Learn PHP the hard way - Hardcover"},"orderLineDetails":{"productPrice":6099,"productType":"GOODS","quantity":1}}]},"orderRequest":{},"autoExecuteOrder":false}';
 
-        $json = $this->client->serializeJson($object);
+        $json = BaseApiClient::serializeJson($object);
 
         $this->assertEquals($expected, $json);
     }
@@ -112,7 +110,7 @@ class BaseApiClientTest extends TestCase
         // json representation of the applepaypayment response above
         $json = '{"token":{"paymentData":{"data":"data","header":{"wrappedKey":"foobar","transactionId":"transaction-101"}},"paymentMethod":{"displayName":"The name is...","network":"MasterCard","type":"credit","billingContact":null},"transactionIdentifier":"transaction-101-cc"},"billingContact":{"phoneNumber":"+1239452324","emailAddress":"mail@imail.com","givenName":"John","familyName":"Michell","phoneticGivenName":"","phoneticFamilyName":"","addressLines":["Alarichstraße 12"],"locality":"Berlin","postalCode":"12105","subAdministrativeArea":""},"spam":"IGNORE THIS"}';
 
-        $response = $this->client->deserializeJson($json, ApplePayPayment::class);
+        $response = BaseApiClient::deserializeJson($json, ApplePayPayment::class);
 
         $this->assertEquals($expectedResponse, $response);
     }

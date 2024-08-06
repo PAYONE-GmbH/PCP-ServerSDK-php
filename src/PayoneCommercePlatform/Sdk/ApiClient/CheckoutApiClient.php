@@ -68,7 +68,7 @@ class CheckoutApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serializeJson($createCheckoutRequest);
+        $httpBody = self::serializeJson($createCheckoutRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -307,7 +307,7 @@ class CheckoutApiClient extends BaseApiClient
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         // json_encode the body
-        $httpBody = $this->serializeJson($patchCheckoutRequest);
+        $httpBody = self::serializeJson($patchCheckoutRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
