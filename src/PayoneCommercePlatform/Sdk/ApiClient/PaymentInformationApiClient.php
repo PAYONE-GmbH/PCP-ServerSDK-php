@@ -72,7 +72,7 @@ class PaymentInformationApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serialize($paymentInformationRequest);
+        $httpBody = $this->serializeJson($paymentInformationRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(

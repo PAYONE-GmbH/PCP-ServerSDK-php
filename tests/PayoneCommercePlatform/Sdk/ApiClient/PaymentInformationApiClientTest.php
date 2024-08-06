@@ -63,7 +63,7 @@ class PaymentInformationApiClientTest extends TestCase
             merchantReference: '8',
             paymentChannel: PaymentChannel::POS
         );
-        $this->httpClient->method('send')->willReturn(new Response(200, body: BaseApiClient::getSerializer()->serialize($paymentInformationResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(200, body: $this->paymentInformationClient->serializeJson($paymentInformationResponse)));
 
         $payload = new PaymentInformationRequest(
             amountOfMoney: new AmountOfMoney(2400, 'USD'),
@@ -79,7 +79,7 @@ class PaymentInformationApiClientTest extends TestCase
     public function testCreatePaymentInformationUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(400, body: $this->paymentInformationClient->serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -121,7 +121,7 @@ class PaymentInformationApiClientTest extends TestCase
             paymentChannel: PaymentChannel::POS,
             events: [new PaymentEvent()],
         );
-        $this->httpClient->method('send')->willReturn(new Response(200, body: BaseApiClient::getSerializer()->serialize($paymentInformationResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(200, body: $this->paymentInformationClient->serializeJson($paymentInformationResponse)));
 
         $response = $this->paymentInformationClient->getPaymentInformation('1', '2', '3', '4');
 
@@ -131,7 +131,7 @@ class PaymentInformationApiClientTest extends TestCase
     public function testGetPaymentInformationUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(400, body: $this->paymentInformationClient->serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 

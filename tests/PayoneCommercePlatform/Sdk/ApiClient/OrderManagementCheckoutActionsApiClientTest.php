@@ -51,7 +51,7 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
                 payment: new PaymentResponse(paymentOutput: new PaymentOutput(), status: StatusValue::CREATED)
             ),
         );
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: BaseApiClient::getSerializer()->serialize($cancelResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: $this->orderManagementCheckoutActionsApiClient->serializeJson($cancelResponse)));
 
         $response = $this->orderManagementCheckoutActionsApiClient->cancelOrder('1', '2', '3');
 
@@ -61,7 +61,7 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
     public function testCancelOrderUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->orderManagementCheckoutActionsApiClient->serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -88,7 +88,7 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
                 ]
             )
         );
-        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: BaseApiClient::getSerializer()->serialize($orderResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: $this->orderManagementCheckoutActionsApiClient->serializeJson($orderResponse)));
 
         $payload = new OrderRequest(
             orderReferences: new References('ref'),
@@ -102,7 +102,7 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
     public function testCreateOrderUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->orderManagementCheckoutActionsApiClient->serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -129,7 +129,7 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
     public function testDeliverOrderSuccessful(): void
     {
         $deliverResponse = new DeliverResponse(capturePaymentResponse: new CapturePaymentResponse());
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: BaseApiClient::getSerializer()->serialize($deliverResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: $this->orderManagementCheckoutActionsApiClient->serializeJson($deliverResponse)));
 
         $payload = new DeliverRequest(deliverType: DeliverType::PARTIAL, isFinal: false);
         $response = $this->orderManagementCheckoutActionsApiClient->deliverOrder('1', '2', '3', $payload);
@@ -140,7 +140,7 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
     public function testDeliverOrderUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->orderManagementCheckoutActionsApiClient->serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
@@ -165,7 +165,7 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
                 refundOutput: new RefundOutput(references: new PaymentReferences('ref'))
             )
         );
-        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: BaseApiClient::getSerializer()->serialize($returnResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: $this->orderManagementCheckoutActionsApiClient->serializeJson($returnResponse)));
 
         $payload = new ReturnRequest(returnType: ReturnType::PARTIAL, returnReason: 'didnt like it');
         $response = $this->orderManagementCheckoutActionsApiClient->returnOrder('1', '2', '3', $payload);
@@ -176,7 +176,7 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
     public function testReturnOrderUnsuccessful400(): void
     {
         $errorResponse = $this->makeErrorResponse();
-        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: BaseApiClient::getSerializer()->serialize($errorResponse, 'json')));
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: $this->orderManagementCheckoutActionsApiClient->serializeJson($errorResponse)));
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 

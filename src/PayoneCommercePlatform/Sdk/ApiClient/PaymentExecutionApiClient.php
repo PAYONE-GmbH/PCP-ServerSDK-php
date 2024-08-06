@@ -89,7 +89,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serialize($cancelPaymentRequest);
+        $httpBody = $this->serializeJson($cancelPaymentRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -170,7 +170,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serialize($capturePaymentRequest);
+        $httpBody = $this->serializeJson($capturePaymentRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -241,7 +241,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serialize($completePaymentRequest);
+        $httpBody = $this->serializeJson($completePaymentRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -306,7 +306,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serialize($paymentExecutionRequest);
+        $httpBody = $this->serializeJson($paymentExecutionRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -384,7 +384,7 @@ class PaymentExecutionApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serialize($refundRequest);
+        $httpBody = $this->serializeJson($refundRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
