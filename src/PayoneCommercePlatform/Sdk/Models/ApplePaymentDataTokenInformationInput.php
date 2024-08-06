@@ -28,7 +28,7 @@ class ApplePaymentDataTokenInformationInput
     protected ?string $signature;
 
     /**
-     * @var ApplePaymentDataTokenHeaderInformation|null Additional information about the Apple payment data token header.
+     * @var ApplePaymentDataTokenHeaderInformationInput|null Additional information about the Apple payment data token header.
      */
     #[SerializedName('header')]
     protected ?ApplePaymentDataTokenHeaderInformationInput $header;

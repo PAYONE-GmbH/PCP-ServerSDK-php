@@ -17,7 +17,7 @@ class PaymentProduct302SpecificInput
     protected ?string $network;
 
     /**
-     * @var ApplePaymentDataTokenInformation|null Additional information about the Apple payment data token.
+     * @var ApplePaymentDataTokenInformationInput|null Additional information about the Apple payment data token.
      */
     #[SerializedName('token')]
     protected ?ApplePaymentDataTokenInformationInput $token;
