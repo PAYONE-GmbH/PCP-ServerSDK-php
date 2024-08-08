@@ -95,7 +95,7 @@ use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
 $client = new CommerceCaseApiClient($config);
 ```
 
- Each client has typed parameters for the payloads and responses. You can use `phpstan` to verify the types of the parameters and return values or look for `TypeError` thrown at runtime. All payloads are availble as PHP classes within the `PayoneCommercePlatform\Sdk\Models` namespace. The SDK will automatically marshal the PHP objects to JSON and send it to the API. The response will be unmarshalled to a PHP object. 
+ Each client has typed parameters for the payloads and responses. You can use `phpstan` to verify the types of the parameters and return values or look for `TypeError` thrown at runtime. All payloads are availble as PHP classes within the `PayoneCommercePlatform\Sdk\Models` namespace. The SDK will automatically marshal the PHP objects to JSON and send it to the API. The response will be unmarshalled to a PHP object internally. 
 
  To create an empty commerce case you can use the `CreateCommerceCaseRequest` class:
 
@@ -115,7 +115,7 @@ The models directly map to the API as described in [PAYONE Commerce Platform API
 
 When making a request any client may throw a `PayoneCommercePlatform\Sdk\Errors\ApiException`. There two subtypes of this exception:
 
-- `PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException`: This exception is thrown when the API returns an well-formed error response. The given errors are marshalled to `PayoneCommercePlatform\Sdk\Models\APIError` objects which are availble via the `getErrors()` method. They usually contain usual information about what is wrong in your request or the state of the resource.
+- `PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException`: This exception is thrown when the API returns an well-formed error response. The given errors as `PayoneCommercePlatform\Sdk\Models\APIError` instances via the `getErrors()` method on the exception. They usually contain useful information about what is wrong in your request or the state of the resource.
 - `PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException`: This exception is a catch-all exception for any error that cannot be turned into a helpful error response. This includes network errors, malformed responses or other errors that are not directly related to the API.
 
 ### Client Side
@@ -155,7 +155,7 @@ PaymentInformationApiClient::serializeJson($amountOfMoney);
 
 ### Apple Pay
 
-When a client is successfully made a payment via ApplePay it receives a [ApplePayPayment](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypayment). This structure is accessible as a model as `PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPayment`. You can use this model to create a payment information record for a checkout. The model is a direct representation of the ApplePayPayment object. You can use the `serializeJson()` method to convert the model to a JSON string which can be send to the PAYONE Commerce Platform.
+When a client is successfully made a payment via ApplePay it receives a [ApplePayPayment](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypayment). This structure is accessible as a model as `PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPayment`. The model is a direct representation of the ApplePayPayment object. You can use the `deserializeJson()` method to convert a JSON string from a client an `ApplePayPayment` object.
 
 ```php
 <?php
@@ -168,7 +168,7 @@ $json = getJsonStringFromRequestSomehow();
 $applePayPayment = BaseApiClient::deserializeJson($json, ApplePayPayment::class);
 ```
 
-You can use the `PayoneCommercePlatform\Sdk\Transformer\ApplePayTransformer` to map an `ApplePayPayment` to a `MobilePaymentMethodSpecificInput` which can be used for payment executions or order requests. The transformer has a static method `transformApplePayPaymentToMobilePaymentMethodSpecificInput()` which takes an `ApplePayPayment` and returns a `MobilePaymentMethodSpecificInput`. The transformer does not check if the reponse is complete, if anything is missing the field will be set to `null`.
+You can use the `PayoneCommercePlatform\Sdk\Transformer\ApplePayTransformer` to map an `ApplePayPayment` to a `MobilePaymentMethodSpecificInput` which can be used for payment executions or order requests. The transformer has a static method `transformApplePayPaymentToMobilePaymentMethodSpecificInput()` which takes an `ApplePayPayment` and returns a `MobilePaymentMethodSpecificInput`. The transformer does not check if the reponse is complete. If anything is missing the field will be set to `null`.
 
 ```php
 <?php
