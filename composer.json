@@ -43,7 +43,7 @@
       "format": "php-cs-fixer fix",
       "lint": "phpstan analyze -l 9 src tests",
       "test": "phpunit tests",
-      "coverage": "XDEBUG_MODE=coverage phpunit --coverage-text tests",
+      "coverage": "XDEBUG_MODE=coverage phpunit --coverage-clover=coverage.xml tests",
       "coverage-report": "XDEBUG_MODE=coverage phpunit --coverage-html=coverage tests"
     }
 }

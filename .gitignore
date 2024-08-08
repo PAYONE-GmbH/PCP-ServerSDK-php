@@ -17,4 +17,5 @@ out/
 
 .phpactor.json
 .php-cs-fixer.cache
-coverage
+coverage/
+coverage.xml
