@@ -53,7 +53,7 @@ jobs:
       - name: Test with coverage
         run: composer run-script coverage
 
-  sonar-scan:
-    needs: [lint_test]
-    uses: ./.github/workflows/sonar_scanner.yml
-
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env: 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
