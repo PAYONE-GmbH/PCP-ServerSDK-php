@@ -20,10 +20,10 @@ class FinancingPaymentMethodSpecificInput
     protected ?int $paymentProductId;
 
     /**
-     * @var bool Indicates whether the payment requires approval before the funds will be captured using the Approve payment or Capture payment API.
+     * @var ?bool Indicates whether the payment requires approval before the funds will be captured using the Approve payment or Capture payment API.
      */
     #[SerializedName('requiresApproval')]
-    protected bool $requiresApproval;
+    protected ?bool $requiresApproval;
 
     /**
      * @var PaymentProduct3392SpecificInput|null Specific input details for PAYONE Secured Direct Debit.
@@ -33,7 +33,7 @@ class FinancingPaymentMethodSpecificInput
 
     public function __construct(
         ?int $paymentProductId = 3390,
-        bool $requiresApproval = true,
+        ?bool $requiresApproval = true,
         ?PaymentProduct3392SpecificInput $paymentProduct3392SpecificInput = null
     ) {
         $this->paymentProductId = $paymentProductId;
@@ -53,12 +53,12 @@ class FinancingPaymentMethodSpecificInput
         return $this;
     }
 
-    public function getRequiresApproval(): bool
+    public function getRequiresApproval(): ?bool
     {
         return $this->requiresApproval;
     }
 
-    public function setRequiresApproval(bool $requiresApproval): self
+    public function setRequiresApproval(?bool $requiresApproval): self
     {
         $this->requiresApproval = $requiresApproval;
         return $this;
