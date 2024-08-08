@@ -12,69 +12,69 @@ use PayoneCommercePlatform\Sdk\Models\LinkInformation;
 class InstallmentOption
 {
     /**
-     * @var string Installment option Identifier. Use this in the Complete Payment for the selected installment option.
+     * @var string|null Installment option Identifier. Use this in the Complete Payment for the selected installment option.
      */
     #[SerializedName('installmentOptionId')]
-    protected string $installmentOptionId;
+    protected ?string $installmentOptionId;
 
     /**
-     * @var int The number of monthly payments for this installment.
+     * @var int|null The number of monthly payments for this installment.
      */
     #[SerializedName('numberOfPayments')]
-    protected int $numberOfPayments;
+    protected ?int $numberOfPayments;
 
     /**
-     * @var AmountOfMoney Monthly rate amount.
+     * @var AmountOfMoney|null Monthly rate amount.
      */
     #[SerializedName('monthlyAmount')]
-    protected AmountOfMoney $monthlyAmount;
+    protected ?AmountOfMoney $monthlyAmount;
 
     /**
-     * @var AmountOfMoney Last rate amount.
+     * @var AmountOfMoney|null Last rate amount.
      */
     #[SerializedName('lastRateAmount')]
-    protected AmountOfMoney $lastRateAmount;
+    protected ?AmountOfMoney $lastRateAmount;
 
     /**
-     * @var int Effective interest amount in percent with two decimals.
+     * @var int|null Effective interest amount in percent with two decimals.
      */
     #[SerializedName('effectiveInterestRate')]
-    protected int $effectiveInterestRate;
+    protected ?int $effectiveInterestRate;
 
     /**
-     * @var int Nominal interest amount in percent with two decimals.
+     * @var int|null Nominal interest amount in percent with two decimals.
      */
     #[SerializedName('nominalInterestRate')]
-    protected int $nominalInterestRate;
+    protected ?int $nominalInterestRate;
 
     /**
-     * @var AmountOfMoney Total rate amount.
+     * @var AmountOfMoney|null Total rate amount.
      */
     #[SerializedName('totalAmount')]
-    protected AmountOfMoney $totalAmount;
+    protected ?AmountOfMoney $totalAmount;
 
     /**
-     * @var string Due date of first rate. Format: YYYYMMDD.
+     * @var string|null Due date of first rate. Format: YYYYMMDD.
      */
     #[SerializedName('firstRateDate')]
-    protected string $firstRateDate;
+    protected ?string $firstRateDate;
 
     /**
-     * @var LinkInformation Link with credit information.
+     * @var LinkInformation|null Link with credit information.
      */
     #[SerializedName('creditInformation')]
-    protected LinkInformation $creditInformation;
+    protected ?LinkInformation $creditInformation;
 
     public function __construct(
-        string $installmentOptionId,
-        int $numberOfPayments,
-        AmountOfMoney $monthlyAmount,
-        AmountOfMoney $lastRateAmount,
-        int $effectiveInterestRate,
-        int $nominalInterestRate,
-        AmountOfMoney $totalAmount,
-        string $firstRateDate,
-        LinkInformation $creditInformation
+        ?string $installmentOptionId = null,
+        ?int $numberOfPayments = null,
+        ?AmountOfMoney $monthlyAmount = null,
+        ?AmountOfMoney $lastRateAmount = null,
+        ?int $effectiveInterestRate = null,
+        ?int $nominalInterestRate = null,
+        ?AmountOfMoney $totalAmount = null,
+        ?string $firstRateDate = null,
+        ?LinkInformation $creditInformation = null,
     ) {
         $this->installmentOptionId = $installmentOptionId;
         $this->numberOfPayments = $numberOfPayments;
@@ -88,100 +88,100 @@ class InstallmentOption
     }
 
     // Getters and Setters
-    public function getInstallmentOptionId(): string
+    public function getInstallmentOptionId(): ?string
     {
         return $this->installmentOptionId;
     }
 
-    public function setInstallmentOptionId(string $installmentOptionId): self
+    public function setInstallmentOptionId(?string $installmentOptionId): self
     {
         $this->installmentOptionId = $installmentOptionId;
         return $this;
     }
 
-    public function getNumberOfPayments(): int
+    public function getNumberOfPayments(): ?int
     {
         return $this->numberOfPayments;
     }
 
-    public function setNumberOfPayments(int $numberOfPayments): self
+    public function setNumberOfPayments(?int $numberOfPayments): self
     {
         $this->numberOfPayments = $numberOfPayments;
         return $this;
     }
 
-    public function getMonthlyAmount(): AmountOfMoney
+    public function getMonthlyAmount(): ?AmountOfMoney
     {
         return $this->monthlyAmount;
     }
 
-    public function setMonthlyAmount(AmountOfMoney $monthlyAmount): self
+    public function setMonthlyAmount(?AmountOfMoney $monthlyAmount): self
     {
         $this->monthlyAmount = $monthlyAmount;
         return $this;
     }
 
-    public function getLastRateAmount(): AmountOfMoney
+    public function getLastRateAmount(): ?AmountOfMoney
     {
         return $this->lastRateAmount;
     }
 
-    public function setLastRateAmount(AmountOfMoney $lastRateAmount): self
+    public function setLastRateAmount(?AmountOfMoney $lastRateAmount): self
     {
         $this->lastRateAmount = $lastRateAmount;
         return $this;
     }
 
-    public function getEffectiveInterestRate(): int
+    public function getEffectiveInterestRate(): ?int
     {
         return $this->effectiveInterestRate;
     }
 
-    public function setEffectiveInterestRate(int $effectiveInterestRate): self
+    public function setEffectiveInterestRate(?int $effectiveInterestRate): self
     {
         $this->effectiveInterestRate = $effectiveInterestRate;
         return $this;
     }
 
-    public function getNominalInterestRate(): int
+    public function getNominalInterestRate(): ?int
     {
         return $this->nominalInterestRate;
     }
 
-    public function setNominalInterestRate(int $nominalInterestRate): self
+    public function setNominalInterestRate(?int $nominalInterestRate): self
     {
         $this->nominalInterestRate = $nominalInterestRate;
         return $this;
     }
 
-    public function getTotalAmount(): AmountOfMoney
+    public function getTotalAmount(): ?AmountOfMoney
     {
         return $this->totalAmount;
     }
 
-    public function setTotalAmount(AmountOfMoney $totalAmount): self
+    public function setTotalAmount(?AmountOfMoney $totalAmount): self
     {
         $this->totalAmount = $totalAmount;
         return $this;
     }
 
-    public function getFirstRateDate(): string
+    public function getFirstRateDate(): ?string
     {
         return $this->firstRateDate;
     }
 
-    public function setFirstRateDate(string $firstRateDate): self
+    public function setFirstRateDate(?string $firstRateDate): self
     {
         $this->firstRateDate = $firstRateDate;
         return $this;
     }
 
-    public function getCreditInformation(): LinkInformation
+    public function getCreditInformation(): ?LinkInformation
     {
         return $this->creditInformation;
     }
 
-    public function setCreditInformation(LinkInformation $creditInformation): self
+    public function setCreditInformation(?LinkInformation $creditInformation): self
     {
         $this->creditInformation = $creditInformation;
         return $this;
