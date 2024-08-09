@@ -1,4 +1,4 @@
-name: Run linter, tests and sonarcloud scan
+name: Run tests against older PHP versions
 
 on:
   push:
@@ -13,8 +13,11 @@ on:
   workflow_call:
 
 jobs:
-  lint_test:
+  test_backwards:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-version: ['8.2']
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,8 +25,8 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
-          extensions: composer, xdebug
+          php-version: ${{ matrix.php-version }}
+          extensions: composer
           
       - name: Get composer cache directory
         id: composer-cache
@@ -38,22 +41,5 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --no-interaction --prefer-dist
 
-      - name: Check formatting on src
-        run: composer run-script format-check src
-
-      - name: Check formatting on tests
-        run: composer run-script format-check tests
-
-      - name: Check formatting on demo code
-        run: composer run-script format-check examples/demo-app/src
-
-      - name: Lint
-        run: composer run-script lint
-
-      - name: Test with coverage
-        run: composer run-script coverage
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env: 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Run tests
+        run: composer run-script test

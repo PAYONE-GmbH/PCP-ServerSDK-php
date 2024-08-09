@@ -4,7 +4,7 @@ namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-class ApplePaymentDataTokenHeaderInformation
+class ApplePaymentDataTokenHeaderInformationInput
 {
     /**
      * @var string|null A hexadecimal Transaction identifier identifier as a string.

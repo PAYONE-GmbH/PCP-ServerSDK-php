@@ -9,7 +9,7 @@
             "name": "PAYONE GmbH"
         }
     ],
-    "version": "1.0.0",
+    "version": "0.1.0",
     "require": {
         "php": "~8.2||~8.3",
         "ext-curl": "*",
@@ -43,7 +43,7 @@
       "format": "php-cs-fixer fix",
       "lint": "phpstan analyze -l 9 src tests",
       "test": "phpunit tests",
-      "coverage": "XDEBUG_MODE=coverage phpunit --coverage-text tests",
+      "coverage": "XDEBUG_MODE=coverage phpunit --coverage-clover=coverage.xml tests",
       "coverage-report": "XDEBUG_MODE=coverage phpunit --coverage-html=coverage tests"
     }
 }

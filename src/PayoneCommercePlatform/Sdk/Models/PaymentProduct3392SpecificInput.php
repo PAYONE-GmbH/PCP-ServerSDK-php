@@ -11,24 +11,24 @@ use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
 class PaymentProduct3392SpecificInput
 {
     /**
-     * @var BankAccountInformation Bank account information.
+     * @var BankAccountInformation|null Bank account information.
      */
     #[SerializedName('bankAccountInformation')]
-    protected BankAccountInformation $bankAccountInformation;
+    protected ?BankAccountInformation $bankAccountInformation;
 
     public function __construct(
-        BankAccountInformation $bankAccountInformation
+        ?BankAccountInformation $bankAccountInformation
     ) {
         $this->bankAccountInformation = $bankAccountInformation;
     }
 
     // Getters and Setters
-    public function getBankAccountInformation(): BankAccountInformation
+    public function getBankAccountInformation(): ?BankAccountInformation
     {
         return $this->bankAccountInformation;
     }
 
-    public function setBankAccountInformation(BankAccountInformation $bankAccountInformation): self
+    public function setBankAccountInformation(?BankAccountInformation $bankAccountInformation): self
     {
         $this->bankAccountInformation = $bankAccountInformation;
         return $this;

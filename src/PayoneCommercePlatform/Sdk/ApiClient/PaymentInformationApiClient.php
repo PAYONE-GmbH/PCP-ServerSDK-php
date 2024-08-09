@@ -27,8 +27,7 @@ class PaymentInformationApiClient extends BaseApiClient
     public function createPaymentInformation(string $merchantId, string $commerceCaseId, string $checkoutId, PaymentInformationRequest $paymentInformationRequest): PaymentInformationResponse
     {
         $request = $this->createPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationRequest);
-        list($response) = $this->makeApiCall($request, PaymentInformationResponse::class);
-        return $response;
+        return $this->makeApiCall($request, PaymentInformationResponse::class)[0];
     }
 
     /**
@@ -73,7 +72,7 @@ class PaymentInformationApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        $httpBody = $this->serialize($paymentInformationRequest);
+        $httpBody = self::serializeJson($paymentInformationRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(
@@ -100,8 +99,7 @@ class PaymentInformationApiClient extends BaseApiClient
     public function getPaymentInformation(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentInformationId): PaymentInformationResponse
     {
         $request = $this->getPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationId);
-        list($response) = $this->makeApiCall($request, PaymentInformationResponse::class);
-        return $response;
+        return $this->makeApiCall($request, PaymentInformationResponse::class)[0];
     }
 
     /**
