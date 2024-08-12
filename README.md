@@ -1372,10 +1372,10 @@ Retrieves details of an existing payment information record associated with a sp
 We welcome contributions from the community. If you want to contribute, please follow these steps:
 
 1. Fork the repository.
-1. Create a new branch (`git checkout -b feature-branch`).
+1. Create a new branch (`git checkout -b feature/feature-branch`).
 1. Make your changes.
 1. Commit your changes (`git commit -am 'Add new feature'`).
-1. Push to the branch (`git push origin feature-branch`).
+1. Push to the branch (`git push origin feature/feature-branch`).
 1. Create a new Pull Request.
 
 Please make sure to follow the coding standards and write appropriate tests for your changes. You can run `composer run-script lint` to check for potential errors with `phpstan`. Use `composer run-script format` to ensure you're code is formatted consistently. To run tests run `composer run-script test`
@@ -1396,4 +1396,23 @@ This repository consists out of the following components:
 
 This SDK follows semver for versioning. To relase a new version create a branch `release/X.Y.Z` and run `prepare_release.sh X.Y.Z`. The script automatically replaces the `SDK_VERSION` property within the `CommunicatorConfiguration` class and version field in the root `composer.json` file. After that it commits the changes and tags the commit as `vX.Y.Z`.
 
-This branch should then merged into `develop` and immediately into `main` after that.
+After calling the `prepare_release.sh` script, it is recommended to manually trigger the changelog generation script (which uses [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog)).
+
+1. **Conventional Commit Messages**:
+
+   - Ensure all commit messages follow the conventional commit format, which helps in automatic changelog generation.
+   - Commit messages should be in the format: `type(scope): subject`.
+
+2. **Enforcing Commit Messages**:
+
+   - We enforce conventional commit messages using [Lefthook](https://github.com/evilmartians/lefthook) with [commitlint](https://github.com/conventional-changelog/commitlint).
+   - This setup ensures that all commit messages are validated before they are committed.
+
+3. **Generate Changelog**:
+   - Run the changelog generation script to update the `CHANGELOG.md` file:
+     ```sh
+     npm run changelog
+     ```
+   - Review and commit the updated changelog before proceeding with the release.
+
+When the release is ready to go, a PR should be created based on the relase branch. Select `develop` as the base branch. After merging into `develop`, merge `develop` into `main`.
