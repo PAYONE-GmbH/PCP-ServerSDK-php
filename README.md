@@ -1,16 +1,15 @@
 # PAYONE Commerce Platform Server SDK PHP
 
-**NOTE**: This SDK is still under development. Some things may be broken, features may change in non-compatible ways or will be removed completely.
-
+**NOTE**: This SDK is still under development. Some features may be broken, change in non-compatible ways, or be removed entirely.
 The PHP SDK helps you to communicate with the PAYONE commerce platform server API. Its primary features are:
 
-* convenient PHP wrapper around the API calls and responses:
-  * marshals PHP request objects to HTTP requests
-  * unmarshalls HTTP responses to PHP response objects or PHP exceptions
+* A convenient PHP wrapper around API calls and responses:
+    * marshals PHP request objects to HTTP requests
+    * unmarshals HTTP responses to PHP response objects or PHP exceptions
 * handling of all the details concerning authentication
-* handling of required meta data
+* handling of required metadata
 
-For a general introduction to the API and the different checkout flows see the documentation:
+For a general introduction to the API and various checkout flows, see the documentation:
     - General introduction to the [PAYONE Commerce Platform](https://docs.payone.com/pcp/payone-commerce-platform)
     - Overview of the [checkout flows](https://docs.payone.com/pcp/checkout-flows)
     - Available [payment methods](https://docs.payone.com/pcp/checkout-flows)
@@ -46,7 +45,7 @@ For a general introduction to the API and the different checkout flows see the d
 
 ## Requirements
 
-PHP 8.2 or above is required.
+This SDK requires PHP 8.2 or later.
 
 ## Installation
 
@@ -66,11 +65,11 @@ This SDK is currently not released on [packagist](https://packagist.org/). You c
 }
 ```
 
-This snippets specify the main branch which contains the latest release. You can specify a version by inserting a git tag `vX.Y.Z` instead of `main`. Make sure to prepend the git branch or tag with `dev-`. For a in depth explanation take a look at the [composer documentation](https://getcomposer.org/doc/05-repositories.md#vcs).
+These snippets specify the main branch, which contains the latest release. You can specify a version by inserting a git tag `vX.Y.Z` instead of `main`. Make sure to prepend the git branch or tag with `dev-`. For an in depth explanation take a look at the [Composer documentation](https://getcomposer.org/doc/05-repositories.md#vcs).
 
 ## Usage
 
-To use this SDK you need to construct a `CommunicatorConfiguration` which encapsulate everything needed to connect to the PAYONE Commerce Platform.
+To use this SDK, you need to construct a `CommunicatorConfiguration` which encapsulates everything needed to connect to the PAYONE Commerce Platform.
 
 ```php
 <?php
@@ -85,7 +84,7 @@ $config = new CommunicatorConfiguration(
         integrator: 'YOUR COMPANY NAME',
 );
 ```
-As shown above, you can use `CommunicatorConfiguration::getPredefinedHosts()` for information on the availble environments. With the configuration you can create an API client for each reource you want to interact with. For example to create a commerce case you can use the `CommerceCaseApiClient`.
+As shown above, you can use `CommunicatorConfiguration::getPredefinedHosts()` for information on the available environments. With the configuration you can create an API client for each reource you want to interact with. For example to create a commerce case you can use the `CommerceCaseApiClient`.
 
 ```php
 <?php
@@ -109,20 +108,20 @@ use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest;
 $response = $client->createCommerceCase('YOUR_MERCHANT_ID', new CreateCommerceCaseRequest());
 ```
 
-The models directly map to the API as described in [PAYONE Commerce Platform API Reference](https://docs.payone.com/pcp/commerce-platform-api). For an in depth example you can take a look at the [demo app](#demo-app).
+The models are directly map to the API as described in the [PAYONE Commerce Platform API Reference](https://docs.payone.com/pcp/commerce-platform-api). For an in depth example you can take a look at the [demo app](#demo-app).
 
 ### Error Handling
 
-When making a request any client may throw a `PayoneCommercePlatform\Sdk\Errors\ApiException`. There two subtypes of this exception:
+When making a request, any client instance may throw a `PayoneCommercePlatform\Sdk\Errors\ApiException`. There are two subtypes of this exception:
 
-- `PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException`: This exception is thrown when the API returns an well-formed error response. The given errors as `PayoneCommercePlatform\Sdk\Models\APIError` instances via the `getErrors()` method on the exception. They usually contain useful information about what is wrong in your request or the state of the resource.
+- `PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException`: This exception is thrown when the API returns an well-formed error response. These errors are provided as an array of `PayoneCommercePlatform\Sdk\Models\APIError` instances via the `getErrors()` method on the exception. They usually contain useful information about what is wrong in your request or the state of the resource.
 - `PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException`: This exception is a catch-all exception for any error that cannot be turned into a helpful error response. This includes network errors, malformed responses or other errors that are not directly related to the API.
 
 ### Client Side
 
-For most [payment methods](https://docs.payone.com/pcp/commerce-platform-payment-methods) some information from the client is needed, e.g. payment information given by Apple when a payment via ApplePay suceeds. PAYONE provides client side SDKs which helps you interact the third party payment providers. You can find the SDKs under the [Payone GitHub organization](https://github.com/PAYONE-GmbH). Either way ensure to never store or even send credit card information to your server. The PAYONE Commerce Platform never needs access to the credit card information. The client side is responsible for safely retrieving a credit card token. This token must be used with this SDK.
+For most [payment methods](https://docs.payone.com/pcp/commerce-platform-payment-methods), some information from the client is needed, e.g. payment information given by Apple when a payment via ApplePay suceeds. PAYONE provides client side SDKs which helps you interact the third party payment providers. You can find these SDKs under the [Payone GitHub organization](https://github.com/PAYONE-GmbH). Either way ensure to never store or even send credit card information to your server. The PAYONE Commerce Platform never needs access to the credit card information. The client side is responsible for safely retrieving a credit card token. This token must be used with this SDK.
 
-This SDKs makes no assumption about how the networking between the client and your PHP server is done. If need to serialize a model to JSON or deserialize a client side request from a JSON string to a model you can use the static `serializeJson()` and `deserializeJson()` methods on the `BaseApiClient` class:
+This SDK makes no assumptions about how networking between the client and your PHP server is handled. If need to serialize a model to JSON or deserialize a client side request from a JSON string to a model you can use the static `serializeJson()` and `deserializeJson()` methods on the `BaseApiClient` class:
 
 ```php
 <?php
@@ -155,7 +154,7 @@ PaymentInformationApiClient::serializeJson($amountOfMoney);
 
 ### Apple Pay
 
-When a client is successfully made a payment via ApplePay it receives a [ApplePayPayment](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypayment). This structure is accessible as a model as `PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPayment`. The model is a direct representation of the ApplePayPayment object. You can use the `deserializeJson()` method to convert a JSON string from a client an `ApplePayPayment` object.
+When a client successfully makes a payment via ApplePay, it receives a [ApplePayPayment](https://developer.apple.com/documentation/apple_pay_on_the_web/applepaypayment). This structure is accessible as a model as `PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPayment`. The model is a direct representation of the ApplePayPayment. You can use the `deserializeJson()` method to convert a JSON string from a client an `ApplePayPayment` object.
 
 ```php
 <?php
@@ -180,9 +179,9 @@ $mobilePaymentMethodSpecificInput = ApplePayTransformer::transformApplePayPaymen
 
 ## Demo App
 
-This repo contains a demo app that showcases how to implement common use cases, like a [Step-by-Step Checkout](https://docs.payone.com/pcp/checkout-flows/step-by-step-checkout) and an [One-Stop-Checkout](https://docs.payone.com/pcp/checkout-flows/one-step-checkout). For each use case the demo app contains a protected method in the top level class `DemoApp`. You can run the app to execute the code within in the sandbox API. This is a good way to test, if your setup is correct.
+This repository contains a demo app that showcases how to implement common use cases, like a [Step-by-Step Checkout](https://docs.payone.com/pcp/checkout-flows/step-by-step-checkout) and an [One-Stop-Checkout](https://docs.payone.com/pcp/checkout-flows/one-step-checkout). For each use case the demo app contains a protected method in the top level class `DemoApp`. You can run the app to execute the code within in the sandbox API. This is a good way to test, if your setup is correct.
 
-Before running the app ensure you have run `composer install` and `composer dumb-autoload` within the demo app directory (`./examples/demo-app`). By default all API calls are send to the pre-production environment of the PAYONE Commerce Platform. Note that the created entities can't deleted completely.
+Before running the app ensure you have run `composer install` and `composer dumb-autoload` within the demo app directory (`./examples/demo-app`). By default, all API calls are sent to the pre-production environment of the PAYONE Commerce Platform. Note that the created entities cannot be completely deleted.
 
 You can run it within the demo app directory via `php src/DemoApp.php`, make sure to provide all necessary environment variables:
 1. `API_KEY` a valid api key for the PAYONE Commerce Platform
@@ -1378,11 +1377,11 @@ We welcome contributions from the community. If you want to contribute, please f
 1. Push to the branch (`git push origin feature/feature-branch`).
 1. Create a new Pull Request.
 
-Please make sure to follow the coding standards and write appropriate tests for your changes. You can run `composer run-script lint` to check for potential errors with `phpstan`. Use `composer run-script format` to ensure you're code is formatted consistently. To run tests run `composer run-script test`
+Please ensure that you follow the coding standards and write appropriate tests for your changes. You can use `composer run-script lint` to check for potential errors with `phpstan`. Use `composer run-script format` to ensure you're code is formatted consistently. To run tests run `composer run-script test`
 
 ## Development
 
-Ensure you have PHP 8.2 or higher installed. You will need [composer](https://getcomposer.org/) and [xdebug](https://xdebug.org/docs/install). An pretty version of the coverage report can will be placed in `coverage`, after running `composer run-script coverage-report`.
+Ensure you have PHP 8.2 or higher installed. You will need [composer](https://getcomposer.org/) and [xdebug](https://xdebug.org/docs/install). A pretty version of the coverage report will be placed in `coverage`, after running `composer run-script coverage-report`.
 
 ### Structure of this repository
 
@@ -1394,7 +1393,7 @@ This repository consists out of the following components:
 
 ### Release
 
-This SDK follows semver for versioning. To relase a new version create a branch `release/X.Y.Z` and run `prepare_release.sh X.Y.Z`. The script automatically replaces the `SDK_VERSION` property within the `CommunicatorConfiguration` class and version field in the root `composer.json` file. After that it commits the changes and tags the commit as `vX.Y.Z`.
+This SDK follows semantic versioning (semver). To relase a new version, create a branch `release/X.Y.Z` and run `prepare_release.sh X.Y.Z`. The script automatically updates the `SDK_VERSION` property within the `CommunicatorConfiguration` class and the version field in the root composer.json, package.json and package-lock.json file. After that the changes are automatically committed and tagged as `vX.Y.Z`.
 
 After calling the `prepare_release.sh` script, it is recommended to manually trigger the changelog generation script (which uses [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog)).
 
@@ -1415,4 +1414,4 @@ After calling the `prepare_release.sh` script, it is recommended to manually tri
      ```
    - Review and commit the updated changelog before proceeding with the release.
 
-When the release is ready to go, a PR should be created based on the relase branch. Select `develop` as the base branch. After merging into `develop`, merge `develop` into `main`.
+When the release is ready, a PR should be created for relase branch. Select `develop` as the base branch. After merging into `develop`, merge `develop` into `main`.
