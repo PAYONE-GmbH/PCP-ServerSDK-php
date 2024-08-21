@@ -1,7 +1,7 @@
 # PAYONE Commerce Platform Server SDK PHP
 
-**NOTE**: This SDK is still under development. Some features may be broken, change in non-compatible ways, or be removed entirely.
-The PHP SDK helps you to communicate with the PAYONE commerce platform server API. Its primary features are:
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=PAYONE-GmbH_PCP-ServerSDK-php&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=PAYONE-GmbH_PCP-ServerSDK-php)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=PAYONE-GmbH_PCP-ServerSDK-php&metric=coverage)](https://sonarcloud.io/summary/new_code?id=PAYONE-GmbH_PCP-ServerSDK-php)
 
 * A convenient PHP wrapper around API calls and responses:
     * marshals PHP request objects to HTTP requests
