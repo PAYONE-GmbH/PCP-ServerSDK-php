@@ -259,7 +259,7 @@ class DemoApp
         ) {
             $installmentOptions = $order->getCreatePaymentResponse()->getPayment()->getPaymentOutput()->getFinancingPaymentMethodSpecificOutput()->getPaymentProduct3391SpecificOutput()->getInstallmentOptions();
         } else {
-            throw new \RuntimeException('PCP API did not provide installment options, you may need to contact Payone support.');
+            throw new \RuntimeException('PCP API did not provide installment options, you may need to contact PAYONE support.');
         }
         var_dump($installmentOptions);
 
