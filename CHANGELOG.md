@@ -1,3 +1,11 @@
+# [1.0.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v0.1.0...v1.0.0) (2024-08-22)
+### Features
+* feat: provide updated api endpoints when calling getPredefinedHosts() ([3927c7eafe34b2ac9fb66dcecd9869b5dad644c8](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/3927c7eafe34b2ac9fb66dcecd9869b5dad644c8))
+
+### BREAKING CHANGE
+
+* When the host for CommunicatorConfiguration is provided
+`getPredefinedHosts()` it now points to a different url
 # [0.1.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/f7fc619bdc3a01a86a4d29d23946fa29d520fa31...v0.1.0) (2024-08-09)
 ### Bug Fixes
 * fix: allow nullables to be compatible with api responses ([3d505149080ad09d1b9fe8eaa5a20928e5531bff](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/3d505149080ad09d1b9fe8eaa5a20928e5531bff))
