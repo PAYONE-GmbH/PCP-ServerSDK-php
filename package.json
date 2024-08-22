@@ -5,7 +5,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 --config ./changelog.config.js"
+    "changelog": "conventional-changelog -i CHANGELOG.md -s --config ./changelog.config.js"
   },
   "repository": {
     "type": "git",
