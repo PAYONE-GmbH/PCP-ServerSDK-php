@@ -257,11 +257,11 @@ class CommunicatorConfiguration
     {
         return [
             "prod" => [
-                "url" => "https://commerce-api.payone.com",
+                "url" => "https://api.commerce.payone.com",
                 "description" => "Production URL",
             ],
             "preprod" => [
-                "url" => "https://preprod.commerce-api.payone.com",
+                "url" => "https://api.preprod.commerce.payone.com",
                 "description" => "Pre-Production URL",
             ]
         ];

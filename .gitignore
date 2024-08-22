@@ -19,3 +19,6 @@ out/
 .php-cs-fixer.cache
 coverage/
 coverage.xml
+
+# Nodejs / Javascript
+node_modules
