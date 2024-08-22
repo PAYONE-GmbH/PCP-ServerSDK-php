@@ -1,51 +1,53 @@
-# PAYONE Commerce Platform Server SDK PHP
+# PAYONE Commerce Platform PHP SDK
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=PAYONE-GmbH_PCP-ServerSDK-php&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=PAYONE-GmbH_PCP-ServerSDK-php)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=PAYONE-GmbH_PCP-ServerSDK-php&metric=coverage)](https://sonarcloud.io/summary/new_code?id=PAYONE-GmbH_PCP-ServerSDK-php)
 
-* A convenient PHP wrapper around API calls and responses:
-    * marshals PHP request objects to HTTP requests
-    * unmarshals HTTP responses to PHP response objects or PHP exceptions
-* handling of all the details concerning authentication
-* handling of required metadata
+- A convenient PHP wrapper around API calls and responses:
+  - marshals PHP request objects to HTTP requests
+  - unmarshals HTTP responses to PHP response objects or PHP exceptions
+- handling of all the details concerning authentication
+- handling of required metadata
 
-For a general introduction to the API and various checkout flows, see the documentation:
-    - General introduction to the [PAYONE Commerce Platform](https://docs.payone.com/pcp/payone-commerce-platform)
-    - Overview of the [checkout flows](https://docs.payone.com/pcp/checkout-flows)
-    - Available [payment methods](https://docs.payone.com/pcp/checkout-flows)
+For a general introduction to the API and various checkout flows, see the documentation: - General introduction to the [PAYONE Commerce Platform](https://docs.payone.com/pcp/payone-commerce-platform) - Overview of the [checkout flows](https://docs.payone.com/pcp/checkout-flows) - Available [payment methods](https://docs.payone.com/pcp/checkout-flows)
 
 ## Table of Contents
 
-1. [Requirements](#requirements)
-1. [Installation](#installation)
-1. [Usage](#usage)
-   - [Error Handling](#error-handling)
-   - [Client Side](#client-side)
-   - [Apple Pay](#apple-pay)
-1. [Demo App](#demo-app)
-1. [API Reference](#api-reference)
-   - [CommunicatorConfiguration](#communicatorconfiguration)
-     - [Setup your configuration](#setup-your-configuration)
-     - [Constants](#constants)
-     - [Methods](#methods)
-   - [Queries](#queries)
-     - [GetCommerceCasesQuery](#getcommercecasesquery)
-     - [GetCheckoutsQuery](#getcheckoutsquery)
-   - [API Clients](#api-clients)
-     - [BaseApiClient](#baseapiclient)
-     - [CheckoutApiClient](#checkoutapiclient)
-     - [CommerceCaseApiClient](#commercecaseapiclient)
-     - [OrderManagementCheckoutActionsApiClient](#ordermanagementcheckoutactionsapiclient)
-     - [PaymentExecutionApiClient](#paymentexecutionapiclient)
-     - [PaymentInformationApiClient](#paymentinformationapiclient)
-1. [Contributing](#contributing)
-1. [Development](#development)
-   - [Structure of this repository](#structure-of-this-repository)
-   - [Release](#release)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [General](#general)
+  - [Error Handling](#error-handling)
+  - [Client Side](#client-side)
+  - [Apple Pay](#apple-pay)
+- [Demo App](#demo-app)
+- [API Reference](#api-reference)
+  - [CommunicatorConfiguration](#communicatorconfiguration)
+    - [Setup your configuration](#setup-your-configuration)
+    - [Constants](#constants)
+    - [Methods](#methods)
+  - [Queries](#queries)
+    - [GetCommerceCasesQuery](#getcommercecasesquery)
+    - [GetCheckoutsQuery](#getcheckoutsquery)
+  - [API Clients](#api-clients)
+    - [BaseApiClient](#baseapiclient)
+    - [CheckoutApiClient](#checkoutapiclient)
+    - [CommerceCaseApiClient](#commercecaseapiclient)
+    - [OrderManagementCheckoutActionsApiClient](#ordermanagementcheckoutactionsapiclient)
+    - [PaymentExecutionApiClient](#paymentexecutionapiclient)
+    - [PaymentInformationApiClient](#paymentinformationapiclient)
+- [Contributing](#contributing)
+- [Development](#development)
+  - [Structure of this repository](#structure-of-this-repository)
+  - [Release](#release)
+  - [Optional: Creating a GitHub Release](#optional-creating-a-github-release)
+- [License](#license)
 
 ## Requirements
 
 This SDK requires PHP 8.2 or later.
+
+**[back to top](#table-of-contents)**
 
 ## Installation
 
@@ -53,21 +55,25 @@ This SDK is currently not released on [packagist](https://packagist.org/). You c
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/PAYONE-GmbH/PCP-ServerSDK-php"
-        }
-    ],
-    "require": {
-        "payone-gmbh/pcp-serversdk-php": "dev-main"
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/PAYONE-GmbH/PCP-ServerSDK-php"
     }
+  ],
+  "require": {
+    "payone-gmbh/pcp-serversdk-php": "dev-main"
+  }
 }
 ```
 
 These snippets specify the main branch, which contains the latest release. You can specify a version by inserting a git tag `vX.Y.Z` instead of `main`. Make sure to prepend the git branch or tag with `dev-`. For an in depth explanation take a look at the [Composer documentation](https://getcomposer.org/doc/05-repositories.md#vcs).
 
+**[back to top](#table-of-contents)**
+
 ## Usage
+
+### General
 
 To use this SDK, you need to construct a `CommunicatorConfiguration` which encapsulates everything needed to connect to the PAYONE Commerce Platform.
 
@@ -84,6 +90,7 @@ $config = new CommunicatorConfiguration(
         integrator: 'YOUR COMPANY NAME',
 );
 ```
+
 As shown above, you can use `CommunicatorConfiguration::getPredefinedHosts()` for information on the available environments. With the configuration you can create an API client for each reource you want to interact with. For example to create a commerce case you can use the `CommerceCaseApiClient`.
 
 ```php
@@ -94,9 +101,9 @@ use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
 $client = new CommerceCaseApiClient($config);
 ```
 
- Each client has typed parameters for the payloads and responses. You can use `phpstan` to verify the types of the parameters and return values or look for `TypeError` thrown at runtime. All payloads are availble as PHP classes within the `PayoneCommercePlatform\Sdk\Models` namespace. The SDK will automatically marshal the PHP objects to JSON and send it to the API. The response will be unmarshalled to a PHP object internally. 
+Each client has typed parameters for the payloads and responses. You can use `phpstan` to verify the types of the parameters and return values or look for `TypeError` thrown at runtime. All payloads are availble as PHP classes within the `PayoneCommercePlatform\Sdk\Models` namespace. The SDK will automatically marshal the PHP objects to JSON and send it to the API. The response will be unmarshalled to a PHP object internally.
 
- To create an empty commerce case you can use the `CreateCommerceCaseRequest` class:
+To create an empty commerce case you can use the `CreateCommerceCaseRequest` class:
 
 ```php
 <?php
@@ -177,6 +184,8 @@ use PayoneCommercePlatform\Sdk\Transformer\ApplePayTransformer;
 $mobilePaymentMethodSpecificInput = ApplePayTransformer::transformApplePayPaymentToMobilePaymentMethodSpecificInput($applePayPayment);
 ```
 
+**[back to top](#table-of-contents)**
+
 ## Demo App
 
 This repository contains a demo app that showcases how to implement common use cases, like a [Step-by-Step Checkout](https://docs.payone.com/pcp/checkout-flows/step-by-step-checkout) and an [One-Stop-Checkout](https://docs.payone.com/pcp/checkout-flows/one-step-checkout). For each use case the demo app contains a protected method in the top level class `DemoApp`. You can run the app to execute the code within in the sandbox API. This is a good way to test, if your setup is correct.
@@ -184,18 +193,21 @@ This repository contains a demo app that showcases how to implement common use c
 Before running the app ensure you have run `composer install` and `composer dumb-autoload` within the demo app directory (`./examples/demo-app`). By default, all API calls are sent to the pre-production environment of the PAYONE Commerce Platform. Note that the created entities cannot be completely deleted.
 
 You can run it within the demo app directory via `php src/DemoApp.php`, make sure to provide all necessary environment variables:
+
 1. `API_KEY` a valid api key for the PAYONE Commerce Platform
 1. `API_SECRET` a valid api secret for the PAYONE Commerce Platform
 1. `MERCHANT_ID` the merchant id which is needed to identify entities, e.g. commerce cases and checkouts, that belong to you.
 
 [Jump to the demo app](./examples/demo-app/src/DemoApp.php)
 
+**[back to top](#table-of-contents)**
 
 ## API Reference
 
 All contents of this SDK are availble under the namespace `PayoneCommercePlatform\Sdk`. The SDK groups the endpoints of every resource into its own client, e.g. the `PayoneCommercePlatform\Sdk\ApiClient\CheckoutApiClient` can be used to interact with a checkout. To instantiate a singular client a `PayoneCommercePlatform\Sdk\CommunicatorConfiguration` instance has to provided which at least needs an API Key and Secret to connect to PAYONE Commerce Platform. The reponses and requests as well as their contained objects are provided as PHP classes and enums within the `PayoneCommercePlatform\Sdk\Models` namespace.
 
 ### CommunicatorConfiguration
+
 The CommunicatorConfiguration class is responsible for configuring the connection to the PAYONE Commerce Platform. This class holds essential information such as API keys, host URLs, and metadata required to authenticate and interact with the platform's API. Its needed as configuration to interact with any of the resources. Ensure that the API key and secret are securely stored and only passed to the configuration instance when needed.
 
 #### Setup your configuration
@@ -221,8 +233,8 @@ You shouldn't need to provide `serverMetaInfo`. This property can automatically 
 #### Constants
 
 **`SDK_VERSION`**  
-*Description*: The version of the SDK.
-*type*: `string`
+_Description_: The version of the SDK.
+_type_: `string`
 
 #### Methods
 
@@ -243,6 +255,7 @@ public function __construct(
 Constructor to initialize the configuration with required and optional parameters.
 
 **Parameters**:
+
 - `string $apiKey`: The API key for authentication.
 - `string $apiSecret`: The API secret for authentication.
 - `string|null $host`: The host URL for the PAYONE Commerce Platform API. Defaults to the production URL if not provided.
@@ -260,6 +273,7 @@ public function setApiKey(string $apiKey): self
 Sets the API key.
 
 **Parameters**:
+
 - `string $apiKey`: The API key for authentication.
 
 **Returns**:  
@@ -287,6 +301,7 @@ public function setApiSecret(string $apiSecret): self
 Sets the API secret.
 
 **Parameters**:
+
 - `string $apiSecret`: The API secret for authentication.
 
 **Returns**:  
@@ -326,6 +341,7 @@ public function setIntegrator(?string $integrator): self
 Sets the integrator information.
 
 **Parameters**:
+
 - `string|null $integrator`: The integrator information.
 
 **Returns**:  
@@ -341,6 +357,7 @@ public function setHost(string $host): self
 Sets the host URL. Automatically removes any trailing slash from the provided URL.
 
 **Parameters**:
+
 - `string $host`: The host URL for the PAYONE Commerce Platform API.
 
 **Returns**:  
@@ -380,6 +397,7 @@ public function setClientMetaInfo(array $clientMetaInfo): self
 Sets the client metadata information.
 
 **Parameters**:
+
 - `array<string, string> $clientMetaInfo`: The client metadata information.
 
 **Returns**:  
@@ -395,6 +413,7 @@ public function addClientMetaInfo(string $key, string $value): self
 Adds an entry to the client metadata information.
 
 **Parameters**:
+
 - `string $key`: The key for the metadata entry.
 - `string $value`: The value for the metadata entry.
 
@@ -423,6 +442,7 @@ public function setServerMetaInfo(array $serverMetaInfo): self
 Sets the server metadata information.
 
 **Parameters**:
+
 - `array<string, string> $serverMetaInfo`: The server metadata information.
 
 **Returns**:  
@@ -438,6 +458,7 @@ public function addServerMetaInfo(string $key, string $value): self
 Adds an entry to the server metadata information.
 
 **Parameters**:
+
 - `string $key`: The key for the metadata entry.
 - `string $value`: The value for the metadata entry.
 
@@ -467,54 +488,63 @@ The properties are directly mapped to the query parameters of the [commerce case
 The `GetCommerceCasesQuery` class is used to build and structure query parameters when fetching commerce cases via the PAYONE Commerce Platform API. It allows you to filter and limit the results by various criteria such as date range, merchant details, checkout status, and payment channels.
 
 ##### `offset`
+
 - **Type**: `int|null`
 - **Description**: The offset of the first item in the result set. This is used for pagination.
 - **Setter**: `public function setOffset(?int $offset): self`
 - **Getter**: `public function getOffset(): ?int`
 
 ##### `size`
+
 - **Type**: `int|null`
 - **Description**: The maximum number of items to return in the result set. This is used for pagination.
 - **Setter**: `public function setSize(?int $size): self`
 - **Getter**: `public function getSize(): ?int`
 
 ##### `fromDate`
+
 - **Type**: `DateTime|null`
 - **Description**: The start date for filtering commerce cases.
 - **Setter**: `public function setFromDate(?DateTime $fromDate): self`
 - **Getter**: `public function getFromDate(): ?DateTime`
 
 ##### `toDate`
+
 - **Type**: `DateTime|null`
 - **Description**: The end date for filtering commerce cases.
 - **Setter**: `public function setToDate(?DateTime $toDate): self`
 - **Getter**: `public function getToDate(): ?DateTime`
 
 ##### `commerceCaseId`
+
 - **Type**: `string|null`
 - **Description**: The unique identifier for a commerce case.
 - **Setter**: `public function setCommerceCaseId(?string $commerceCaseId): self`
 - **Getter**: `public function getCommerceCaseId(): ?string`
 
 ##### `merchantReference`
+
 - **Type**: `string|null`
 - **Description**: A reference identifier provided by the merchant.
 - **Setter**: `public function setMerchantReference(?string $merchantReference): self`
 - **Getter**: `public function getMerchantReference(): ?string`
 
 ##### `merchantCustomerId`
+
 - **Type**: `string|null`
 - **Description**: The unique identifier of the customer as provided by the merchant.
 - **Setter**: `public function setMerchantCustomerId(?string $merchantCustomerId): self`
 - **Getter**: `public function getMerchantCustomerId(): ?string`
 
 ##### `includeCheckoutStatus`
+
 - **Type**: `array<StatusCheckout>|null`
 - **Description**: An array of `StatusCheckout` enums to filter commerce cases by checkout status.
 - **Setter**: `public function setIncludeCheckoutStatus(?array $includeCheckoutStatus): self`
 - **Getter**: `public function getIncludeCheckoutStatus(): ?array`
 
 ##### `includePaymentChannel`
+
 - **Type**: `array<PaymentChannel>|null`
 - **Description**: An array of `PaymentChannel` enums to filter commerce cases by payment channels.
 - **Setter**: `public function setIncludePaymentChannel(?array $includePaymentChannel): self`
@@ -527,191 +557,221 @@ The properties are directly mapped to the query parameters of the [checkout API]
 The `GetCheckoutsQuery` class is used to build and structure query parameters when fetching checkout data via the PAYONE Commerce Platform API. It allows you to filter and limit the results by various criteria such as date range, amounts, merchant details, checkout statuses, and payment channels.
 
 ##### `offset`
+
 - **Type**: `int|null`
 - **Description**: The offset of the first item in the result set. This is used for pagination.
 - **Setter**: `public function setOffset(?int $offset): self`
 - **Getter**: `public function getOffset(): ?int`
 
 ##### `size`
+
 - **Type**: `int|null`
 - **Description**: The maximum number of items to return in the result set. This is used for pagination.
 - **Setter**: `public function setSize(?int $size): self`
 - **Getter**: `public function getSize(): ?int`
 
 ##### `fromDate`
+
 - **Type**: `DateTime|null`
 - **Description**: The start date for filtering checkouts.
 - **Setter**: `public function setFromDate(?DateTime $fromDate): self`
 - **Getter**: `public function getFromDate(): ?DateTime`
 
 ##### `toDate`
+
 - **Type**: `DateTime|null`
 - **Description**: The end date for filtering checkouts.
 - **Setter**: `public function setToDate(?DateTime $toDate): self`
 - **Getter**: `public function getToDate(): ?DateTime`
 
 ##### `fromCheckoutAmount`
+
 - **Type**: `int|null`
 - **Description**: The minimum checkout amount for filtering.
 - **Setter**: `public function setFromCheckoutAmount(?int $fromCheckoutAmount): self`
 - **Getter**: `public function getFromCheckoutAmount(): ?int`
 
 ##### `toCheckoutAmount`
+
 - **Type**: `int|null`
 - **Description**: The maximum checkout amount for filtering.
 - **Setter**: `public function setToCheckoutAmount(?int $toCheckoutAmount): self`
 - **Getter**: `public function getToCheckoutAmount(): ?int`
 
 ##### `fromOpenAmount`
+
 - **Type**: `int|null`
 - **Description**: The minimum open amount for filtering.
 - **Setter**: `public function setFromOpenAmount(?int $fromOpenAmount): self`
 - **Getter**: `public function getFromOpenAmount(): ?int`
 
 ##### `toOpenAmount`
+
 - **Type**: `int|null`
 - **Description**: The maximum open amount for filtering.
 - **Setter**: `public function setToOpenAmount(?int $toOpenAmount): self`
 - **Getter**: `public function getToOpenAmount(): ?int`
 
 ##### `fromCollectedAmount`
+
 - **Type**: `int|null`
 - **Description**: The minimum collected amount for filtering.
 - **Setter**: `public function setFromCollectedAmount(?int $fromCollectedAmount): self`
 - **Getter**: `public function getFromCollectedAmount(): ?int`
 
 ##### `toCollectedAmount`
+
 - **Type**: `int|null`
 - **Description**: The maximum collected amount for filtering.
 - **Setter**: `public function setToCollectedAmount(?int $toCollectedAmount): self`
 - **Getter**: `public function getToCollectedAmount(): ?int`
 
 ##### `fromCancelledAmount`
+
 - **Type**: `int|null`
 - **Description**: The minimum cancelled amount for filtering.
 - **Setter**: `public function setFromCancelledAmount(?int $fromCancelledAmount): self`
 - **Getter**: `public function getFromCancelledAmount(): ?int`
 
 ##### `toCancelledAmount`
+
 - **Type**: `int|null`
 - **Description**: The maximum cancelled amount for filtering.
 - **Setter**: `public function setToCancelledAmount(?int $toCancelledAmount): self`
 - **Getter**: `public function getToCancelledAmount(): ?int`
 
 ##### `fromRefundAmount`
+
 - **Type**: `int|null`
 - **Description**: The minimum refund amount for filtering.
 - **Setter**: `public function setFromRefundAmount(?int $fromRefundAmount): self`
 - **Getter**: `public function getFromRefundAmount(): ?int`
 
 ##### `toRefundAmount`
+
 - **Type**: `int|null`
 - **Description**: The maximum refund amount for filtering.
 - **Setter**: `public function setToRefundAmount(?int $toRefundAmount): self`
 - **Getter**: `public function getToRefundAmount(): ?int`
 
 ##### `fromChargebackAmount`
+
 - **Type**: `int|null`
 - **Description**: The minimum chargeback amount for filtering.
 - **Setter**: `public function setFromChargebackAmount(?int $fromChargebackAmount): self`
 - **Getter**: `public function getFromChargebackAmount(): ?int`
 
 ##### `toChargebackAmount`
+
 - **Type**: `int|null`
 - **Description**: The maximum chargeback amount for filtering.
 - **Setter**: `public function setToChargebackAmount(?int $toChargebackAmount): self`
 - **Getter**: `public function getToChargebackAmount(): ?int`
 
 ##### `checkoutId`
+
 - **Type**: `string|null`
 - **Description**: The unique identifier of the checkout.
 - **Setter**: `public function setCheckoutId(?string $checkoutId): self`
 - **Getter**: `public function getCheckoutId(): ?string`
 
 ##### `merchantReference`
+
 - **Type**: `string|null`
 - **Description**: A reference identifier provided by the merchant.
 - **Setter**: `public function setMerchantReference(?string $merchantReference): self`
 - **Getter**: `public function getMerchantReference(): ?string`
 
 ##### `merchantCustomerId`
+
 - **Type**: `string|null`
 - **Description**: The unique identifier of the customer as provided by the merchant.
 - **Setter**: `public function setMerchantCustomerId(?string $merchantCustomerId): self`
 - **Getter**: `public function getMerchantCustomerId(): ?string`
 
 ##### `includePaymentProductId`
+
 - **Type**: `array<string>|null`
 - **Description**: An array of payment product IDs to include in the search.
 - **Setter**: `public function setIncludePaymentProductId(?array $includePaymentProductId): self`
 - **Getter**: `public function getIncludePaymentProductId(): ?array`
 
 ##### `includeCheckoutStatus`
+
 - **Type**: `array<StatusCheckout>|null`
 - **Description**: An array of `StatusCheckout` enums to filter checkouts by status.
 - **Setter**: `public function setIncludeCheckoutStatus(?array $includeCheckoutStatus): self`
 - **Getter**: `public function getIncludeCheckoutStatus(): ?array`
 
 ##### `includeExtendedCheckoutStatus`
+
 - **Type**: `array<ExtendedCheckoutStatus>|null`
 - **Description**: An array of `ExtendedCheckoutStatus` enums to filter checkouts by extended status.
 - **Setter**: `public function setIncludeExtendedCheckoutStatus(?array $includeExtendedCheckoutStatus): self`
 - **Getter**: `public function getIncludeExtendedCheckoutStatus(): ?array`
 
 ##### `includePaymentChannel`
+
 - **Type**: `array<PaymentChannel>|null`
 - **Description**: An array of `PaymentChannel` enums to filter checkouts by payment channel.
 - **Setter**: `public function setIncludePaymentChannel(?array $includePaymentChannel): self`
 - **Getter**: `public function getIncludePaymentChannel(): ?array`
 
 ##### `paymentReference`
+
 - **Type**: `string|null`
 - **Description**: The payment reference for filtering.
 - **Setter**: `public function setPaymentReference(?string $paymentReference): self`
 - **Getter**: `public function getPaymentReference(): ?string`
 
 ##### `paymentId`
+
 - **Type**: `string|null`
 - **Description**: The payment ID for filtering.
 - **Setter**: `public function setPaymentId(?string $paymentId): self`
 - **Getter**: `public function getPaymentId(): ?string`
 
 ##### `firstName`
+
 - **Type**: `string|null`
 - **Description**: The first name of the customer for filtering.
 - **Setter**: `public function setFirstName(?string $firstName): self`
 - **Getter**: `public function getFirstName(): ?string`
 
 ##### `surname`
+
 - **Type**: `string|null`
 - **Description**: The surname of the customer for filtering.
 - **Setter**: `public function setSurname(?string $surname): self`
 - **Getter**: `public function getSurname(): ?string`
 
 ##### `email`
+
 - **Type**: `string|null`
 - **Description**: The email of the customer for filtering.
 - **Setter**: `public function setEmail(?string $email): self`
 - **Getter**: `public function getEmail(): ?string`
 
 ##### `phoneNumber`
+
 - **Type**: `string|null`
 - **Description**: The phone number of the customer for filtering.
 - **Setter**: `public function setPhoneNumber(?string $phoneNumber): self`
 - **Getter**: `public function getPhoneNumber(): ?string`
 
 ##### `dateOfBirth`
+
 - **Type**: `string|null`
 - **Description**: The date of birth of the customer for filtering.
 - **Setter**: `public function setDateOfBirth(?string $dateOfBirth): self`
 - **Getter**: `public function getDateOfBirth(): ?string`
 
 ##### `companyInformation`
+
 - **Type**: `string|null`
 - **Description**: The company information for filtering.
 - **Setter**: `public function setCompanyInformation(?string $companyInformation): self`
 - **Getter**: `public function getCompanyInformation(): ?string`
-
 
 ### API Clients
 
@@ -735,10 +795,12 @@ All clients inherit from `PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient`. Y
 A generic function that deserializes a JSON string into an instance of the specified class type.
 
 **Parameters**:
+
 - `string $data`: The JSON string to deserialize.
 - `class-string<T>`: The fully qualified class name of the type to deserialize the JSON string into.
 
-**Returns**:  
+**Returns**:
+
 - `T` - An instance of the specified class type
 
 **Exceptions**:
@@ -752,6 +814,7 @@ A generic function that deserializes a JSON string into an instance of the speci
 Serializes an object or array into a JSON string. The method ensures that empty objects are serialized as `'{}'` rather than `'[]'`. Any property that itself maybe a model from the `PayoneCommercePlatform\Sdk\Models` namespace or an array of models is resursively serialized. T
 
 **Parameters**:
+
 - `mixed $data`: The data to be serialized into a JSON string.
 
 **Returns**:
@@ -788,6 +851,7 @@ public function createCheckout(
 Creates a new checkout within an existing commerce case.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant. A Checkout is associated with exactly one merchant.
 - `string $commerceCaseId`: The unique identifier of a commerce case.
 - `CreateCheckoutRequest $createCheckoutRequest`: The request body containing details for creating the checkout.
@@ -796,6 +860,7 @@ Creates a new checkout within an existing commerce case.
 `CreateCheckoutResponse` - The response object containing details of the created checkout.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -813,6 +878,7 @@ public function deleteCheckout(
 Deletes an existing checkout.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a commerce case.
 - `string $checkoutId`: The unique identifier of the checkout to be deleted.
@@ -821,6 +887,7 @@ Deletes an existing checkout.
 `void`
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -838,6 +905,7 @@ public function getCheckout(
 Retrieves details of a specific checkout.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a commerce case.
 - `string $checkoutId`: The unique identifier of the checkout to retrieve.
@@ -846,6 +914,7 @@ Retrieves details of a specific checkout.
 `CheckoutResponse` - The response object containing details of the retrieved checkout.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -862,6 +931,7 @@ public function getCheckouts(
 Retrieves a list of checkouts based on the provided search parameters.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `GetCheckoutsQuery $query`: The query parameters used to filter the checkouts.
 
@@ -869,6 +939,7 @@ Retrieves a list of checkouts based on the provided search parameters.
 `CheckoutsResponse` - The response object containing a list of checkouts that match the search parameters.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -887,6 +958,7 @@ public function updateCheckout(
 Modifies an existing checkout.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a commerce case.
 - `string $checkoutId`: The unique identifier of the checkout to be updated.
@@ -896,6 +968,7 @@ Modifies an existing checkout.
 `void`
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -929,6 +1002,7 @@ public function createCommerceCase(
 Creates a new commerce case for a specified merchant.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant. A Commerce Case is associated with exactly one merchant.
 - `CreateCommerceCaseRequest $createCommerceCaseRequest`: The request body containing details for creating the commerce case.
 
@@ -936,6 +1010,7 @@ Creates a new commerce case for a specified merchant.
 `CreateCommerceCaseResponse` - The response object containing details of the created commerce case.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -952,6 +1027,7 @@ public function getCommerceCase(
 Retrieves details of a specific commerce case.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of the commerce case to retrieve.
 
@@ -959,6 +1035,7 @@ Retrieves details of a specific commerce case.
 `CommerceCaseResponse` - The response object containing details of the retrieved commerce case.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -975,6 +1052,7 @@ public function getCommerceCases(
 Retrieves a list of commerce cases based on the provided search parameters.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `GetCommerceCasesQuery $query`: The query parameters used to filter the commerce cases.
 
@@ -982,6 +1060,7 @@ Retrieves a list of commerce cases based on the provided search parameters.
 `array<CommerceCaseResponse>` - An array of `CommerceCaseResponse` objects representing the retrieved commerce cases.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -999,6 +1078,7 @@ public function updateCommerceCase(
 Updates an existing commerce case with new customer information.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of the commerce case to update.
 - `Customer $customer`: The customer data to update in the commerce case.
@@ -1007,6 +1087,7 @@ Updates an existing commerce case with new customer information.
 `void`
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1042,6 +1123,7 @@ public function cancelOrder(
 Marks items of a Checkout as canceled and automatically cancels the payment associated with those items.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant. A Checkout is associated with exactly one merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1051,6 +1133,7 @@ Marks items of a Checkout as canceled and automatically cancels the payment asso
 `CancelResponse` - The response object containing details of the canceled order.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1069,6 +1152,7 @@ public function createOrder(
 Creates an order that will automatically execute a payment.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant. A Checkout is associated with exactly one merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1078,6 +1162,7 @@ Creates an order that will automatically execute a payment.
 `OrderResponse` - The response object containing details of the created order.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1096,6 +1181,7 @@ public function deliverOrder(
 Marks items of a Checkout as delivered and automatically captures the payment associated with those items.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant. A Checkout is associated with exactly one merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1105,6 +1191,7 @@ Marks items of a Checkout as delivered and automatically captures the payment as
 `DeliverResponse` - The response object containing details of the delivered order.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1123,6 +1210,7 @@ public function returnOrder(
 Marks items of a Checkout as returned and automatically refunds the payment associated with those items.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant. A Checkout is associated with exactly one merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1132,6 +1220,7 @@ Marks items of a Checkout as returned and automatically refunds the payment asso
 `ReturnResponse` - The response object containing details of the returned order.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1168,6 +1257,7 @@ public function cancelPaymentExecution(
 Cancels a payment that has been previously executed.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1178,6 +1268,7 @@ Cancels a payment that has been previously executed.
 `CancelPaymentResponse` - The response object containing details of the canceled payment.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1197,6 +1288,7 @@ public function capturePaymentExecution(
 Captures a payment that has been authorized but not yet captured.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1207,6 +1299,7 @@ Captures a payment that has been authorized but not yet captured.
 `CapturePaymentResponse` - The response object containing details of the captured payment.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1226,6 +1319,7 @@ public function completePayment(
 Completes a payment that has been partially processed or requires finalization.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1236,6 +1330,7 @@ Completes a payment that has been partially processed or requires finalization.
 `CompletePaymentResponse` - The response object containing details of the completed payment.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1254,6 +1349,7 @@ public function createPayment(
 Creates a new payment execution for a checkout.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1263,6 +1359,7 @@ Creates a new payment execution for a checkout.
 `CreatePaymentResponse` - The response object containing details of the created payment execution.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1282,6 +1379,7 @@ public function refundPaymentExecution(
 Refunds a payment that has been previously captured.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1292,6 +1390,7 @@ Refunds a payment that has been previously captured.
 `RefundPaymentResponse` - The response object containing details of the refunded payment.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1327,6 +1426,7 @@ public function createPaymentInformation(
 Creates a new payment information record associated with a specific checkout.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1336,6 +1436,7 @@ Creates a new payment information record associated with a specific checkout.
 `PaymentInformationResponse` - The response object containing details of the created payment information.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
@@ -1354,6 +1455,7 @@ public function getPaymentInformation(
 Retrieves details of an existing payment information record associated with a specific checkout.
 
 **Parameters**:
+
 - `string $merchantId`: The unique identifier of the merchant.
 - `string $commerceCaseId`: The unique identifier of a Commerce Case.
 - `string $checkoutId`: The unique identifier of a Checkout.
@@ -1363,21 +1465,17 @@ Retrieves details of an existing payment information record associated with a sp
 `PaymentInformationResponse` - The response object containing details of the payment information.
 
 **Exceptions**:
+
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
+**[back to top](#table-of-contents)**
+
 ## Contributing
 
-We welcome contributions from the community. If you want to contribute, please follow these steps:
+See [Contributing](./CONTRIBUTING.md)
 
-1. Fork the repository.
-1. Create a new branch (`git checkout -b feature/feature-branch`).
-1. Make your changes.
-1. Commit your changes (`git commit -am 'Add new feature'`).
-1. Push to the branch (`git push origin feature/feature-branch`).
-1. Create a new Pull Request.
-
-Please ensure that you follow the coding standards and write appropriate tests for your changes. You can use `composer run-script lint` to check for potential errors with `phpstan`. Use `composer run-script format` to ensure you're code is formatted consistently. To run tests run `composer run-script test`
+**[back to top](#table-of-contents)**
 
 ## Development
 
@@ -1414,4 +1512,31 @@ After calling the `prepare_release.sh` script, it is recommended to manually tri
      ```
    - Review and commit the updated changelog before proceeding with the release.
 
-When the release is ready, a PR should be created for relase branch. Select `develop` as the base branch. After merging into `develop`, merge `develop` into `main`.
+When the release is ready, a PR should be created for release branch. Select `develop` as the base branch. After merging into `develop`, merge `develop` into `main`.
+
+### Optional: Creating a GitHub Release
+
+Once you've pushed your latest changes to the repository, developers can start using the latest version by pulling it from GitHub. However, to make the release more visible and provide detailed release notes, you can optionally create a GitHub release.
+
+1. **Navigate to the Releases Page**: Go to the "Releases" section of your repository on GitHub.
+2. **Draft a New Release**: Click "Draft a new release".
+3. **Tag the Release**: Select the version tag that corresponds to the commit you want to release (e.g., `v0.1.0`). If the tag doesn't exist, you can create it here.
+4. **Release Title**: Add a descriptive title for the release (e.g., `v0.1.0 - Initial Release`).
+5. **Auto-Generated Release Notes**: GitHub can automatically generate release notes based on merged pull requests and commit history. You can review these notes, adjust the content, and highlight important changes.
+6. **Publish the Release**: Once you're satisfied with the release notes, click "Publish release".
+
+Creating a GitHub release is optional but beneficial, as it provides additional context and visibility for your users. Developers can then reference this specific release tag in their `composer.json` file when adding the package as a dependency.
+
+For detailed guidance, refer to the [GitHub documentation on managing releases](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository).
+
+**[back to top](#table-of-contents)**
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+**[back to top](#table-of-contents)**
+
+---
+
+Thank you for using our SDK for Online Payments! If you have any questions or need further assistance, feel free to open an issue or contact us.
