@@ -1,3 +1,4 @@
+## [1.0.1](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.0.0...v1.0.1) (2024-12-12)
 # [1.0.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v0.1.0...v1.0.0) (2024-08-22)
 ### Features
 * feat: provide updated api endpoints when calling getPredefinedHosts() ([3927c7eafe34b2ac9fb66dcecd9869b5dad644c8](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/3927c7eafe34b2ac9fb66dcecd9869b5dad644c8))
