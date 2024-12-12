@@ -46,8 +46,8 @@
   },
   "scripts": {
     "demo": "php ./examples/demo-app/src/DemoApp.php",
-    "format-check": "php-cs-fixer check",
-    "format": "php-cs-fixer fix",
+    "format-check": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer check",
+    "format": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
     "lint": "phpstan analyze -l 9 src tests",
     "test": "phpunit tests",
     "coverage": "XDEBUG_MODE=coverage phpunit --coverage-clover=coverage.xml tests",
