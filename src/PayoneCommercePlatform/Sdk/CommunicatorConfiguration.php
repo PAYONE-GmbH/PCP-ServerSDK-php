@@ -4,7 +4,7 @@ namespace PayoneCommercePlatform\Sdk;
 
 class CommunicatorConfiguration
 {
-    public const SDK_VERSION = '1.0.0';
+    public const SDK_VERSION = '1.0.1';
 
     /**
      * Api key for the PAYONE Commerce Platform

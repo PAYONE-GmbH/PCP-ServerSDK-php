@@ -50,7 +50,7 @@ class BaseApiClient
      */
     public function __construct(
         CommunicatorConfiguration $config,
-        ClientInterface $client = null,
+        ClientInterface|null $client = null,
     ) {
         $this->config = $config;
         $this->client = $client ?: new Client();
@@ -107,7 +107,6 @@ class BaseApiClient
         $contents = "";
         try {
             $contents = $response->getBody()->getContents();
-            // @phpstan-ignore-next-line
             return [
                 self::$serializer->deserialize($contents, $type, 'json'),
                 $response->getStatusCode(),
