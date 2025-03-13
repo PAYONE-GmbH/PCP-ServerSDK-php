@@ -3,7 +3,6 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
-
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentMethodSpecificInput;
 
 class CompleteOrderRequest

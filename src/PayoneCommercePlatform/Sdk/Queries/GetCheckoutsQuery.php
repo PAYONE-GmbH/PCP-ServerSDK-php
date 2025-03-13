@@ -497,13 +497,13 @@ class GetCheckoutsQuery
             $query['includePaymentProductId'] = implode(',', $this->includePaymentProductId);
         }
         if ($this->includeCheckoutStatus !== null) {
-            $query['includeCheckoutStatus'] = implode(',', array_map(fn($status) => $status->value, $this->includeCheckoutStatus));
+            $query['includeCheckoutStatus'] = implode(',', array_map(fn ($status) => $status->value, $this->includeCheckoutStatus));
         }
         if ($this->includeExtendedCheckoutStatus !== null) {
-            $query['includeExtendedCheckoutStatus'] = implode(',', array_map(fn($status) => $status->value, $this->includeExtendedCheckoutStatus));
+            $query['includeExtendedCheckoutStatus'] = implode(',', array_map(fn ($status) => $status->value, $this->includeExtendedCheckoutStatus));
         }
         if ($this->includePaymentChannel !== null) {
-            $query['includePaymentChannel'] = implode(',', array_map(fn($channel) => $channel->value, $this->includePaymentChannel));
+            $query['includePaymentChannel'] = implode(',', array_map(fn ($channel) => $channel->value, $this->includePaymentChannel));
         }
         if ($this->paymentReference !== null) {
             $query['paymentReference'] = $this->paymentReference;

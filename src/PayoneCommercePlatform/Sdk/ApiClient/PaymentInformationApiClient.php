@@ -157,15 +157,15 @@ class PaymentInformationApiClient extends BaseApiClient
 
     /**
      * Operation refundPaymentInformation
-     * 
+     *
      * Refund a Payment Information
-     * 
+     *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentInformationId Unique identifier of a paymentInformation (required)
      * @param \PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundRequest $paymentInformationRefundRequest paymentInformationRefundRequest (required)
-     * 
+     *
      * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundResponse
      */
@@ -177,13 +177,13 @@ class PaymentInformationApiClient extends BaseApiClient
 
     /**
      * Create request for operation 'refundPaymentInformation'
-     * 
+     *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param  string $checkoutId Unique identifier of a Checkout (required)
      * @param  string $paymentInformationId Unique identifier of a paymentInformation (required)
      * @param \PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundRequest $paymentInformationRefundRequest paymentInformationRefundRequest (required)
-     * 
+     *
      * @return \GuzzleHttp\Psr7\Request
      */
     protected function refundPaymentInformationRequest(

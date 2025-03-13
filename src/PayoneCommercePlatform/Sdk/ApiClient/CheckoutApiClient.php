@@ -322,12 +322,12 @@ class CheckoutApiClient extends BaseApiClient
 
     /**
      * Operation completeCheckout
-     * 
+     *
      * @param string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param string $checkoutId Unique identifier of a Checkout (required)
      * @param \PayoneCommercePlatform\Sdk\Models\CompleteOrderRequest $completeOrderRequest completeOrderRequest (required)
-     * 
+     *
      * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return \PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse
      */
@@ -341,12 +341,12 @@ class CheckoutApiClient extends BaseApiClient
 
     /**
      * Create request for operation 'completeCheckout'
-     * 
+     *
      * @param string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param string $commerceCaseId Unique identifier of a Commerce Case. (required)
      * @param string $checkoutId Unique identifier of a Checkout (required)
      * @param \PayoneCommercePlatform\Sdk\Models\CompleteOrderRequest $completeOrderRequest completeOrderRequest (required)
-     * 
+     *
      * @return \GuzzleHttp\Psr7\Request
      */
     protected function completeCheckoutRequest(string $merchantId, string $commerceCaseId, string $checkoutId, CompleteOrderRequest $completeOrderRequest): Request

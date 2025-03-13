@@ -11,7 +11,7 @@ use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformationInput;
 class PaymentProduct302SpecificInput
 {
     /**
-     * @var string|null Type of your Apple Pay integration. 
+     * @var string|null Type of your Apple Pay integration.
      * - `MERCHANT_CERTIFICATE`: using your own certificate (paid Apple Pay account needed).
      * - `MASS_ENABLEMENT`: using PAYONE certificate.
      */
@@ -38,8 +38,8 @@ class PaymentProduct302SpecificInput
     protected ?ApplePaymentDataTokenInformationInput $token;
 
     /**
-     * @var string|null The Domain of your Webshop. Needed for initialization the Apple Pay payment session 
-     * when `integrationType` is `MASS_ENABLEMENT`. 
+     * @var string|null The Domain of your Webshop. Needed for initialization the Apple Pay payment session
+     * when `integrationType` is `MASS_ENABLEMENT`.
      */
     #[SerializedName('domainName')]
     protected ?string $domainName;
