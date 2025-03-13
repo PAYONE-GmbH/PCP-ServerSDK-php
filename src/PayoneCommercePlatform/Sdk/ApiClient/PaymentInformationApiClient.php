@@ -6,6 +6,8 @@ use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
 use PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest;
 use PayoneCommercePlatform\Sdk\Models\PaymentInformationResponse;
+use PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundRequest;
+use PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
 
@@ -150,6 +152,86 @@ class PaymentInformationApiClient extends BaseApiClient
             'GET',
             $operationHost . $resourcePath,
             $headers,
+        );
+    }
+
+    /**
+     * Operation refundPaymentInformation
+     * 
+     * Refund a Payment Information
+     * 
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentInformationId Unique identifier of a paymentInformation (required)
+     * @param \PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundRequest $paymentInformationRefundRequest paymentInformationRefundRequest (required)
+     * 
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
+     * @return \PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundResponse
+     */
+    public function refundPaymentInformation(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentInformationId, PaymentInformationRefundRequest $paymentInformationRefundRequest): PaymentInformationRefundResponse
+    {
+        $request = $this->refundPaymentInformationRequest($merchantId, $commerceCaseId, $checkoutId, $paymentInformationId, $paymentInformationRefundRequest);
+        return $this->makeApiCall($request, PaymentInformationRefundResponse::class)[0];
+    }
+
+    /**
+     * Create request for operation 'refundPaymentInformation'
+     * 
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentInformationId Unique identifier of a paymentInformation (required)
+     * @param \PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundRequest $paymentInformationRefundRequest paymentInformationRefundRequest (required)
+     * 
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    protected function refundPaymentInformationRequest(
+        string $merchantId,
+        string $commerceCaseId,
+        string $checkoutId,
+        string $paymentInformationId,
+        PaymentInformationRefundRequest $paymentInformationRefundRequest
+    ): Request {
+        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information/{paymentInformationId}/refund';
+        $httpBody = '';
+
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'merchantId' . '}',
+            rawurlencode($merchantId),
+            $resourcePath
+        );
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'commerceCaseId' . '}',
+            rawurlencode($commerceCaseId),
+            $resourcePath
+        );
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'checkoutId' . '}',
+            rawurlencode($checkoutId),
+            $resourcePath
+        );
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'paymentInformationId' . '}',
+            rawurlencode($paymentInformationId),
+            $resourcePath
+        );
+
+        /** @var array<string, string> */
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
+
+        $httpBody = self::serializeJson($paymentInformationRefundRequest);
+
+        $operationHost = $this->config->getHost();
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath,
+            $headers,
+            $httpBody
         );
     }
 }

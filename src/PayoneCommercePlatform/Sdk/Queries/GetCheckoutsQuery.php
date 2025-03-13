@@ -44,6 +44,8 @@ class GetCheckoutsQuery
     private ?string $phoneNumber = null;
     private ?string $dateOfBirth = null;
     private ?string $companyInformation = null;
+    private ?string $terminalId = null;
+    private ?string $reportingToken = null;
 
     public function setOffset(?int $offset): self
     {
@@ -247,6 +249,18 @@ class GetCheckoutsQuery
         return $this;
     }
 
+    public function setTerminalId(?string $terminalId): self
+    {
+        $this->terminalId = $terminalId;
+        return $this;
+    }
+
+    public function setReportingToken(?string $reportingToken): self
+    {
+        $this->reportingToken = $reportingToken;
+        return $this;
+    }
+
     public function getOffset(): ?int
     {
         return $this->offset;
@@ -406,6 +420,16 @@ class GetCheckoutsQuery
         return $this->companyInformation;
     }
 
+    public function getTerminalId(): ?string
+    {
+        return $this->terminalId;
+    }
+
+    public function getReportingToken(): ?string
+    {
+        return $this->reportingToken;
+    }
+
     /** @return array<string, int|string> */
     public function toQueryMap(): array
     {
@@ -473,13 +497,13 @@ class GetCheckoutsQuery
             $query['includePaymentProductId'] = implode(',', $this->includePaymentProductId);
         }
         if ($this->includeCheckoutStatus !== null) {
-            $query['includeCheckoutStatus'] = implode(',', array_map(fn ($status) => $status->value, $this->includeCheckoutStatus));
+            $query['includeCheckoutStatus'] = implode(',', array_map(fn($status) => $status->value, $this->includeCheckoutStatus));
         }
         if ($this->includeExtendedCheckoutStatus !== null) {
-            $query['includeExtendedCheckoutStatus'] = implode(',', array_map(fn ($status) => $status->value, $this->includeExtendedCheckoutStatus));
+            $query['includeExtendedCheckoutStatus'] = implode(',', array_map(fn($status) => $status->value, $this->includeExtendedCheckoutStatus));
         }
         if ($this->includePaymentChannel !== null) {
-            $query['includePaymentChannel'] = implode(',', array_map(fn ($channel) => $channel->value, $this->includePaymentChannel));
+            $query['includePaymentChannel'] = implode(',', array_map(fn($channel) => $channel->value, $this->includePaymentChannel));
         }
         if ($this->paymentReference !== null) {
             $query['paymentReference'] = $this->paymentReference;
@@ -504,6 +528,12 @@ class GetCheckoutsQuery
         }
         if ($this->companyInformation !== null) {
             $query['companyInformation'] = $this->companyInformation;
+        }
+        if ($this->terminalId !== null) {
+            $query['terminalId'] = $this->terminalId;
+        }
+        if ($this->reportingToken !== null) {
+            $query['reportingToken'] = $this->reportingToken;
         }
 
         return $query;

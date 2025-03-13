@@ -43,18 +43,26 @@ class PaymentEvent
     #[SerializedName('returnReason')]
     protected ?string $returnReason;
 
+    /**
+     * @var PaymentInstructions|null Payment instructions associated with this payment event.
+     */
+    #[SerializedName('paymentInstructions')]
+    protected ?PaymentInstructions $paymentInstructions;
+
     public function __construct(
         ?PaymentType $type = null,
         ?AmountOfMoney $amountOfMoney = null,
         ?StatusValue $paymentStatus = null,
         ?CancellationReason $cancellationReason = null,
-        ?string $returnReason = null
+        ?string $returnReason = null,
+        ?PaymentInstructions $paymentInstructions = null
     ) {
         $this->type = $type;
         $this->amountOfMoney = $amountOfMoney;
         $this->paymentStatus = $paymentStatus;
         $this->cancellationReason = $cancellationReason;
         $this->returnReason = $returnReason;
+        $this->paymentInstructions = $paymentInstructions;
     }
 
     // Getters and Setters
@@ -110,6 +118,17 @@ class PaymentEvent
     public function setReturnReason(?string $returnReason): self
     {
         $this->returnReason = $returnReason;
+        return $this;
+    }
+
+    public function getPaymentInstructions(): ?PaymentInstructions
+    {
+        return $this->paymentInstructions;
+    }
+
+    public function setPaymentInstructions(?PaymentInstructions $paymentInstructions): self
+    {
+        $this->paymentInstructions = $paymentInstructions;
         return $this;
     }
 }

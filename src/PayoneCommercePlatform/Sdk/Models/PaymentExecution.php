@@ -60,6 +60,12 @@ class PaymentExecution
     protected ?FinancingPaymentMethodSpecificInput $financingPaymentMethodSpecificInput;
 
     /**
+     * @var BankPayoutMethodSpecificInput|null Bank payout method specific input details.
+     */
+    #[SerializedName('bankPayoutMethodSpecificInput')]
+    protected ?BankPayoutMethodSpecificInput $bankPayoutMethodSpecificInput;
+
+    /**
      * @var PaymentChannel|null Payment channel.
      */
     #[SerializedName('paymentChannel')]
@@ -72,23 +78,45 @@ class PaymentExecution
     protected ?References $references;
 
     /**
+     * @var string|null The previous payment ID, if applicable.
+     */
+    #[SerializedName('previousPayment')]
+    protected ?string $previousPayment;
+
+    /**
+     * @var string|null The date and time when the payment was created.
+     */
+    #[SerializedName('creationDateTime')]
+    protected ?string $creationDateTime;
+
+    /**
+     * @var string|null The date and time when the payment was last updated.
+     */
+    #[SerializedName('lastUpdated')]
+    protected ?string $lastUpdated;
+
+    /**
      * @var PaymentEvent[]|null List of payment events.
      */
     #[SerializedName('events')]
     protected ?array $events;
 
     /**
-      * @param string|null $paymentExecutionId Unique ID of paymentExecution.
-      * @param string|null $paymentId Unique payment transaction identifier of the payment gateway.
-      * @param CardPaymentMethodSpecificInput|null $cardPaymentMethodSpecificInput Card payment method specific input details.
-      * @param MobilePaymentMethodSpecificInput|null $mobilePaymentMethodSpecificInput Mobile payment method specific input details.
-      * @param RedirectPaymentMethodSpecificInput|null $redirectPaymentMethodSpecificInput Redirect payment method specific input details.
-      * @param SepaDirectDebitPaymentMethodSpecificInput|null $sepaDirectDebitPaymentMethodSpecificInput SEPA direct debit payment method specific input details.
-      * @param FinancingPaymentMethodSpecificInput|null $financingPaymentMethodSpecificInput Financing payment method specific input details.
-      * @param PaymentChannel|null $paymentChannel Payment channel.
-      * @param References|null $references Reference details linked to this transaction.
-      * @param PaymentEvent[]|null $events List of payment events.
-      */
+     * @param string|null $paymentExecutionId Unique ID of paymentExecution.
+     * @param string|null $paymentId Unique payment transaction identifier of the payment gateway.
+     * @param CardPaymentMethodSpecificInput|null $cardPaymentMethodSpecificInput Card payment method specific input details.
+     * @param MobilePaymentMethodSpecificInput|null $mobilePaymentMethodSpecificInput Mobile payment method specific input details.
+     * @param RedirectPaymentMethodSpecificInput|null $redirectPaymentMethodSpecificInput Redirect payment method specific input details.
+     * @param SepaDirectDebitPaymentMethodSpecificInput|null $sepaDirectDebitPaymentMethodSpecificInput SEPA direct debit payment method specific input details.
+     * @param FinancingPaymentMethodSpecificInput|null $financingPaymentMethodSpecificInput Financing payment method specific input details.
+     * @param BankPayoutMethodSpecificInput|null $bankPayoutMethodSpecificInput Bank payout method specific input details.
+     * @param PaymentChannel|null $paymentChannel Payment channel.
+     * @param References|null $references Reference details linked to this transaction.
+     * @param string|null $previousPayment The previous payment ID, if applicable.
+     * @param string|null $creationDateTime The date and time when the payment was created.
+     * @param string|null $lastUpdated The date and time when the payment was last updated.
+     * @param PaymentEvent[]|null $events List of payment events.
+     */
     public function __construct(
         ?string $paymentExecutionId = null,
         ?string $paymentId = null,
@@ -97,8 +125,12 @@ class PaymentExecution
         ?RedirectPaymentMethodSpecificInput $redirectPaymentMethodSpecificInput = null,
         ?SepaDirectDebitPaymentMethodSpecificInput $sepaDirectDebitPaymentMethodSpecificInput = null,
         ?FinancingPaymentMethodSpecificInput $financingPaymentMethodSpecificInput = null,
+        ?BankPayoutMethodSpecificInput $bankPayoutMethodSpecificInput = null,
         ?PaymentChannel $paymentChannel = null,
         ?References $references = null,
+        ?string $previousPayment = null,
+        ?string $creationDateTime = null,
+        ?string $lastUpdated = null,
         ?array $events = null
     ) {
         $this->paymentExecutionId = $paymentExecutionId;
@@ -108,8 +140,12 @@ class PaymentExecution
         $this->redirectPaymentMethodSpecificInput = $redirectPaymentMethodSpecificInput;
         $this->sepaDirectDebitPaymentMethodSpecificInput = $sepaDirectDebitPaymentMethodSpecificInput;
         $this->financingPaymentMethodSpecificInput = $financingPaymentMethodSpecificInput;
+        $this->bankPayoutMethodSpecificInput = $bankPayoutMethodSpecificInput;
         $this->paymentChannel = $paymentChannel;
         $this->references = $references;
+        $this->previousPayment = $previousPayment;
+        $this->creationDateTime = $creationDateTime;
+        $this->lastUpdated = $lastUpdated;
         $this->events = $events;
     }
 
@@ -191,6 +227,17 @@ class PaymentExecution
         return $this;
     }
 
+    public function getBankPayoutMethodSpecificInput(): ?BankPayoutMethodSpecificInput
+    {
+        return $this->bankPayoutMethodSpecificInput;
+    }
+
+    public function setBankPayoutMethodSpecificInput(?BankPayoutMethodSpecificInput $bankPayoutMethodSpecificInput): self
+    {
+        $this->bankPayoutMethodSpecificInput = $bankPayoutMethodSpecificInput;
+        return $this;
+    }
+
     public function getPaymentChannel(): ?PaymentChannel
     {
         return $this->paymentChannel;
@@ -210,6 +257,39 @@ class PaymentExecution
     public function setReferences(?References $references): self
     {
         $this->references = $references;
+        return $this;
+    }
+
+    public function getPreviousPayment(): ?string
+    {
+        return $this->previousPayment;
+    }
+
+    public function setPreviousPayment(?string $previousPayment): self
+    {
+        $this->previousPayment = $previousPayment;
+        return $this;
+    }
+
+    public function getCreationDateTime(): ?string
+    {
+        return $this->creationDateTime;
+    }
+
+    public function setCreationDateTime(?string $creationDateTime): self
+    {
+        $this->creationDateTime = $creationDateTime;
+        return $this;
+    }
+
+    public function getLastUpdated(): ?string
+    {
+        return $this->lastUpdated;
+    }
+
+    public function setLastUpdated(?string $lastUpdated): self
+    {
+        $this->lastUpdated = $lastUpdated;
         return $this;
     }
 

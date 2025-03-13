@@ -5,6 +5,7 @@ namespace PayoneCommercePlatform\Sdk\Models;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
 use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
+use PayoneCommercePlatform\Sdk\Models\PaymentInstructions;
 
 /**
  * @description Object containing Capture details.
@@ -35,16 +36,24 @@ class CaptureOutput
     #[SerializedName('paymentMethod')]
     protected ?string $paymentMethod;
 
+    /**
+     * @var PaymentInstructions|null Payment instructions associated with the capture.
+     */
+    #[SerializedName('paymentInstructions')]
+    protected ?PaymentInstructions $paymentInstructions;
+
     public function __construct(
         ?AmountOfMoney $amountOfMoney = null,
         ?string $merchantParameters = null,
         ?PaymentReferences $references = null,
-        ?string $paymentMethod = null
+        ?string $paymentMethod = null,
+        ?PaymentInstructions $paymentInstructions = null
     ) {
         $this->amountOfMoney = $amountOfMoney;
         $this->merchantParameters = $merchantParameters;
         $this->references = $references;
         $this->paymentMethod = $paymentMethod;
+        $this->paymentInstructions = $paymentInstructions;
     }
 
     // Getters and Setters
@@ -89,6 +98,17 @@ class CaptureOutput
     public function setPaymentMethod(?string $paymentMethod): self
     {
         $this->paymentMethod = $paymentMethod;
+        return $this;
+    }
+
+    public function getPaymentInstructions(): ?PaymentInstructions
+    {
+        return $this->paymentInstructions;
+    }
+
+    public function setPaymentInstructions(?PaymentInstructions $paymentInstructions): self
+    {
+        $this->paymentInstructions = $paymentInstructions;
         return $this;
     }
 }
