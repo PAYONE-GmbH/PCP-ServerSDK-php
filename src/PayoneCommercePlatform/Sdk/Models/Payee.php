@@ -2,22 +2,27 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
+use Symfony\Component\Serializer\Annotation\SerializedName;
+
 class Payee
 {
     /**
      * @var string
      */
-    private $iban;
+    #[SerializedName('iban')]
+    private string $iban;
 
     /**
      * @var string|null
      */
-    private $bic;
+    #[SerializedName('bic')]
+    private ?string $bic;
 
     /**
      * @var string
      */
-    private $name;
+    #[SerializedName('name')]
+    private string $name;
 
     public function __construct(
         string $name,
@@ -29,27 +34,39 @@ class Payee
         $this->bic = $bic;
     }
 
-    /**
-     * @return string
-     */
+    // Getters and Setters
     public function getIban(): string
     {
         return $this->iban;
     }
 
-    /**
-     * @return string|null
-     */
+    public function setIban(string $iban): self
+    {
+        $this->iban = $iban;
+        return $this;
+    }
+
+
     public function getBic(): ?string
     {
         return $this->bic;
     }
 
-    /**
-     * @return string
-     */
+    public function setBic(?string $bic): self
+    {
+        $this->bic = $bic;
+        return $this;
+    }
+
+
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
     }
 }

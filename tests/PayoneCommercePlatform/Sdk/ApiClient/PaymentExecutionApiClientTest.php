@@ -214,10 +214,10 @@ class PaymentExecutionApiClientTest extends TestCase
 
     public function testPausePaymentSuccessful(): void
     {
-        $pausePaymentResponse = new PausePaymentResponse(new StatusValue('CREATED'));
+        $pausePaymentResponse = new PausePaymentResponse(status: StatusValue::CREATED);
         $this->httpClient->method('send')->willReturn(new Response(status: 204, body: PaymentExecutionApiClient::serializeJson($pausePaymentResponse)));
 
-        $payload = new PausePaymentRequest(new RefreshType('PAYMENT_EVENTS'));
+        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_EVENTS);
         $response = $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
 
         $this->assertEquals($pausePaymentResponse, $response);
@@ -230,7 +230,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
-        $payload = new PausePaymentRequest(new RefreshType('PAYMENT_PROVIDER_DETAILS'));
+        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
         $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
     }
 
@@ -241,7 +241,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
 
-        $payload = new PausePaymentRequest(new RefreshType('PAYMENT_PROVIDER_DETAILS'));
+        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
         $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
     }
 
@@ -250,7 +250,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $paymentExecution = new PaymentExecution();
         $this->httpClient->method('send')->willReturn(new Response(status: 204, body: PaymentExecutionApiClient::serializeJson($paymentExecution)));
 
-        $payload = new RefreshPaymentRequest(new RefreshType('PAYMENT_EVENTS'));
+        $payload = new RefreshPaymentRequest(refreshType: RefreshType::PAYMENT_EVENTS);
         $response = $this->paymentExecutionClient->refreshPayment('1', '2', '3', '4', $payload);
 
         $this->assertEquals($paymentExecution, $response);
@@ -263,7 +263,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
-        $payload = new RefreshPaymentRequest(new RefreshType('PAYMENT_PROVIDER_DETAILS'));
+        $payload = new RefreshPaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
         $this->paymentExecutionClient->refreshPayment('1', '2', '3', '4', $payload);
     }
 
@@ -274,7 +274,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
 
-        $payload = new RefreshPaymentRequest(new RefreshType('PAYMENT_PROVIDER_DETAILS'));
+        $payload = new RefreshPaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
         $this->paymentExecutionClient->refreshPayment('1', '2', '3', '4', $payload);
     }
 }

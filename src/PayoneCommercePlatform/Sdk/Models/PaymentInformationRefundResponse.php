@@ -2,17 +2,21 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
+use Symfony\Component\Serializer\Annotation\SerializedName;
+
 class PaymentInformationRefundResponse
 {
     /**
      * @var PayoutResponse
      */
-    private $payment;
+    #[SerializedName('payment')]
+    private PayoutResponse $payment;
 
     /**
      * @var string
      */
-    private $paymentExecutionId;
+    #[SerializedName('paymentExecutionId')]
+    private string $paymentExecutionId;
 
     public function __construct(
         PayoutResponse $payment,
@@ -22,19 +26,27 @@ class PaymentInformationRefundResponse
         $this->paymentExecutionId = $paymentExecutionId;
     }
 
-    /**
-     * @return PayoutResponse
-     */
+    // Getters and Setters
     public function getPayment(): PayoutResponse
     {
         return $this->payment;
     }
 
-    /**
-     * @return string
-     */
+    public function setPayment(PayoutResponse $payment): self
+    {
+        $this->payment = $payment;
+        return $this;
+    }
+
+
     public function getPaymentExecutionId(): string
     {
         return $this->paymentExecutionId;
+    }
+
+    public function setPaymentExecutionId(string $paymentExecutionId): self
+    {
+        $this->paymentExecutionId = $paymentExecutionId;
+        return $this;
     }
 }

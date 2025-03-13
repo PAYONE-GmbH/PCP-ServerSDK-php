@@ -2,21 +2,26 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
+use Symfony\Component\Serializer\Annotation\SerializedName;
+
 class PaymentInformationRefundRequest
 {
     /**
      * @var PositiveAmountOfMoney
      */
+    #[SerializedName('amountOfMoney')]
     private $amountOfMoney;
 
     /**
      * @var PaymentReferences|null
      */
+    #[SerializedName('references')]
     private $references;
 
     /**
      * @var string|null
      */
+    #[SerializedName('accountHolder')]
     private $accountHolder;
 
     public function __construct(

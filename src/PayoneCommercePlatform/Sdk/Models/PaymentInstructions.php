@@ -2,27 +2,33 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
+use Symfony\Component\Serializer\Annotation\SerializedName;
+
 class PaymentInstructions
 {
     /**
      * @var Payee
      */
-    private $payee;
+    #[SerializedName('payee')]
+    private Payee $payee;
 
     /**
      * @var string
      */
-    private $dueDate;
+    #[SerializedName('dueDate')]
+    private string $dueDate;
 
     /**
      * @var string
      */
-    private $referenceNumber;
+    #[SerializedName('referenceNumber')]
+    private string $referenceNumber;
 
     /**
      * @var string|null
      */
-    private $status;
+    #[SerializedName('status')]
+    private ?string $status;
 
     public function __construct(
         Payee $payee,
@@ -36,9 +42,16 @@ class PaymentInstructions
         $this->status = $status;
     }
 
+    // Getters and Setters
     public function getPayee(): Payee
     {
         return $this->payee;
+    }
+
+    public function setPayee(Payee $payee): self
+    {
+        $this->payee = $payee;
+        return $this;
     }
 
     public function getDueDate(): string
@@ -46,13 +59,31 @@ class PaymentInstructions
         return $this->dueDate;
     }
 
+    public function setDueDate(string $dueDate): self
+    {
+        $this->dueDate = $dueDate;
+        return $this;
+    }
+
     public function getReferenceNumber(): string
     {
         return $this->referenceNumber;
     }
 
+    public function setReferenceNumber(string $referenceNumber): self
+    {
+        $this->referenceNumber = $referenceNumber;
+        return $this;
+    }
+
     public function getStatus(): ?string
     {
         return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+        return $this;
     }
 }
