@@ -14,7 +14,7 @@ class MobilePaymentThreeDSecure
      * @var RedirectionData|null Data required for redirection during 3D Secure authentication.
      */
     #[SerializedName('redirectionData')]
-    protected ?string $redirectionData;
+    protected ?RedirectionData $redirectionData;
 
 
     public function __construct(?RedirectionData $redirectionData)
