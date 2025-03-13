@@ -1,3 +1,4 @@
+# [1.28.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.0.0...v1.28.0) (2025-03-13)
 ## [1.0.1](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.0.0...v1.0.1) (2024-12-12)
 # [1.0.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v0.1.0...v1.0.0) (2024-08-22)
 ### Features
