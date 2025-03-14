@@ -15,6 +15,10 @@ use PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\RefundRequest;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
+use PayoneCommercePlatform\Sdk\Models\PausePaymentRequest;
+use PayoneCommercePlatform\Sdk\Models\PausePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\PaymentExecution;
+use PayoneCommercePlatform\Sdk\Models\RefreshPaymentRequest;
 
 class PaymentExecutionApiClient extends BaseApiClient
 {
@@ -385,6 +389,150 @@ class PaymentExecutionApiClient extends BaseApiClient
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
         $httpBody = self::serializeJson($refundRequest);
+
+        $operationHost = $this->config->getHost();
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath,
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation pausePayment
+     *
+     * Pause a Payment
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PausePaymentRequest $pausePaymentRequest pausePaymentRequest (required)
+     *
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
+     * @return \PayoneCommercePlatform\Sdk\Models\PausePaymentResponse
+     */
+    public function pausePayment(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, PausePaymentRequest $pausePaymentRequest): PausePaymentResponse
+    {
+        $request = $this->pausePaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $pausePaymentRequest);
+        return $this->makeApiCall($request, PausePaymentResponse::class)[0];
+    }
+
+    /**
+     * Create request for operation 'pausePayment'
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PausePaymentRequest $pausePaymentRequest (required)
+     *
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    protected function pausePaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, PausePaymentRequest $pausePaymentRequest): Request
+    {
+        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/pause';
+        $httpBody = '';
+
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'merchantId' . '}',
+            rawurlencode($merchantId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'commerceCaseId' . '}',
+            rawurlencode($commerceCaseId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'checkoutId' . '}',
+            rawurlencode($checkoutId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'paymentExecutionId' . '}',
+            rawurlencode($paymentExecutionId),
+            $resourcePath
+        );
+
+        /** @var array<string, string> */
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
+
+        $httpBody = self::serializeJson($pausePaymentRequest);
+
+        $operationHost = $this->config->getHost();
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath,
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation refreshPayment
+     *
+     * Refresh a Payment
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\RefreshPaymentRequest $refreshPaymentRequest refreshPaymentRequest (required)
+     *
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
+     * @return \PayoneCommercePlatform\Sdk\Models\PaymentExecution
+     */
+    public function refreshPayment(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, RefreshPaymentRequest $refreshPaymentRequest): PaymentExecution
+    {
+        $request = $this->refreshPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $refreshPaymentRequest);
+        return $this->makeApiCall($request, PaymentExecution::class)[0];
+    }
+
+    /**
+     * Create request for operation 'refreshPayment'
+     *
+     * @param  string $merchantId The merchantId identifies uniquely the merchant. (required)
+     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
+     * @param  string $checkoutId Unique identifier of a Checkout (required)
+     * @param  string $paymentExecutionId Unique identifier of a paymentExecution (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\RefreshPaymentRequest $refreshPaymentRequest (required)
+     *
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    protected function refreshPaymentRequest(string $merchantId, string $commerceCaseId, string $checkoutId, string $paymentExecutionId, RefreshPaymentRequest $refreshPaymentRequest): Request
+    {
+        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/refresh';
+        $httpBody = '';
+
+        // path params
+        $resourcePath = str_replace(
+            '{' . 'merchantId' . '}',
+            rawurlencode($merchantId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'commerceCaseId' . '}',
+            rawurlencode($commerceCaseId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'checkoutId' . '}',
+            rawurlencode($checkoutId),
+            $resourcePath
+        );
+        $resourcePath = str_replace(
+            '{' . 'paymentExecutionId' . '}',
+            rawurlencode($paymentExecutionId),
+            $resourcePath
+        );
+
+        /** @var array<string, string> */
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
+
+        $httpBody = self::serializeJson($refreshPaymentRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(

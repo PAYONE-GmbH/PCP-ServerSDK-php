@@ -24,24 +24,26 @@ class OrderLineDetailsPatch extends OrderLineDetailsInput
     protected ?array $status;
 
     /**
-      * @param int $productPrice Price of the product in the smallest currency unit.
-      * @param int $quantity Quantity of the product.
-      * @param string|null $productCode Unique identifier of the product.
-      * @param ProductType|null $productType Type of the product.
-      * @param int|null $taxAmount Tax amount in the smallest currency unit.
-      * @param string|null $productUrl URL of the product.
-      * @param string|null $productImageUrl URL of the product image.
-      * @param string|null $productCategoryPath Category path of the product.
-      * @param string|null $merchantShopDeliveryReference Unique identifier of the product in the merchant shop.
-      * @param string|null $id Unique identifier of a cart item.
-      * @param CartItemOrderStatus[]|null $status List of cart item statuses.
-      */
+     * @param int $productPrice Price of the product in the smallest currency unit.
+     * @param int $quantity Quantity of the product.
+     * @param string|null $productCode Unique identifier of the product.
+     * @param ProductType|null $productType Type of the product.
+     * @param int|null $taxAmount Tax amount in the smallest currency unit.
+     * @param bool|null $taxAmountPerUnit Indicates if the tax amount is per unit.
+     * @param string|null $productUrl URL of the product.
+     * @param string|null $productImageUrl URL of the product image.
+     * @param string|null $productCategoryPath Category path of the product.
+     * @param string|null $merchantShopDeliveryReference Unique identifier of the product in the merchant shop.
+     * @param string|null $id Unique identifier of a cart item.
+     * @param CartItemOrderStatus[]|null $status List of cart item statuses.
+     */
     public function __construct(
         int $productPrice,
         int $quantity,
         ?string $productCode = null,
         ?ProductType $productType = null,
         ?int $taxAmount = null,
+        ?bool $taxAmountPerUnit = null,
         ?string $productUrl = null,
         ?string $productImageUrl = null,
         ?string $productCategoryPath = null,
@@ -55,6 +57,7 @@ class OrderLineDetailsPatch extends OrderLineDetailsInput
             $productCode,
             $productType,
             $taxAmount,
+            $taxAmountPerUnit,
             $productUrl,
             $productImageUrl,
             $productCategoryPath,

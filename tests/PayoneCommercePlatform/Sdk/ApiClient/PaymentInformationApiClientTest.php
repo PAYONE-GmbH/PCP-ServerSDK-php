@@ -11,7 +11,11 @@ use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
 use PayoneCommercePlatform\Sdk\Models\PaymentEvent;
 use PayoneCommercePlatform\Sdk\Models\PaymentInformationRequest;
 use PayoneCommercePlatform\Sdk\Models\PaymentInformationResponse;
+use PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundRequest;
+use PayoneCommercePlatform\Sdk\Models\PaymentInformationRefundResponse;
 use PayoneCommercePlatform\Sdk\Models\PaymentType;
+use PayoneCommercePlatform\Sdk\Models\PayoutResponse;
+use PayoneCommercePlatform\Sdk\Models\PositiveAmountOfMoney;
 use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
 
 class PaymentInformationApiClientTest extends TestCase
@@ -121,5 +125,46 @@ class PaymentInformationApiClientTest extends TestCase
         $this->expectExceptionCode(500);
 
         $this->paymentInformationClient->getPaymentInformation('1', '2', '3', '4');
+    }
+
+    public function testRefundPaymentInformationSuccessful(): void
+    {
+        $paymentInformationRefundResponse = new PaymentInformationRefundResponse(
+            new PayoutResponse(id: 'test-id'),
+            '1'
+        );
+        $this->httpClient->method('send')->willReturn(new Response(200, body: PaymentInformationApiClient::serializeJson($paymentInformationRefundResponse)));
+
+        $payload = new PaymentInformationRefundRequest(
+            amountOfMoney: new PositiveAmountOfMoney(2400, 'USD')
+        );
+        $response = $this->paymentInformationClient->refundPaymentInformation('1', '2', '3', '4', $payload);
+
+        $this->assertEquals($paymentInformationRefundResponse, $response);
+    }
+
+    public function testRefundPaymentInformationUnsuccessful400(): void
+    {
+        $errorResponse = $this->makeErrorResponse();
+        $this->httpClient->method('send')->willReturn(new Response(400, body: PaymentInformationApiClient::serializeJson($errorResponse)));
+        $this->expectException(ApiErrorResponseException::class);
+        $this->expectExceptionCode(400);
+
+        $payload = new PaymentInformationRefundRequest(
+            amountOfMoney: new PositiveAmountOfMoney(2400, 'USD')
+        );
+        $this->paymentInformationClient->refundPaymentInformation('1', '2', '3', '4', $payload);
+    }
+
+    public function testRefundPaymentInformationUnsuccessful500(): void
+    {
+        $this->httpClient->method('send')->willReturn(new Response(500, body: null));
+        $this->expectException(ApiResponseRetrievalException::class);
+        $this->expectExceptionCode(500);
+
+        $payload = new PaymentInformationRefundRequest(
+            amountOfMoney: new PositiveAmountOfMoney(2400, 'USD')
+        );
+        $this->paymentInformationClient->refundPaymentInformation('1', '2', '3', '4', $payload);
     }
 }

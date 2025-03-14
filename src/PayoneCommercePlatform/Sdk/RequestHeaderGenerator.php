@@ -23,10 +23,10 @@ class RequestHeaderGenerator
 
     public function generateAdditionalRequestHeaders(Request $request): Request
     {
-        if(!$request->hasHeader('Date')) {
+        if (!$request->hasHeader('Date')) {
             $request = $request->withAddedHeader('Date', $this->getRfc161Date());
         }
-        if(!$request->hasHeader('X-GCS-ServerMetaInfo')) {
+        if (!$request->hasHeader('X-GCS-ServerMetaInfo')) {
             $request = $request->withAddedHeader('X-GCS-ServerMetaInfo', $this->getServerMetaInfoValue());
         }
 
@@ -39,7 +39,7 @@ class RequestHeaderGenerator
             $request = $request->withAddedHeader('X-GCS-ClientMetaInfo', base64_encode($json));
         }
 
-        if(!$request->hasHeader('Authorization')) {
+        if (!$request->hasHeader('Authorization')) {
             $request = $request->withAddedHeader('Authorization', $this->getAuthorizationHeaderValue($request));
         }
 
