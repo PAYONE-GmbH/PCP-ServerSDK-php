@@ -3,7 +3,7 @@
   "author": "PAYONE GmbH",
   "license": "MIT",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.0",
   "scripts": {
     "changelog": "conventional-changelog -i CHANGELOG.md -s --config ./changelog.config.js"
   },

@@ -17,16 +17,22 @@ use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CustomerDevice;
 use PayoneCommercePlatform\Sdk\Models\MerchantAction;
 use PayoneCommercePlatform\Sdk\Models\PaymentCreationOutput;
+use PayoneCommercePlatform\Sdk\Models\PaymentExecution;
 use PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest;
 use PayoneCommercePlatform\Sdk\Models\PaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
 use PayoneCommercePlatform\Sdk\Models\PaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\PaymentStatusOutput;
+use PayoneCommercePlatform\Sdk\Models\PausePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\PausePaymentRequest;
+use PayoneCommercePlatform\Sdk\Models\RefreshPaymentRequest;
+use PayoneCommercePlatform\Sdk\Models\RefreshType;
 use PayoneCommercePlatform\Sdk\Models\RedirectData;
 use PayoneCommercePlatform\Sdk\Models\RefundOutput;
 use PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\RefundRequest;
 use PayoneCommercePlatform\Sdk\Models\ReturnInformation;
+use PayoneCommercePlatform\Sdk\Models\StatusValue;
 use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
 
 class PaymentExecutionApiClientTest extends TestCase
@@ -204,5 +210,71 @@ class PaymentExecutionApiClientTest extends TestCase
 
         $payload = new RefundRequest(return: new ReturnInformation(returnReason: 'test-reason', items: []));
         $this->paymentExecutionClient->refundPaymentExecution('1', '2', '3', '4', $payload);
+    }
+
+    public function testPausePaymentSuccessful(): void
+    {
+        $pausePaymentResponse = new PausePaymentResponse(status: StatusValue::CREATED);
+        $this->httpClient->method('send')->willReturn(new Response(status: 204, body: PaymentExecutionApiClient::serializeJson($pausePaymentResponse)));
+
+        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_EVENTS);
+        $response = $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
+
+        $this->assertEquals($pausePaymentResponse, $response);
+    }
+
+    public function testPausePaymentUnsuccessful400(): void
+    {
+        $errorReponse = $this->makeErrorResponse();
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: PaymentExecutionApiClient::serializeJson($errorReponse)));
+        $this->expectException(ApiErrorResponseException::class);
+        $this->expectExceptionCode(400);
+
+        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
+        $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
+    }
+
+    public function testPausePaymentUnsuccessful500(): void
+    {
+        $errorReponse = $this->makeErrorResponse();
+        $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
+        $this->expectException(ApiResponseRetrievalException::class);
+        $this->expectExceptionCode(500);
+
+        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
+        $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
+    }
+
+    public function testRefreshPaymentSuccessful(): void
+    {
+        $paymentExecution = new PaymentExecution();
+        $this->httpClient->method('send')->willReturn(new Response(status: 204, body: PaymentExecutionApiClient::serializeJson($paymentExecution)));
+
+        $payload = new RefreshPaymentRequest(refreshType: RefreshType::PAYMENT_EVENTS);
+        $response = $this->paymentExecutionClient->refreshPayment('1', '2', '3', '4', $payload);
+
+        $this->assertEquals($paymentExecution, $response);
+    }
+
+    public function testRefreshPaymentUnsuccessful400(): void
+    {
+        $errorReponse = $this->makeErrorResponse();
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: PaymentExecutionApiClient::serializeJson($errorReponse)));
+        $this->expectException(ApiErrorResponseException::class);
+        $this->expectExceptionCode(400);
+
+        $payload = new RefreshPaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
+        $this->paymentExecutionClient->refreshPayment('1', '2', '3', '4', $payload);
+    }
+
+    public function testRefreshPaymentUnsuccessful500(): void
+    {
+        $errorReponse = $this->makeErrorResponse();
+        $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
+        $this->expectException(ApiResponseRetrievalException::class);
+        $this->expectExceptionCode(500);
+
+        $payload = new RefreshPaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
+        $this->paymentExecutionClient->refreshPayment('1', '2', '3', '4', $payload);
     }
 }

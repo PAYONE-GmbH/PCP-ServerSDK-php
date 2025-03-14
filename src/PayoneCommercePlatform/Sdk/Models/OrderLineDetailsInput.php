@@ -41,6 +41,12 @@ class OrderLineDetailsInput
     protected ?int $taxAmount;
 
     /**
+     * @var bool|null If this is set to 'true', 'taxAmount' will be interpreted as the tax amount per unit as opposed to the tax amount per line item.
+     */
+    #[SerializedName('taxAmountPerUnit')]
+    protected ?bool $taxAmountPerUnit;
+
+    /**
      * @var string|null URL of the product in shop. Used for PAYONE Buy Now, Pay Later (BNPL).
      */
     #[SerializedName('productUrl')]
@@ -70,6 +76,7 @@ class OrderLineDetailsInput
         ?string $productCode = null,
         ?ProductType $productType = null,
         ?int $taxAmount = null,
+        ?bool $taxAmountPerUnit = null,
         ?string $productUrl = null,
         ?string $productImageUrl = null,
         ?string $productCategoryPath = null,
@@ -80,6 +87,7 @@ class OrderLineDetailsInput
         $this->productType = $productType;
         $this->quantity = $quantity;
         $this->taxAmount = $taxAmount;
+        $this->taxAmountPerUnit = $taxAmountPerUnit;
         $this->productUrl = $productUrl;
         $this->productImageUrl = $productImageUrl;
         $this->productCategoryPath = $productCategoryPath;
@@ -139,6 +147,17 @@ class OrderLineDetailsInput
     public function setTaxAmount(?int $taxAmount): self
     {
         $this->taxAmount = $taxAmount;
+        return $this;
+    }
+
+    public function getTaxAmountPerUnit(): ?bool
+    {
+        return $this->taxAmountPerUnit;
+    }
+
+    public function setTaxAmountPerUnit(?bool $taxAmountPerUnit): self
+    {
+        $this->taxAmountPerUnit = $taxAmountPerUnit;
         return $this;
     }
 

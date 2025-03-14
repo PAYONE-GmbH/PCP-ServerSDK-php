@@ -15,6 +15,12 @@ class BankAccountInformation
     protected string $iban;
 
     /**
+     * @var string|null Bank Identification Code.
+     */
+    #[SerializedName('bic')]
+    protected ?string $bic;
+
+    /**
      * @var string Account holder of the bank account with the given IBAN.
      * Does not necessarily have to be the end customer (e.g. joint accounts).
      */
@@ -23,9 +29,11 @@ class BankAccountInformation
 
     public function __construct(
         string $iban,
+        ?string $bic,
         string $accountHolder
     ) {
         $this->iban = $iban;
+        $this->bic = $bic;
         $this->accountHolder = $accountHolder;
     }
 
@@ -38,6 +46,17 @@ class BankAccountInformation
     public function setIban(string $iban): self
     {
         $this->iban = $iban;
+        return $this;
+    }
+
+    public function getBic(): ?string
+    {
+        return $this->bic;
+    }
+
+    public function setBic(?string $bic): self
+    {
+        $this->bic = $bic;
         return $this;
     }
 

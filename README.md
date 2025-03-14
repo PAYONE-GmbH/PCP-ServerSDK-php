@@ -773,6 +773,20 @@ The `GetCheckoutsQuery` class is used to build and structure query parameters wh
 - **Setter**: `public function setCompanyInformation(?string $companyInformation): self`
 - **Getter**: `public function getCompanyInformation(): ?string`
 
+##### `terminalId`
+
+- **Type**: `string|null`
+- **Description**: The terminal id for filtering.
+- **Setter**: `public function setTerminalId(?string $terminalId): self`
+- **Getter**: `public function getTerminalId(): ?string`
+
+##### `reportingToken`
+
+- **Type**: `string|null`
+- **Description**: The reporting token für filtering.
+- **Setter**: `public function setReportingToken(?string $reportingToken): self`
+- **Getter**: `public function getReportingToken(): ?string`
+
 ### API Clients
 
 There's a API client class for each resource:
@@ -966,6 +980,35 @@ Modifies an existing checkout.
 
 **Returns**:  
 `void`
+
+**Exceptions**:
+
+- `ApiErrorResponseException`
+- `ApiResponseRetrievalException`
+
+###### `completeCheckout`
+
+```php
+public function completeCheckout(
+    string $merchantId,
+    string $commerceCaseId,
+    string $checkoutId,
+    CompleteOrderRequest $completeOrderRequest
+): CompletePaymentResponse
+```
+
+**Description**:  
+Completes an already existing Order.
+
+**Parameters**:
+
+- `string $merchantId`: The unique identifier of the merchant.
+- `string $commerceCaseId`: The unique identifier of a commerce case.
+- `string $checkoutId`: The unique identifier of the checkout to be updated.
+- `CompleteOrderRequest $completeOrderRequest`: The request body containing the selected installmentOptionId as well as the bankAccountInformation of the customer.
+
+**Returns**:  
+`CompletePaymentResponse` - The response object containing the details of the created payment, the merchant actions, including the needed data, that you should perform next to complete the payment and an object that holds the payment related properties.
 
 **Exceptions**:
 
@@ -1394,6 +1437,68 @@ Refunds a payment that has been previously captured.
 - `ApiErrorResponseException`
 - `ApiResponseRetrievalException`
 
+###### `pausePayment`
+
+```php
+public function pausePayment(
+    string $merchantId,
+    string $commerceCaseId,
+    string $checkoutId,
+    string $paymentExecutionId,
+    PausePaymentRequest $pausePaymentRequest
+): PausePaymentResponse
+```
+
+**Description**:  
+Pauses a payment for selected payment methods.
+
+**Parameters**:
+
+- `string $merchantId`: The unique identifier of the merchant.
+- `string $commerceCaseId`: The unique identifier of a Commerce Case.
+- `string $checkoutId`: The unique identifier of a Checkout.
+- `string $paymentExecutionId`: The unique identifier of a payment execution.
+- `PausePaymentRequest $pausePaymentRequest`: The request body containing details to pause a payment for a specific payment method.
+
+**Returns**:  
+`PausePaymentResponse` - The response object containing a current high-level status of the payment in a human-readable form.
+
+**Exceptions**:
+
+- `ApiErrorResponseException`
+- `ApiResponseRetrievalException`
+
+###### `refreshPayment`
+
+```php
+public function refreshPayment(
+    string $merchantId,
+    string $commerceCaseId,
+    string $checkoutId,
+    string $paymentExecutionId,
+    RefreshPaymentRequest $refreshPaymentRequest
+): PaymentExecution
+```
+
+**Description**:  
+Pauses a payment for selected payment methods.
+
+**Parameters**:
+
+- `string $merchantId`: The unique identifier of the merchant.
+- `string $commerceCaseId`: The unique identifier of a Commerce Case.
+- `string $checkoutId`: The unique identifier of a Checkout.
+- `string $paymentExecutionId`: The unique identifier of a payment execution.
+- `RefreshPaymentRequest $refreshPaymentRequest`: The request body containing the refresh type.
+
+**Returns**:  
+`PaymentExecution` - The response object containing the information of the payment.
+
+**Exceptions**:
+
+- `ApiErrorResponseException`
+- `ApiResponseRetrievalException`
+
 #### PaymentInformationApiClient
 
 The `PaymentInformationApiClient` class provides methods to create and retrieve payment information associated with a commerce case and a checkout.
@@ -1463,6 +1568,37 @@ Retrieves details of an existing payment information record associated with a sp
 
 **Returns**:  
 `PaymentInformationResponse` - The response object containing details of the payment information.
+
+**Exceptions**:
+
+- `ApiErrorResponseException`
+- `ApiResponseRetrievalException`
+
+###### `refundPaymentInformation`
+
+```php
+public function refundPaymentInformation(
+    string $merchantId,
+    string $commerceCaseId,
+    string $checkoutId,
+    string $paymentInformationId,
+    PaymentInformationRefundRequest $paymentInformationRefundRequest
+): PaymentInformationRefundResponse
+```
+
+**Description**:  
+Initiate an online refund for a POS terminal transaction. The platform will automatically detect the payment method of the original transaction and select the most appropriate mode to refund the transaction.
+
+**Parameters**:
+
+- `string $merchantId`: The unique identifier of the merchant.
+- `string $commerceCaseId`: The unique identifier of a Commerce Case.
+- `string $checkoutId`: The unique identifier of a Checkout.
+- `string $paymentInformationId`: The unique identifier of the payment information.
+- `PaymentInformationRefundRequest $paymentInformationRefundRequest`: The request body containing information about amount and currency, reference properties that are linked to this transaction and the account holder of the bank account.
+
+**Returns**:  
+`PaymentInformationResponse` - The response object containing details of the payment related properties for the refund of a Payment Information and a reference to the paymentExecution.
 
 **Exceptions**:
 

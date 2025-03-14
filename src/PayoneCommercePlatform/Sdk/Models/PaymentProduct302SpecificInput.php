@@ -11,7 +11,22 @@ use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformationInput;
 class PaymentProduct302SpecificInput
 {
     /**
+     * @var string|null Type of your Apple Pay integration.
+     * - `MERCHANT_CERTIFICATE`: using your own certificate (paid Apple Pay account needed).
+     * - `MASS_ENABLEMENT`: using PAYONE certificate.
+     */
+    #[SerializedName('integrationType')]
+    protected ?string $integrationType;
+
+    /**
      * @var string|null The card network that was used for an Apple Pay payment transaction.
+     * * Network/Scheme of the card used for the payment.
+     * - `MASTERCARD`
+     * - `VISA`
+     * - `AMEX`
+     * - `GIROCARD`
+     * - `DISCOVER` (not supported yet)
+     * - `JCB` (not supported yet)
      */
     #[SerializedName('network')]
     protected ?string $network;
@@ -22,15 +37,46 @@ class PaymentProduct302SpecificInput
     #[SerializedName('token')]
     protected ?ApplePaymentDataTokenInformationInput $token;
 
+    /**
+     * @var string|null The Domain of your Webshop. Needed for initialization the Apple Pay payment session
+     * when `integrationType` is `MASS_ENABLEMENT`.
+     */
+    #[SerializedName('domainName')]
+    protected ?string $domainName;
+
+    /**
+     * @var string|null The Name of your Store. Needed for initializing the Apple Pay payment session
+     * when `integrationType` is `MASS_ENABLEMENT`.
+     */
+    #[SerializedName('displayName')]
+    protected ?string $displayName;
+
     public function __construct(
+        ?string $integrationType = null,
         ?string $network = null,
-        ?ApplePaymentDataTokenInformationInput $token = null
+        ?ApplePaymentDataTokenInformationInput $token = null,
+        ?string $domainName = null,
+        ?string $displayName = null
     ) {
+        $this->integrationType = $integrationType;
         $this->network = $network;
         $this->token = $token;
+        $this->domainName = $domainName;
+        $this->displayName = $displayName;
     }
 
     // Getters and Setters
+    public function getIntegrationType(): ?string
+    {
+        return $this->integrationType;
+    }
+
+    public function setIntegrationType(?string $integrationType): self
+    {
+        $this->integrationType = $integrationType;
+        return $this;
+    }
+
     public function getNetwork(): ?string
     {
         return $this->network;
@@ -50,6 +96,28 @@ class PaymentProduct302SpecificInput
     public function setToken(?ApplePaymentDataTokenInformationInput $token): self
     {
         $this->token = $token;
+        return $this;
+    }
+
+    public function getDomainName(): ?string
+    {
+        return $this->domainName;
+    }
+
+    public function setDomainName(?string $domainName): self
+    {
+        $this->domainName = $domainName;
+        return $this;
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(?string $displayName): self
+    {
+        $this->displayName = $displayName;
         return $this;
     }
 }

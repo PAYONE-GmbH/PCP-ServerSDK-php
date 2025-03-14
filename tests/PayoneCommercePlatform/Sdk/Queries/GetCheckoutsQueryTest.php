@@ -48,6 +48,8 @@ class GetCheckoutsQueryTest extends TestCase
         $query->setPhoneNumber("1234567890");
         $query->setDateOfBirth("1980-01-01");
         $query->setCompanyInformation("Company Inc.");
+        $query->setTerminalId('1234');
+        $query->setReportingToken('5678');
 
         // act
         $queryMap = $query->toQueryMap();
@@ -84,6 +86,8 @@ class GetCheckoutsQueryTest extends TestCase
         $this->assertEquals("1234567890", $queryMap["phoneNumber"]);
         $this->assertEquals("1980-01-01", $queryMap["dateOfBirth"]);
         $this->assertEquals("Company Inc.", $queryMap["companyInformation"]);
+        $this->assertEquals("1234", $queryMap["terminalId"]);
+        $this->assertEquals("5678", $queryMap["reportingToken"]);
     }
 
     public function testNulls(): void

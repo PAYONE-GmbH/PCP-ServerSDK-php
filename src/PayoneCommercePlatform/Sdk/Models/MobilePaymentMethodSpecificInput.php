@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\MobilePaymentThreeDSecure;
 use PayoneCommercePlatform\Sdk\Models\PaymentProduct302SpecificInput;
 use PayoneCommercePlatform\Sdk\Models\AuthorizationMode;
 
@@ -42,6 +43,12 @@ class MobilePaymentMethodSpecificInput
     protected ?string $ephemeralKey;
 
     /**
+     * @var MobilePaymentThreeDSecure|null Three-D Secure details for the mobile payment.
+     */
+    #[SerializedName('threeDSecure')]
+    protected ?MobilePaymentThreeDSecure $threeDSecure;
+
+    /**
      * @var PaymentProduct302SpecificInput|null Specific input details for payment product 320.
      */
     #[SerializedName('paymentProduct302SpecificInput')]
@@ -53,6 +60,7 @@ class MobilePaymentMethodSpecificInput
         ?string $encryptedPaymentData = null,
         ?string $publicKeyHash = null,
         ?string $ephemeralKey = null,
+        ?MobilePaymentThreeDSecure $threeDSecure = null,
         ?PaymentProduct302SpecificInput $paymentProduct302SpecificInput = null
     ) {
         $this->paymentProductId = $paymentProductId;
@@ -60,6 +68,7 @@ class MobilePaymentMethodSpecificInput
         $this->encryptedPaymentData = $encryptedPaymentData;
         $this->publicKeyHash = $publicKeyHash;
         $this->ephemeralKey = $ephemeralKey;
+        $this->threeDSecure = $threeDSecure;
         $this->paymentProduct302SpecificInput = $paymentProduct302SpecificInput;
     }
 
@@ -116,6 +125,17 @@ class MobilePaymentMethodSpecificInput
     public function setEphemeralKey(?string $ephemeralKey): self
     {
         $this->ephemeralKey = $ephemeralKey;
+        return $this;
+    }
+
+    public function getThreeDSecure(): ?MobilePaymentThreeDSecure
+    {
+        return $this->threeDSecure;
+    }
+
+    public function setThreeDSecure(?MobilePaymentThreeDSecure $threeDSecure): self
+    {
+        $this->threeDSecure = $threeDSecure;
         return $this;
     }
 

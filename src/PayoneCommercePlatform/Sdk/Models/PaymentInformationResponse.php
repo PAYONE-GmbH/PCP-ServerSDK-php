@@ -67,6 +67,18 @@ class PaymentInformationResponse
     protected ?string $merchantReference;
 
     /**
+     * @var string|null The date and time when the payment was created.
+     */
+    #[SerializedName('creationDateTime')]
+    protected ?string $creationDateTime;
+
+    /**
+     * @var string|null The date and time when the payment was last updated.
+     */
+    #[SerializedName('lastUpdated')]
+    protected ?string $lastUpdated;
+
+    /**
      * @var CardPaymentDetails|null Card payment details.
      */
     #[SerializedName('cardPaymentDetails')]
@@ -88,6 +100,8 @@ class PaymentInformationResponse
      * @param string|null $merchantReference Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR or terminal will be used. It is always the reference for external transactions. (e.g. card present payments, cash payments or payments processed by other payment providers).
      * @param string|null $terminalId Unique identifier of the POS terminal of the payment transaction.
      * @param string|null $merchantCustomerId Unique identifier of the customer.
+     * @param string|null $creationDateTime The date and time when the payment was created.
+     * @param string|null $lastUpdated The date and time when the payment was last updated.
      * @param CardPaymentDetails|null $cardPaymentDetails Card payment details.
      * @param PaymentEvent[]|null $events List of payment events.
      */
@@ -100,6 +114,8 @@ class PaymentInformationResponse
         ?string $merchantReference = null,
         ?string $terminalId = null,
         ?string $merchantCustomerId = null,
+        ?string $creationDateTime = null,
+        ?string $lastUpdated = null,
         ?PaymentChannel $paymentChannel = null,
         ?CardPaymentDetails $cardPaymentDetails = null,
         ?array $events = null
@@ -113,6 +129,8 @@ class PaymentInformationResponse
         $this->terminalId = $terminalId;
         $this->cardAcceptorId = $cardAcceptorId;
         $this->merchantReference = $merchantReference;
+        $this->creationDateTime = $creationDateTime;
+        $this->lastUpdated = $lastUpdated;
         $this->cardPaymentDetails = $cardPaymentDetails;
         $this->events = $events;
     }
@@ -214,6 +232,28 @@ class PaymentInformationResponse
     public function setMerchantReference(string $merchantReference): self
     {
         $this->merchantReference = $merchantReference;
+        return $this;
+    }
+
+    public function getCreationDateTime(): ?string
+    {
+        return $this->creationDateTime;
+    }
+
+    public function setCreationDateTime(?string $creationDateTime): self
+    {
+        $this->creationDateTime = $creationDateTime;
+        return $this;
+    }
+
+    public function getLastUpdated(): ?string
+    {
+        return $this->lastUpdated;
+    }
+
+    public function setLastUpdated(?string $lastUpdated): self
+    {
+        $this->lastUpdated = $lastUpdated;
         return $this;
     }
 

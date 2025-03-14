@@ -3,7 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\PaymentProduct3392SpecificOutput;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct3391SpecificOutput;
+use PayoneCommercePlatform\Sdk\Models\PaymentInstructions;
 
 /**
  * @description Object containing the specific output details for financing payment methods (Buy Now Pay Later).
@@ -26,12 +27,20 @@ class FinancingPaymentMethodSpecificOutput
     #[SerializedName('paymentProduct3391SpecificOutput')]
     protected ?PaymentProduct3391SpecificOutput $paymentProduct3391SpecificOutput;
 
+    /**
+     * @var PaymentInstructions|null Payment instructions associated with the financing payment method.
+     */
+    #[SerializedName('paymentInstructions')]
+    protected ?PaymentInstructions $paymentInstructions;
+
     public function __construct(
         ?int $paymentProductId = null,
-        ?PaymentProduct3391SpecificOutput $paymentProduct3391SpecificOutput = null
+        ?PaymentProduct3391SpecificOutput $paymentProduct3391SpecificOutput = null,
+        ?PaymentInstructions $paymentInstructions = null
     ) {
         $this->paymentProductId = $paymentProductId;
         $this->paymentProduct3391SpecificOutput = $paymentProduct3391SpecificOutput;
+        $this->paymentInstructions = $paymentInstructions;
     }
 
     // Getters and Setters
@@ -54,6 +63,17 @@ class FinancingPaymentMethodSpecificOutput
     public function setPaymentProduct3391SpecificOutput(?PaymentProduct3391SpecificOutput $paymentProduct3391SpecificOutput): self
     {
         $this->paymentProduct3391SpecificOutput = $paymentProduct3391SpecificOutput;
+        return $this;
+    }
+
+    public function getPaymentInstructions(): ?PaymentInstructions
+    {
+        return $this->paymentInstructions;
+    }
+
+    public function setPaymentInstructions(?PaymentInstructions $paymentInstructions): self
+    {
+        $this->paymentInstructions = $paymentInstructions;
         return $this;
     }
 }
