@@ -3,8 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 /**
- * 
- *  Result of the Address Verification Service checks. Possible values are: 
+ * @description Result of the Address Verification Service checks. Possible values are: 
  * A - Address (Street) matches, Zip does not 
  * B - Street address match for international transactions—Postal code not verified due to incompatible formats 
  * C - Street address and postal code not verified for international transaction due to incompatible formats 
