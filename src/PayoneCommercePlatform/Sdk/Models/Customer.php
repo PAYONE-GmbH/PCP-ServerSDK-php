@@ -44,10 +44,10 @@ class Customer
     protected ?string $fiscalNumber;
 
     /**
-     * @var string|null Business relation to the customer.
+     * @var BusinessRelation|null Business relation to the customer.
      */
     #[SerializedName('businessRelation')]
-    protected ?string $businessRelation;
+    protected ?BusinessRelation $businessRelation;
 
     /**
      * @var string|null The locale that the customer should be addressed in (for 3rd parties).
@@ -67,7 +67,7 @@ class Customer
         ?Address $billingAddress = null,
         ?ContactDetails $contactDetails = null,
         ?string $fiscalNumber = null,
-        ?string $businessRelation = null,
+        ?BusinessRelation $businessRelation = null,
         ?string $locale = null,
         ?PersonalInformation $personalInformation = null
     ) {
@@ -137,12 +137,12 @@ class Customer
         return $this;
     }
 
-    public function getBusinessRelation(): ?string
+    public function getBusinessRelation(): ?BusinessRelation
     {
         return $this->businessRelation;
     }
 
-    public function setBusinessRelation(?string $businessRelation): self
+    public function setBusinessRelation(?BusinessRelation $businessRelation): self
     {
         $this->businessRelation = $businessRelation;
         return $this;
