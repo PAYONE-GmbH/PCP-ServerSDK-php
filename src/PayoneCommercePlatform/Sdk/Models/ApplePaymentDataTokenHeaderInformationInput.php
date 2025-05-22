@@ -7,10 +7,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class ApplePaymentDataTokenHeaderInformationInput
 {
     /**
-     * @var string A hexadecimal Transaction identifier identifier as a string.
+     * @var string|null A hexadecimal Transaction identifier identifier as a string.
      */
     #[SerializedName('transactionId')]
-    protected string $transactionId;
+    protected ?string $transactionId;
 
     /**
      * @var string|null SHA–256 hash, hex encoded as a string. Hash of the applicationData property of the original PKPaymentRequest object.
@@ -19,7 +19,7 @@ class ApplePaymentDataTokenHeaderInformationInput
     protected ?string $applicationData;
 
     public function __construct(
-        string $transactionId,
+        ?string $transactionId = null,
         ?string $applicationData = null
     ) {
         $this->transactionId = $transactionId;
@@ -27,12 +27,12 @@ class ApplePaymentDataTokenHeaderInformationInput
     }
 
     // Getters and Setters
-    public function getTransactionId(): string
+    public function getTransactionId(): ?string
     {
         return $this->transactionId;
     }
 
-    public function setTransactionId(string $transactionId): self
+    public function setTransactionId(?string $transactionId): self
     {
         $this->transactionId = $transactionId;
         return $this;
