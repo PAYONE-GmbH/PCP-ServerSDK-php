@@ -12,7 +12,7 @@ class CustomerAccount
     /**
      * @var string|null Creation date and time of the customer account in ISO 8601 format (UTC).
      * Accepted formats are:
-     * 
+     *
      * * YYYY-MM-DD'T'HH:mm:ss'Z'
      * * YYYY-MM-DD'T'HH:mm:ss+XX:XX
      * * YYYY-MM-DD'T'HH:mm:ss-XX:XX

@@ -13,10 +13,10 @@ class APIError
     protected string $errorCode;
 
     /**
-     * @var string|null Category the error belongs to. The category should give an indication of the type of error you are dealing with. 
-     * Do not expect a finite set of possible categories, as they are subject to change. 
+     * @var string|null Category the error belongs to. The category should give an indication of the type of error you are dealing with.
+     * Do not expect a finite set of possible categories, as they are subject to change.
      * Common values are:
-     * 
+     *
      * * DIRECT_PLATFORM_ERROR - indicating that a functional error has occurred in the platform.
      * * PAYMENT_PLATFORM_ERROR - indicating that a functional error has occurred in the payment platform.
      * * IO_ERROR - indicating that a technical error has occurred within the payment platform or between the payment platform and third party systems.
