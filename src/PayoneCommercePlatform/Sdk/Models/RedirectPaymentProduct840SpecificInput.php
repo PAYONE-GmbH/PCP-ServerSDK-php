@@ -19,10 +19,20 @@ class RedirectPaymentProduct840SpecificInput
     #[SerializedName('addressSelectionAtPayPal')]
     protected bool $addressSelectionAtPayPal;
 
+    /**
+     * @var string|null A unique ID determined by the merchant, to link a Paypal transaction to a FraudNet PayPal risk session.
+     * Only applicable to customer-initiated transactions, when the FraudNet SDK is used, and to be passed in the API request the same tracking ID value
+     * (FraudNet Session Identifier).
+     */
+    #[SerializedName('fraudNetId')]
+    protected ?string $fraudNetId;
+
     public function __construct(
-        bool $addressSelectionAtPayPal = false
+        bool $addressSelectionAtPayPal = false,
+        ?string $fraudNetId = null
     ) {
         $this->addressSelectionAtPayPal = $addressSelectionAtPayPal;
+        $this->fraudNetId = $fraudNetId;
     }
 
     // Getters and Setters
@@ -34,6 +44,17 @@ class RedirectPaymentProduct840SpecificInput
     public function setAddressSelectionAtPayPal(bool $addressSelectionAtPayPal): self
     {
         $this->addressSelectionAtPayPal = $addressSelectionAtPayPal;
+        return $this;
+    }
+
+    public function getFraudNetId(): ?string
+    {
+        return $this->fraudNetId;
+    }
+
+    public function setFraudNetId(?string $fraudNetId): self
+    {
+        $this->fraudNetId = $fraudNetId;
         return $this;
     }
 }
