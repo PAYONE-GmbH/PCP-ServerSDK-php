@@ -1,0 +1,4803 @@
+openapi: "3.0.3"
+
+info:
+  version: 1.35.0
+  title: "Commerce Platform API"
+  description: |
+    RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
+
+servers:
+  - url: "https://commerce-api.payone.com"
+    description: Production URL
+  - url: "https://preprod.commerce-api.payone.com"
+    description: Pre-Production URL
+
+tags:
+  - name: CommerceCase
+    description: Resource for the operations on Commerce Cases.
+  - name: Checkout
+    description: Resource for the operations on Checkouts.
+  - name: OrderManagementCheckoutActions
+    description: Order Management Checkout Actions allow operations on the items of a shopping cart. Requires ORDER_MANAGEMENT as allowedPaymentActions.
+  - name: PaymentExecution
+    description: Resource for operations on Payment Executions. Requires PAYMENT_EXECUTION as allowedPaymentActions.
+  - name: PaymentInformation
+    description: Resource for operations on Payment Information.
+
+paths:
+  '/v1/{merchantId}/commerce-cases':
+    post:
+      summary: Create a Commerce Case
+      description: |-
+        This endpoint can be used to create a Commerce Case in combination with a Checkout and an Order. A Commerce Case
+        is a container for multiple Checkouts and can be directly linked to one customer. The Order can either be
+        directly executed or the paymentMethodSpecificInput can also be stored for a later execution over the
+        OrderManagementCheckoutActions or Payment Execution endpoint.
+      tags:
+        - CommerceCase
+      operationId: createCommerceCase
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommerceCaseRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: |-
+            The response contains the references to the Commerce Case and the Checkout and if autoExecuteOrder was set
+            to true the payment response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCommerceCaseResponse'
+        '202':
+          x-nullable: true
+          description: |-
+            The response contains the references to the Commerce case and the Checkout. Status code 202 will be returned
+            if the creation of a Commerce Case and Checkout was successful but the payment was not.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCommerceCaseResponse'
+        '400':
+          x-nullable: true
+          description: Commerce Case not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Get a list of Commerce Cases based on Search Parameters
+      description: |
+        This endpoint will provide a list of Commerce Cases based on the provided criteria.
+        Not all parameters are required to be set.
+        Results will be returned in descending creation time per default.
+      tags:
+        - CommerceCase
+      operationId: getCommerceCases
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/fromDate'
+        - $ref: '#/components/parameters/toDate'
+        - $ref: '#/components/parameters/commerceCaseIdQuery'
+        - $ref: '#/components/parameters/merchantReference'
+        - $ref: '#/components/parameters/merchantCustomerId'
+        - $ref: '#/components/parameters/includeCheckoutStatus'
+        - $ref: '#/components/parameters/includePaymentChannel'
+      responses:
+        '200':
+          x-nullable: true
+          description: |
+            The response contains all Commerce Cases and Checkouts that match with the provided criteria. 
+            An empty list will be returned if no criteria was provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommerceCasesResponse'
+        '400':
+          x-nullable: true
+          description: Exception when requesting Checkouts with unknown parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}':
+    get:
+      summary: Get Commerce Case Details
+      description: This endpoint can be used to get a specific Commerce Case and all linked Checkouts.
+      tags:
+        - CommerceCase
+      operationId: getCommerceCase
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+      responses:
+        '200':
+          x-nullable: true
+          description: The response contains the Commerce Case and all linked Checkout.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommerceCaseResponse'
+        '404':
+          x-nullable: true
+          description: Checkout not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Modify an existing Commerce Case.
+      description: This endpoint can be used to update or modify the customer object of a Commerce Case.
+      tags:
+        - CommerceCase
+      operationId: updateCommerceCase
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchCommerceCaseRequest'
+      responses:
+        '204':
+          x-nullable: true
+          description: The Commerce Case was updated successfully.
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed or was missing required data. When a required property was missing the error
+            message will indicate which property caused the error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: Commerce Case not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          x-nullable: true
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/order':
+    post:
+      summary: Creates an Order that will automatially execute a Payment
+      description: |
+        This endpoint can be used to create an Order that automatically executes a payment for the respective Checkout. 
+        The Order request requires items within the ShoppingCart and can be made for a partial or the entire
+        ShoppingCart of a Checkout.
+      tags:
+        - OrderManagementCheckoutActions
+      operationId: createOrder
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The order request was successfully processed and a payment object was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed or was missing required data. When a required property was missing the error
+            message will point out which property caused the error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          x-nullable: true
+          description: The payment was declined by a 3rd party (acquirer, payment processor, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          x-nullable: true
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          x-nullable: true
+          description: |-
+            Any 5XX response points to something that went wrong on our end. This could also be that the system was
+            unable to route the transaction to an appropriate acquirer/3rd party. Another reason for such a response
+            is when the 3rd party's response could not be understood.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          x-nullable: true
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/complete-order':
+    post:
+      summary: Complete an Order
+      description: |-
+        For PAYONE Secured Installment (paymentProductId 3391) a two-step process is required.
+        The first step is creating an Order, the second step is completing it by calling this API endpoint.
+      tags:
+        - OrderManagementCheckoutActions
+      operationId: completeOrder
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteOrderRequest'
+        required: true
+      responses:
+        200:
+          description: The Order was successfully completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletePaymentResponse'
+        400:
+          description: Incorrect input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        402:
+          description: The payment was declined by a 3rd party (acquirer, payment processor, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: Complete is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        422:
+          description: The request was well-formed but was unable to be processed due to semantic errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        502:
+          description: Any 5XX response points to something that went wrong on our
+            end. This could also be that the system was unable to route the transaction
+            to an appropriate acquirer/3rd party. Another reason for such a response
+            is when the 3rd party's response could not be understood.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        503:
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/deliver':
+    post:
+      summary: Mark items of a Checkout as delivered and automatically capture the payment for the items
+      description: |
+        This endpoint can be used to mark items from a Checkout as delivered and to automatically capture the payments
+        for those items.
+        The return can only be done for Checkouts with status COMPLETED, BILLED or CHARGEBACKED and the items have to
+        be in the status ORDERED.
+        If the payment has already been captured (in case of a SALE), the deliver request will only update the item
+        status.
+      tags:
+        - OrderManagementCheckoutActions
+      operationId: deliverOrder
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeliverRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The deliver was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliverResponse'
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed or was missing required data. When a required property was missing the error
+            message will point out which property caused the error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: |-
+            The most common cause for this response is that the Checkout status was not PENDING_COMPLETION, BILLED or
+            CHARGEBACKED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/return':
+    post:
+      summary: Mark items of a Checkout as returned and automatically refund the payment for the items
+      description: |
+        This endpoint can be used to mark items from a Checkout as returned and will automatically refund the payments
+        for those items.
+        The return can only be done for Checkouts with status BILLED or CHARGEBACKED and the items have to be in the
+        status DELIVERED.
+      tags:
+        - OrderManagementCheckoutActions
+      operationId: returnOrder
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReturnRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The return was successfully executed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnResponse'
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed or was missing required data. When a required property was missing the error
+            message will indicate which property caused the error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: |-
+            The most common cause for this response is that the Checkout status was not PENDING_COMPLETION, BILLED or
+            CHARGEBACKED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/cancel':
+    post:
+      summary: Mark items of a Checkout as cancelled and automatically cancel the payment for the items
+      description: |-
+        This endpoint can be used to mark items from a Checkout as cancelled and reverse the payment associated with
+        this Checkout.
+        The Cancel endpoint can be used to cancel a full or partial order. 
+        The Cancel request will mark all or (for cancelType PARTIAL) the provided items as CANCELLED, and – in case of
+        an existing authorization – will reverse the payment.
+        
+        In the light of card payments, reversing an authorization that is not needed will prevent you from having to pay
+        a fee/penalty for unused authorization requests.
+        Whilst scheme regulations require that acquirers and PSPs support authorization reversals, there are no rules
+        towards issuers mandating them to process the reversal advice.
+        Therefore, there is no guarantee the authorization hold is released.
+        The authorization reversal can only be performed by the card issuer, and under no circumstances will we be
+        responsible for performing the authorization reversal.
+
+        The cancellationReason is mandatory for BNPL payment methods (paymentProductId 3390, 3391 and 3392). For other
+        payment methods the cancellationReason is not mandatory but can be used for reporting and reconciliation
+        purposes.
+      tags:
+        - OrderManagementCheckoutActions
+      operationId: cancelOrder
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelRequest'
+      responses:
+        '200':
+          x-nullable: true
+          description: |-
+            The payment has been cancelled. Some acquirers/issuers will provide some feedback in case a reversal of the
+            authorization has been performed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelResponse'
+        '400':
+          x-nullable: true
+          description: Incorrect input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          x-nullable: true
+          description: Payment required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: Payment was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          x-nullable: true
+          description: Cancellation is not allowed because payment is closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          x-nullable: true
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts':
+    post:
+      summary: Add a Checkout to an existing Commerce Case
+      description: |-
+        This endpoint can be used to add a new Checkout in combination with an Order to an existing Commerce Case. The
+        Order can either be directly executed or the paymentMethodSpecificInput can also be stored for a later execution
+        over the OrderManagementCheckout Action or Payment Execution endpoint.
+      tags:
+        - Checkout
+      operationId: createCheckout
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCheckoutRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The response contains the reference of the Checkout and possible the response for the payment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCheckoutResponse'
+        '202':
+          x-nullable: true
+          description: |-
+            The response contains the reference of the Checkout. But the Payment Execution was not successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCheckoutResponse'
+        '400':
+          x-nullable: true
+          description: Payment not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/checkouts':
+    get:
+      summary: Get a list of Checkouts based on Search Parameters
+      description: |
+        This endpoint will provide a list of Checkouts based on the provided criteria.
+        Not all parameters are required to be set.
+        Results will be returned in descending creation time per default.
+        Only up to the first 10,000 results will be returned.
+      tags:
+        - Checkout
+      operationId: getCheckouts
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/size'
+        - $ref: '#/components/parameters/fromDate'
+        - $ref: '#/components/parameters/toDate'
+        - $ref: '#/components/parameters/fromCheckoutAmount'
+        - $ref: '#/components/parameters/toCheckoutAmount'
+        - $ref: '#/components/parameters/fromOpenAmount'
+        - $ref: '#/components/parameters/toOpenAmount'
+        - $ref: '#/components/parameters/fromCollectedAmount'
+        - $ref: '#/components/parameters/toCollectedAmount'
+        - $ref: '#/components/parameters/fromCancelledAmount'
+        - $ref: '#/components/parameters/toCancelledAmount'
+        - $ref: '#/components/parameters/fromRefundAmount'
+        - $ref: '#/components/parameters/toRefundAmount'
+        - $ref: '#/components/parameters/fromChargebackAmount'
+        - $ref: '#/components/parameters/toChargebackAmount'
+        - $ref: '#/components/parameters/checkoutIdQuery'
+        - $ref: '#/components/parameters/merchantReference'
+        - $ref: '#/components/parameters/merchantCustomerId'
+        - $ref: '#/components/parameters/includePaymentProductId'
+        - $ref: '#/components/parameters/includeCheckoutStatus'
+        - $ref: '#/components/parameters/includeExtendedCheckoutStatus'
+        - $ref: '#/components/parameters/includePaymentChannel'
+        - $ref: '#/components/parameters/paymentReference'
+        - $ref: '#/components/parameters/paymentId'
+        - $ref: '#/components/parameters/firstName'
+        - $ref: '#/components/parameters/surname'
+        - $ref: '#/components/parameters/email'
+        - $ref: '#/components/parameters/phoneNumber'
+        - $ref: '#/components/parameters/dateOfBirth'
+        - $ref: '#/components/parameters/companyInformation'
+        - $ref: '#/components/parameters/terminalId'
+        - $ref: '#/components/parameters/reportingToken'
+      responses:
+        '200':
+          x-nullable: true
+          description: |
+            The response containing all found Checkouts for the provided criteria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutsResponse'
+        '400':
+          x-nullable: true
+          description: Exception when requesting Checkouts with given parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}':
+    get:
+      summary: Get Checkout Details
+      description: This endpoint can be used to get a Checkout.
+      tags:
+        - Checkout
+      operationId: getCheckout
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      responses:
+        '200':
+          x-nullable: true
+          description: The response contains the Checkout.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutResponse'
+        '404':
+          x-nullable: true
+          description: Checkout not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Modify a Checkout
+      description: This endpoint can be used to update or modify the data of a Checkout.
+      tags:
+        - Checkout
+      operationId: updateCheckout
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchCheckoutRequest'
+      responses:
+        '204':
+          x-nullable: true
+          description: The Checkout is updated successfully.
+        '400':
+          x-nullable: true
+          description: Payment not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          x-nullable: true
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete a Checkout
+      description: This endpoint can be used to delete an unused Checkout.
+      tags:
+        - Checkout
+      operationId: deleteCheckout
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      responses:
+        '204':
+          x-nullable: true
+          description: The Checkout was successfully deleted.
+        '403':
+          x-nullable: true
+          description: You are not allowed to delete the Checkout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: The Checkout could not be found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions':
+    post:
+      summary: Create a Payment
+      description: |-
+        This endpoint can be used to create a payment for a specific payment method. The amount of the payment cannot
+        exceed the overall Checkout amount.
+        OrderManagementActions will be impossible after using a PaymentExecution endpoint.
+      tags:
+        - PaymentExecution
+      operationId: createPayment
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentExecutionRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The payment request was successfully processed and a payment object was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePaymentResponse'
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed or was missing required data. When a required property was missing the error
+            message will point out which property caused the error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          x-nullable: true
+          description: The payment was declined by a 3rd party (acquirer, payment processor, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          x-nullable: true
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          x-nullable: true
+          description: |-
+            Any 5XX response points to something that went wrong on our end. This could also be that the system was
+            unable to route the transaction to an appropriate acquirer/3rd party. Another reason for such a response
+            is when the 3rd party's response could not be understood.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          x-nullable: true
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/capture':
+    post:
+      summary: Capture a Payment
+      description: |-
+        This endpoint can be used to capture authorized amounts of a payment. The Capture can only be done for Checkouts
+        with status COMPLETED, BILLED or CHARGEBACKED.
+        OrderManagementActions will be impossible after using a PaymentExecution endpoint.
+        It is possible to perform multiple partial captures by providing an amount that is lower than the total
+        authorized amount.
+        
+        The cancellationReason is mandatory for BNPL payment methods (paymentProductId 3390, 3391 and 3392) if isFinal
+        is set to true and the amount of the Capture is lower than the authorized amount.
+        For other payment methods the cancellationReason is not mandatory in this case but can be used for reporting and
+        reconciliation purposes.
+      tags:
+        - PaymentExecution
+      operationId: capturePaymentExecution
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentExecutionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CapturePaymentRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The Capture was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CapturePaymentResponse'
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed or was missing required data. When a required property was missing the error
+            message will point out which property caused the error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: |-
+            The most common cause for this response is that the Checkout status was not PENDING_COMPLETION, BILLED or
+            CHARGEBACKED.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/cancel':
+    post:
+      summary: Cancel a Payment
+      description: |-
+        This endpoint can be used to reverse the payment associated with this Checkout. The Cancel is only possible for
+        the entire amount of the payment and not partial payments.
+        OrderManagementActions will be impossible after using a PaymentExecution endpoint.
+        
+        In the light of card payments, reversing an authorization that is not needed will prevent you from having to pay
+        a fee/penalty for unused authorization requests.
+        Whilst scheme regulations require that acquirers and PSPs support authorization reversals, there are no rules
+        towards issuers mandating them to process the reversal advice.
+        Therefore, there is no guarantee the authorization hold is released.
+        The authorization reversal can only be performed by the card issuer, and under no circumstances will we be
+        responsible for performing the authorization reversal.
+
+        The cancellationReason is mandatory for BNPL payment methods (paymentProductId 3390, 3391 and 3392). For other
+        payment methods the cancellationReason is not mandatory but can be used for reporting and reconciliation
+        purposes.
+      tags:
+        - PaymentExecution
+      operationId: cancelPaymentExecution
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentExecutionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelPaymentRequest'
+      responses:
+        '200':
+          x-nullable: true
+          description: |-
+            The payment has been cancelled. Some acquirers/issuers will provide some feedback in case a reversal of the
+            authorization has been performed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelPaymentResponse'
+        '400':
+          x-nullable: true
+          description: Incorrect input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '402':
+          x-nullable: true
+          description: Payment required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: Payment was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          x-nullable: true
+          description: Cancellation is not allowed because payment is closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          x-nullable: true
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/refund':
+    post:
+      summary: Refund a Payment
+      description: |-
+        This endpoint can be used to refund a payment for the associated Checkout. The Refund can only be done for
+        Checkouts with status BILLED or CHARGEBACKED.
+        OrderManagementActions will be impossible after using a PaymentExecution endpoint.
+      tags:
+        - PaymentExecution
+      operationId: refundPaymentExecution
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentExecutionId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The Refund was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundPaymentResponse'
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed or was missing required data. When a required property was missing the error
+            message will point out which property caused the error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: The most common cause for this response id that the payment was not in a cancelable state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/complete':
+    post:
+      summary: Complete a Payment
+      description: |-
+        For PAYONE Secured Installment (paymentProductId 3391) a two-step process is required.
+        The first step is creating a Payment, the second step is completing it by calling this API endpoint.
+        OrderManagementActions will be impossible after using a PaymentExecution endpoint.
+      tags:
+        - PaymentExecution
+      operationId: completePayment
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentExecutionId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompletePaymentRequest'
+        required: true
+      responses:
+        200:
+          description: The completion was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletePaymentResponse'
+        400:
+          description: Incorrect input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        402:
+          description: The payment was declined by a 3rd party (acquirer, payment processor, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: Complete is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        422:
+          description: The request was well-formed but was unable to be processed due to semantic errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        502:
+          description: Any 5XX response points to something that went wrong on our
+            end. This could also be that the system was unable to route the transaction
+            to an appropriate acquirer/3rd party. Another reason for such a response
+            is when the 3rd party's response could not be understood.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        503:
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/pause':
+    post:
+      summary: Pause a Payment for selected payment methods
+      description: |-
+        Defers next dunning step-up after a consumer has announced to send
+        back a shipped order. Merchant intends to do a REFUND call soon.
+        OrderManagementActions will be impossible after using a PaymentExecution endpoint.
+        
+        Currently only applicable for PAYONE Buy Now, Pay Later (BNPL).
+
+        * 3390 - PAYONE Secured Invoice
+        * 3391 - PAYONE Secured Installment
+        * 3392 - PAYONE Secured Direct Debit
+      tags:
+        - PaymentExecution
+      operationId: pausePayment
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentExecutionId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PausePaymentRequest'
+      responses:
+        200:
+          description: The pause was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PausePaymentResponse'
+        400:
+          description: Incorrect input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        402:
+          description: The payment was declined by a 3rd party (acquirer, payment
+            processor, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: You are not allowed to access the service or account or your
+            API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        409:
+          description: Pause is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        422:
+          description: The request was well-formed but was unable to be processed
+            due to semantic errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        502:
+          description: Any 5XX response points to something that went wrong on our
+            end. This could also be that the system was unable to route the transaction
+            to an appropriate acquirer/3rd party. Another reason for such a response
+            is when the 3rd party's response could not be understood.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        503:
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/refresh':
+    post:
+      summary: Refresh information of a Payment Execution
+      description: |-
+        This endpoint can be used to refresh the information of a Payment Execution.
+        
+        This endpoint can be used to refresh a Payment Execution in two different modes:
+        * PAYMENT_EVENTS = Refresh all events that belong to a payment. It can be used for a synchronisation with
+        the payment gateway e.g. in case of possible inconsistencies between the Commerce Platform and the payment gateway.
+        between the commerce platform and the payment platform.
+        * PAYMENT_PROVIDER_DETAILS = Refresh the payment status of the payment and return the payment provider details.
+        It can be used for a synchronisation of the payment with the external payment provider. At the moment this call
+        will update the customer payment status of a transaction for PAYONE Buy Now, Pay Later (BNPL).
+        
+        ATTENTION: This Refresh endpoint includes a rate limit of one request per Payment Execution every twelve hours. 
+        The reason for this rate limit that for the currently supported use case a change in payment provider details is 
+        not expected to change more frequently.
+      tags:
+        - PaymentExecution
+      operationId: refreshPayment
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentExecutionId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshPaymentRequest'
+      responses:
+        200:
+          description: The refresh was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentExecution'
+        400:
+          description: Incorrect input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        403:
+          description: You are not allowed to access the service or account or your
+            API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        500:
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        502:
+          description: Any 5XX response points to something that went wrong on our
+            end. This could also be that the system was unable to route the transaction
+            to an appropriate acquirer/3rd party. Another reason for such a response
+            is when the 3rd party's response could not be understood.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        503:
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information':
+    post:
+      summary: Create a Payment Information
+      description: |-
+        Creates a new Payment Information for the given Checkout.
+      tags:
+        - PaymentInformation
+      operationId: createPaymentInformation
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentInformationRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The response contains the reference of the created Payment Information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInformationResponse'
+        '400':
+          x-nullable: true
+          description: Incorrect input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          x-nullable: true
+          description: Creation of Payment Information is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          x-nullable: true
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information/{paymentInformationId}':
+    get:
+      summary: Get a Payment Information
+      description: |-
+        This endpoint can be used to get a paymentInformation of a Checkout.
+      tags:
+        - PaymentInformation
+      operationId: getPaymentInformation
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentInformationId'
+      responses:
+        '200':
+          x-nullable: true
+          description: The response contains the reference of the created Payment Information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInformationResponse'
+        '404':
+          x-nullable: true
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information/{paymentInformationId}/refund':
+    post:
+      summary: Refund a Payment Information
+      description: |-
+        This endpoint can be used to initiate an online refund for a POS terminal transaction.
+        The platform will automatically detect the payment method of the original transaction and select the most appropriate mode to refund the transaction.
+      tags:
+        - PaymentInformation
+      operationId: refundPaymentInformation
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentInformationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentInformationRefundRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The Refund was successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentInformationRefundResponse'
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed or was missing required data. When a required property was missing the error
+            message will point out which property caused the error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: The most common cause for this response id that the payment was not in a cancelable state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefundErrorResponse'
+
+components:
+  parameters:
+    checkoutIdPath:
+      in: path
+      name: checkoutId
+      description: Unique identifier of a Checkout
+      required: true
+      schema:
+        type: string
+        format: UUID
+    checkoutIdQuery:
+      in: query
+      name: checkoutId
+      description: Unique identifier of a Checkout
+      schema:
+        type: string
+        format: UUID
+      example: 7a3444d3-f6ce-4b6e-b6c4-2486a160cf19
+    commerceCaseIdPath:
+      in: path
+      name: commerceCaseId
+      description: Unique identifier of a Commerce Case.
+      required: true
+      schema:
+        type: string
+        format: UUID
+    commerceCaseIdQuery:
+      in: query
+      name: commerceCaseId
+      description: Unique identifier of a Commerce Case.
+      schema:
+        type: string
+        format: UUID
+      example: 7a3444d3-f6ce-4b6e-b6c4-2486a160cf19
+    companyInformation:
+      in: query
+      name: companyInformation
+      description: Filter your results by the name of the company.
+      schema:
+        type: string
+        x-trim-at: 50
+      example: Sinclair's company name
+    dateOfBirth:
+      in: query
+      name: dateOfBirth
+      description: |-
+        Filter your results by the date of birth.
+        Format YYYYMMDD
+      schema:
+        type: string
+        maxLength: 8
+        pattern: ^((19|20|21)\d{6})?$
+      example: 20041101
+    email:
+      in: query
+      name: email
+      description: Filter your results by the customer email address.
+      schema:
+        type: string
+        x-trim-at: 70
+      example: Sinclair.Müller@example.com
+    firstName:
+      in: query
+      name: firstName
+      description: |-
+        Filter your results by the customer first name. It is also possible to filter by the first name from the
+        shipping address.
+      schema:
+        type: string
+        x-trim-at: 35
+      example: Sinclair
+    fromCancelledAmount:
+      in: query
+      description: |-
+        Minimum cancelled amount of the Checkouts that shall be included in the response. Amount in cents always
+        having 2 decimals.
+      name: fromCancelledAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    fromChargebackAmount:
+      in: query
+      description: |-
+        Minimum chargeback amount of the Checkouts that shall be included in the response. Amount in cents always
+        having 2 decimals.
+      name: fromChargebackAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    fromCheckoutAmount:
+      in: query
+      description: |-
+        Minimum monetary value of the Checkouts that shall be included in the response. Amount in cents always
+        having 2 decimals.
+      name: fromCheckoutAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    fromCollectedAmount:
+      in: query
+      description: |-
+        Minimum collected amount of the Checkouts that shall be included in the response. Amount in cents always
+        having 2 decimals.
+      name: fromCollectedAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    fromDate:
+      in: query
+      name: fromDate
+      schema:
+        type: string
+        format: date-time
+      description: |
+        Date and time in RFC3339 format after which Items (Checkouts or Commerce-Cases, depending on the context) should be included in the request.
+        Accepted formats are:
+        * YYYY-MM-DD'T'HH:mm:ss'Z'
+        * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+        * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+        * YYYY-MM-DD'T'HH:mm'Z'
+        * YYYY-MM-DD'T'HH:mm+XX:XX
+        * YYYY-MM-DD'T'HH:mm-XX:XX        
+
+        All other formats may be ignored by the system.
+      examples:
+        YYYY-MM-DDThh:mm:ssZ:
+          value: 2022-11-10T13:34:23Z
+        YYYY-MM-DDThh:mm:ss+XX:XX:
+          value: 2022-11-10T14:34:23+01:00
+    fromOpenAmount:
+      in: query
+      description: |-
+        Minimum open amount of the Checkouts that shall be included in the response. Amount in cents always having
+        2 decimals.
+      name: fromOpenAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    fromRefundAmount:
+      in: query
+      description: |-
+        Minimum refunded amount of the Checkouts that shall be included in the response. Amount in cents always having
+        2 decimals.
+      name: fromRefundAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    includeCheckoutStatus:
+      in: query
+      name: includeCheckoutStatus
+      description: |-
+        Filter your results by Checkout status so that only Checkouts with the specified statuses are returned.
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/StatusCheckout'
+    includeExtendedCheckoutStatus:
+      in: query
+      name: includeExtendedCheckoutStatus
+      description: |-
+        Filter your results by extended Checkout status so that only Checkouts with the specified statuses are returned.
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/ExtendedCheckoutStatus'
+    includePaymentChannel:
+      in: query
+      name: includePaymentChannel
+      description: |-
+        Filter your results by payment channel so that only Checkouts which reference transactions on the given
+        channels are returned.
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/PaymentChannel'
+    includePaymentProductId:
+      in: query
+      name: includePaymentProductId
+      description: |-
+        Filter your results by payment product ID so that only Checkouts containing a Payment Execution with one of
+        the specified payment product IDs are returned.
+      schema:
+        type: array
+        items:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          example: 840
+    merchantCustomerId:
+      in: query
+      name: merchantCustomerId
+      description: Unique identifier for the customer.
+      schema:
+        type: string
+        maxLength: 20
+      example: 1234
+    merchantIdPath:
+      in: path
+      name: merchantId
+      description: The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant.
+      required: true
+      schema:
+        type: string
+        minLength: 0
+        maxLength: 64
+      example: 3241
+    merchantReference:
+      in: query
+      name: merchantReference
+      description: |-
+        Unique reference of the Checkout that is also returned for reporting and reconciliation purposes.
+      schema:
+        type: string
+        maxLength: 40
+      example: your-checkout-6372
+    offset:
+      in: query
+      name: offset
+      description: The offset to load Items (Checkouts or Commerce-Cases, depending on the context) starting with 0.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      example: 0
+    paymentExecutionId:
+      in: path
+      name: paymentExecutionId
+      description: Unique identifier of a paymentExecution
+      required: true
+      schema:
+        type: string
+        format: UUID
+    paymentId:
+      in: query
+      name: paymentId
+      description: Filter your results by the paymentExecutionId, paymentInformationId or the id of the payment.
+      schema:
+        type: string
+      example: 664423132
+    paymentInformationId:
+      in: path
+      name: paymentInformationId
+      description: Unique identifier of a paymentInformation
+      required: true
+      schema:
+        type: string
+        format: UUID
+    paymentReference:
+      in: query
+      name: paymentReference
+      description: Filter your results by the merchantReference of the paymentExecution or paymentInformation.
+      schema:
+        type: string
+      example: Reference-4172
+    phoneNumber:
+      in: query
+      name: phoneNumber
+      description: Filter your results by the customer phone number.
+      schema:
+        type: string
+        x-trim-at: 20
+      example: '+1234567890'
+    reportingToken:
+      in: query
+      name: reportingToken
+      description: Filter your results by the reportingToken.
+      schema:
+        type: string
+        x-trim-at: 40
+      example: 12a037cc-833d-8b45-8f6f-11c34171f4e1
+    size:
+      in: query
+      name: size
+      description: The number of Items (Checkouts or Commerce-Cases, depending on the context) loaded per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+      example: 10
+    surname:
+      in: query
+      name: surname
+      description: |-
+        Filter your results by the customer surname. It is also possible to filter by the surname from the shipping
+        address.
+      schema:
+        type: string
+        x-trim-at: 35
+      example: Müller
+    terminalId:
+      in: query
+      name: terminalId
+      description: |-
+        Filter your results by the terminalId.
+      schema:
+        type: string
+        minLength: 8
+        maxLength: 8
+      example: "60023723"
+    toCancelledAmount:
+      in: query
+      description: |-
+        Maximum cancelled amount of the Checkouts that shall be included in the response. Amount in cents always
+        having 2 decimals.
+      name: toCancelledAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    toChargebackAmount:
+      in: query
+      description: |-
+        Maximum chargeback amount of the Checkouts that shall be included in the response. Amount in cents always
+        having 2 decimals.
+      name: toChargebackAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    toCheckoutAmount:
+      in: query
+      description: |-
+        Maximum monetary value of the Checkouts that shall be included in the response. Amount in cents always
+        having 2 decimals.
+      name: toCheckoutAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    toCollectedAmount:
+      in: query
+      description: |-
+        Maximum collected amount of the Checkouts that shall be included in the response. Amount in cents always
+        having 2 decimals.
+      name: toCollectedAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    toDate:
+      in: query
+      name: toDate
+      schema:
+        type: string
+        format: date-time
+      description: |
+        Date and time in RFC3339 format after which Items (Checkouts or Commerce-Cases, depending on the context) should be included in the request.
+        Accepted formats are:
+        * YYYY-MM-DD'T'HH:mm:ss'Z'
+        * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+        * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+        * YYYY-MM-DD'T'HH:mm'Z'
+        * YYYY-MM-DD'T'HH:mm+XX:XX
+        * YYYY-MM-DD'T'HH:mm-XX:XX
+        All other formats may be ignored by the system.
+      examples:
+        YYYY-MM-DDThh:mm:ssZ:
+          value: 2022-11-10T13:34:23Z
+        YYYY-MM-DDThh:mm:ss+XX:XX:
+          value: 2022-11-10T14:34:23+01:00
+    toOpenAmount:
+      in: query
+      description: |-
+        Maximum open amount of the Checkouts that shall be included in the response. Amount in cents always having 2
+        decimals.
+      name: toOpenAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+    toRefundAmount:
+      in: query
+      description: |-
+        Maximum refunded amount of the Checkouts that shall be included in the response. Amount in cents always having
+        2 decimals.
+      name: toRefundAmount
+      schema:
+        type: integer
+        format: int64
+        maximum: 999999999999
+        minimum: 0
+      example: 1000
+  schemas:
+    Address:
+      type: object
+      description: Object containing billing address details
+      additionalProperties: false
+      properties:
+        additionalInfo:
+          type: string
+          description: Second line of street or additional address information such as apartments and suits
+          example: Apartment 203
+          maxLength: 50
+        city:
+          type: string
+          description: City
+          example: Kiel
+          minLength: 2
+          maxLength: 40
+        countryCode:
+          type: string
+          pattern: ^[a-zA-Z]{2}$
+          description: ISO 3166-1 alpha-2 country code
+          example: DE
+          maxLength: 2
+        houseNumber:
+          type: string
+          description: House number
+          example: 3
+          maxLength: 10
+        state:
+          type: string
+          pattern: ^[a-zA-Z0-9]{1,3}$
+          description: State (ISO 3166-2 subdivisions), only if country=US, CA, CN, JP, MX, BR, AR, ID, TH, IN.
+          example: BR
+          minLength: 1
+          maxLength: 3
+        street:
+          type: string
+          description: Street name
+          example: Coral Avenue
+          maxLength: 50
+        zip:
+          type: string
+          description: Zip code
+          example: 12345
+          minLength: 2
+          maxLength: 10
+    AddressPersonal:
+      type: object
+      description: Object containing personal or shipping address information.
+      additionalProperties: false
+      properties:
+        additionalInfo:
+          type: string
+          description: Second line of street or additional address information such as apartments and suits
+          example: Apartment 203
+          maxLength: 50
+        city:
+          type: string
+          description: City
+          example: Kiel
+          minLength: 2
+          maxLength: 40
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: DE
+          maxLength: 2
+        houseNumber:
+          type: string
+          description: House number
+          example: 3
+          maxLength: 10
+        state:
+          type: string
+          description: State (ISO 3166-2 subdivisions), only if country=US, CA, CN, JP, MX, BR, AR, ID, TH, IN.
+          example: MX
+          minLength: 1
+          maxLength: 3
+        street:
+          type: string
+          description: Street name
+          example: Coral Avenue
+          maxLength: 50
+        zip:
+          type: string
+          description: Zip code
+          example: 1234
+          minLength: 2
+          maxLength: 10
+        name:
+          $ref: '#/components/schemas/PersonalName'
+    AllowedPaymentActions:
+      type: string
+      enum:
+        - ORDER_MANAGEMENT
+        - PAYMENT_EXECUTION
+      description: |
+        Indicates which payment endpoints can be used for the respective Checkout.
+        The systems offers two alternatives to trigger a payment and consecutive events:
+        OrderManagementCheckoutActions or the Payment Execution resource.
+        Both alternatives can be used simultaneously but once one of the Payment Execution endpoints is used the
+        Order Management endpoints can no longer be used for that Checkout since it is no longer possible to match
+        payment events to items of the Checkout.
+    AmountOfMoney:
+      type: object
+      description: Object containing amount and ISO currency code attributes
+      additionalProperties: false
+      properties:
+        amount:
+          type: integer
+          description: Amount in cents and always having 2 decimals
+          format: int64
+          maximum: 999999999999
+          minimum: 0
+          example: 1000
+        currencyCode:
+          type: string
+          description: Three-letter ISO currency code representing the currency for the amount
+          minLength: 3
+          maxLength: 3
+          example: EUR
+      required:
+        - amount
+        - currencyCode
+    ApplePaymentDataTokenInformation:
+      type: object
+      description: |-
+        Additional information about the Apple payment data token. This information are needed for checking the validity
+        of the payment data token before decryption.
+      properties:
+        version:
+          type: string
+          description: |-
+            Version information about the payment token. Currently only EC_v1 for ECC-encrypted data is supported.
+          enum:
+            - EC_V1
+          example: EC_V1
+        signature:
+          type: string
+          description: |-
+            Detached PKCS #7 signature, Base64 encoded as string. Signature of the payment and header data. The
+            signature includes the signing certificate, its intermediate CA certificate, and information about the
+            signing algorithm.
+        header:
+          $ref: '#/components/schemas/ApplePaymentDataTokenHeaderInformation'
+      required:
+        - version
+        - signature
+        - header
+    ApplePaymentDataTokenHeaderInformation:
+      type: object
+      description: Additional information about the Apple payment data token header.
+      properties:
+        transactionId:
+          type: string
+          description: A hexadecimal Transaction identifier identifier as a string.
+        applicationData:
+          type: string
+          description: |-
+            SHA–256 hash, hex encoded as a string. Hash of the applicationData property of the original PKPaymentRequest
+            object.
+      required:
+        - transactionId
+    APIError:
+      description: Contains detailed information on one single error.
+      type: object
+      additionalProperties: false
+      properties:
+        errorCode:
+          type: string
+          description: Error code
+          example: 50001130
+        category:
+          type: string
+          description: |-
+            Category the error belongs to. The category should give an indication of the type of error you are dealing
+            with. Do not expect a finite set of possible categories, as they are subject to change. Common values are:
+            * DIRECT_PLATFORM_ERROR - indicating that a functional error has occurred in the platform.
+            * PAYMENT_PLATFORM_ERROR - indicating that a functional error has occurred in the payment platform.
+            * IO_ERROR - indicating that a technical error has occurred within the payment platform or between the
+            payment platform and third party systems.
+            * COMMERCE_PLATFORM_ERROR - indicating an error originating from the Commerce Platform.
+            * COMMERCE_PORTAL_BACKEND_ERROR - indicating an error originating from the Commerce Portal Backend.
+          example: PAYMENT_PLATFORM_ERROR
+        httpStatusCode:
+          type: integer
+          description: HTTP status code for this error that can be used to determine the type of error
+          format: int32
+          example: 404
+        id:
+          type: string
+          description: ID of the error. This is a short human-readable message that briefly describes the error.
+          example: general-error-technical-fault-internal
+        message:
+          type: string
+          description: |-
+            Human-readable error message that is not meant to be relayed to customer as it might tip off people who are
+            trying to commit fraud
+          example: Authorisation declined
+        propertyName:
+          type: string
+          description: |-
+            Returned only if the error relates to a value that was missing or incorrect.
+
+            Contains a location path to the value as a JSonata query.
+
+            Some common examples:
+            * a.b selects the value of property b of root property a,
+            * a[1] selects the first element of the array in root property a,
+            * a[b='some value'] selects all elements of the array in root property a that have a property b with value
+            'some value'.
+          example: paymentId
+      required:
+        - errorCode
+    AuthorizationMode:
+      type: string
+      x-enum-to-string: false
+      enum:
+        - PRE_AUTHORIZATION
+        - SALE
+      description: |-
+        Determines the type of the authorization that will be used. Allowed values: 
+          * PRE_AUTHORIZATION - The payment creation results in a pre-authorization that is ready for Capture. Pre-
+        authortizations can be reversed and can be captured within 30 days. The capture amount can be lower than the
+        authorized amount. 
+          * SALE - The payment creation results in an authorization that is already captured at the moment of approval. 
+        
+        If the parameter is not provided in the request, the default value will be PRE_AUTHORIZATION
+    BankAccountInformation:
+      type: object
+      description: Object containing information about the end customer's bank account.
+      properties:
+        iban:
+          maxLength: 35
+          type: string
+          description: |-
+            IBAN of the end customer's bank account.
+            The IBAN is the International Bank Account Number. It is an internationally agreed format for the BBAN and
+            includes the ISO country code and two check digits.
+          example: DE02370502990000684712
+        bic:
+          maxLength: 11
+          type: string
+          description: Bank Identification Code
+          example: COLSDE33XXX
+        accountHolder:
+          maxLength: 50
+          type: string
+          description: |-
+            Account holder of the bank account with the given IBAN.
+            Does not necessarily have to be the end customer (e.g. joint accounts).
+          example: Max Mustermann
+      required:
+        - accountHolder
+        - iban
+    BankPayoutMethodSpecificInput:
+      type: object
+      description: Object containing the specific input details for SEPA tranfers
+      properties:
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 772
+        paymentProduct772SpecificInput:
+          $ref: '#/components/schemas/SepaTransferPaymentProduct772SpecificInput'
+    CancelItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: UUID
+          description: Id of the item to cancel.
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        quantity:
+          type: integer
+          description: |-
+            Quantity of the units being cancelled, should be greater than zero
+            Note: Must not be all spaces or all zeros
+          format: int64
+          maximum: 9999
+          minimum: 1
+          example: 1
+      required:
+        - id
+        - quantity
+    CancellationReason:
+      type: string
+      description: |-
+        Reason why an order was cancelled. Possible values:        
+        * CONSUMER_REQUEST - The consumer requested a cancellation of the Order
+        * UNDELIVERABLE - The merchant cannot fulfill the Order
+        * DUPLICATE - The Order was created twice accidentally
+        * FRAUDULENT- Consumer turned out to be a fraudster
+        * ORDER_SHIPPED_IN_FULL - The merchant shipped everything and wants to cancel the remaining authorized amount of
+        the Order
+        * AUTOMATED_SHIPMENT_FAILED - A technical error was thrown during an automated shipment API call rendering the
+        Order impossible to complete
+
+        Mandatory for PAYONE Buy Now, Pay Later (BNPL):
+        * 3390 - PAYONE Secured Invoice
+        * 3391 - PAYONE Secured Installment
+        * 3392 - PAYONE Secured Direct Debit
+      enum:
+        - CONSUMER_REQUEST
+        - UNDELIVERABLE
+        - DUPLICATE
+        - FRAUDULENT
+        - ORDER_SHIPPED_IN_FULL
+        - AUTOMATED_SHIPMENT_FAILED
+      example: CONSUMER_REQUEST
+    CancelPaymentRequest:
+      type: object
+      properties:
+        cancellationReason:
+          $ref: '#/components/schemas/CancellationReason'
+    CancelPaymentResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        payment:
+          $ref: '#/components/schemas/PaymentResponse'
+    CancelRequest:
+      type: object
+      description: |
+        Request to mark items as of the respective Checkout as cancelled and to automatically reverse the associated
+        payment. 
+        A Cancel can be created for a full or the partial ShoppingCart of the Checkout. 
+        The platform will automatically calculate the respective amount to trigger the Cancel. For a partial Cancel a
+        list of items must be provided.
+        
+        The cancellationReason is mandatory for BNPL payment methods (paymentProductId 3390, 3391 and 3392).
+        For other payment methods the cancellationReason is not mandatory but can be used for reporting and
+        reconciliation purposes.
+      properties:
+        cancelType:
+          $ref: '#/components/schemas/CancelType'
+        cancellationReason:
+          $ref: '#/components/schemas/CancellationReason'
+        cancelItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/CancelItem'
+    CancelResponse:
+      type: object
+      properties:
+        cancelPaymentResponse:
+          $ref: '#/components/schemas/CancelPaymentResponse'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartResult'
+    CancelType:
+      type: string
+      description: |
+        The cancelType refers to the ShoppingCart items of the Checkout.
+        cancelType = FULL should be provided if all items should be marked as cancelled and the payment for the entire
+        ShoppingCart should be reversed.
+        cancelType = PARTIAL should be provided if only certain items should be marked as cancelled and the Cancel
+        should not be made for the entire ShoppingCart. For this type the list of items has to be provided. 
+        Please note that a reversal for a partial payment will not reverse the respective amount from the authorization
+        but only reduces the openAmount that is ready for collecting.
+        
+        Following conditions apply to the Cancel request:
+          * items must be in status ORDERED
+          * there was no Capture, Refund or Cancel triggered over the Payment Execution resource
+          * for the cancelType FULL no items are provided in the request
+        Note: If a DISCOUNT productType is among the ShoppingCart items, only cancelType FULL is possible.
+      enum:
+        - FULL
+        - PARTIAL
+    CaptureOutput:
+      type: object
+      description: |
+        Object containing Capture details.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        merchantParameters:
+          type: string
+          description: |-
+            It allows you to store additional parameters for the transaction in JSON format.
+            This field must not contain any personal data.
+          maxLength: 1000
+          example: "{'SessionID':'126548354','ShopperID':'7354131'}"
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        paymentMethod:
+          type: string
+          description: Payment method identifier used by our payment engine.
+        paymentInstructions:
+          $ref: '#/components/schemas/PaymentInstructions'
+    CapturePaymentRequest:
+      type: object
+      additionalProperties: false
+      description: |
+        If the shopping cart is specified, a Capture is made with the amount of the shopping cart for the items that are
+        specified.
+      properties:
+        amount:
+          type: integer
+          format: int64
+          maximum: 999999999999
+          minimum: 1
+          description: |-
+            Here you can specify the amount that you want to capture (specified in cents, where single digit currencies
+            are presumed to have 2 digits). The amount can be lower than the amount that was authorized, but not higher. 
+             If left empty, the full amount will be captured and the request will be final. 
+             If the full amount is captured, the request will also be final.
+        isFinal:
+          type: boolean
+          default: false
+          description: |
+            This property indicates whether this will be the final operation. 
+            If the full amount should not captured but the property is set to true, the remaining amount will automatically be cancelled.
+        cancellationReason:
+          $ref: '#/components/schemas/CancellationReason'
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        delivery:
+          $ref: '#/components/schemas/DeliveryInformation'
+    CapturePaymentResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        captureOutput:
+          $ref: '#/components/schemas/CaptureOutput'
+        status:
+          $ref: '#/components/schemas/StatusValue'
+        statusOutput:
+          $ref: '#/components/schemas/PaymentStatusOutput'
+        id:
+          type: string
+          description: Unique payment transaction identifier of the payment gateway.
+          example: '3066019730_1'
+    CardFraudResults:
+      type: object
+      description: |
+        Fraud results contained in the CardFraudResults object.
+      additionalProperties: false
+      properties:
+        avsResult:
+          description: |2-
+             Result of the Address Verification Service checks. Possible values are: 
+             * A - Address (Street) matches, Zip does not 
+             * B - Street address match for international transactions—Postal code not verified due to incompatible
+             formats 
+             * C - Street address and postal code not verified for international transaction due to incompatible formats 
+             * D - Street address and postal code match for international transaction, cardholder name is incorrect 
+             * E - AVS error 
+             * F - Address does match and five digit ZIP code does match (UK only) 
+             * G - Address information is unavailable; international transaction; non-AVS participant 
+             * H - Billing address and postal code match, cardholder name is incorrect (Amex) 
+             * I - Address information not verified for international transaction 
+             * K - Cardholder name matches (Amex) 
+             * L - Cardholder name and postal code match (Amex) 
+             * M - Cardholder name, street address, and postal code match for international transaction 
+             * N - No Match on Address (Street) or Zip 
+             * O - Cardholder name and address match (Amex) 
+             * P - Postal codes match for international transaction—Street address not verified due to incompatible formats 
+             * Q - Billing address matches, cardholder is incorrect (Amex) 
+             * R - Retry, System unavailable or Timed out 
+             * S - Service not supported by issuer 
+             * U - Address information is unavailable 
+             * W - 9 digit Zip matches, Address (Street) does not 
+             * X - Exact AVS Match 
+             * Y - Address (Street) and 5 digit Zip match 
+             * Z - 5 digit Zip matches, Address (Street) does not 
+             * 0 - No service available
+          example: A
+          type: string
+          enum:
+            - A
+            - B
+            - C
+            - D
+            - E
+            - F
+            - G
+            - H
+            - I
+            - K
+            - L
+            - M
+            - N
+            - O
+            - P
+            - Q
+            - R
+            - S
+            - U
+            - W
+            - X
+            - Y
+            - Z
+            - "0"
+    CardPaymentDetails:
+      type: object
+      description: Information for card payments realized at a POS.
+      properties:
+        maskedCardNumber:
+          type: string
+          description: Reference to the card of the transaction.
+          maxLength: 40
+          example: 672559XXXXXX1108
+        paymentProcessingToken:
+          type: string
+          description: ID of the token. This property is populated when the payment was done with a token.
+          example: 0ca037cc-9079-4df7-8f6f-f2a3443ee521
+          maxLength: 40
+        reportingToken:
+          type: string
+          description: Token to identify the card in the reporting.
+          example: 12a037cc-833d-8b45-8f6f-11c34171f4e1
+          maxLength: 40
+        cardAuthorizationId:
+          type: string
+          description: |
+            Identifier for a successful authorization, reversal or refund.
+            Usually provided by the issuer system. Only provided for card payments.
+          example: 260042
+          maxLength: 8
+    CardInfo:
+      type: object
+      description: |
+        Object containing additional non PCI DSS relevant card information.
+        used instead of card (missing fields: cardNumber, expiryDate, cvv)
+      properties:
+        cardholderName:
+          type: string
+          description: The card holder's name on the card.
+          x-trim-at: 50
+    CartItemOrderStatus:
+      type: object
+      readOnly: true
+      description: Detailed information regarding an occurred payment event.
+      properties:
+        cartItemStatus:
+          $ref: '#/components/schemas/CartItemStatus'
+        quantity:
+          type: integer
+          description: |-
+            Amount of units for which this status is applicable, should be greater than zero
+          format: int64
+          maximum: 9999
+          minimum: 0
+          example: 1
+    CardPaymentMethodSpecificOutput:
+      type: object
+      description: |
+        Object containing the card payment method details.
+      additionalProperties: false
+      properties:
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 840
+        authorisationCode:
+          description: Card Authorization code as returned by the acquirer
+          type: string
+        fraudResults:
+          $ref: '#/components/schemas/CardFraudResults'
+        threeDSecureResults:
+          $ref: '#/components/schemas/ThreeDSecureResults'
+    CardPaymentMethodSpecificInput:
+      type: object
+      description: |
+        Object containing the specific input details for card payments.
+      additionalProperties: false
+      properties:
+        authorizationMode:
+          $ref: '#/components/schemas/AuthorizationMode'
+        recurring:
+          $ref: '#/components/schemas/CardRecurrenceDetails'
+        paymentProcessingToken:
+          type: string
+          description: ID of the token to use to create the payment.
+          example: 0ca037cc-9079-4df7-8f6f-f2a3443ee521
+          maxLength: 40
+        reportingToken:
+          type: string
+          readOnly: true
+          description: Token to identify the card in the reporting.
+          example: 12a037cc-833d-8b45-8f6f-11c34171f4e1
+          maxLength: 40
+        transactionChannel:
+          $ref: '#/components/schemas/TransactionChannel'
+        unscheduledCardOnFileRequestor:
+          $ref: '#/components/schemas/UnscheduledCardOnFileRequestor'
+        unscheduledCardOnFileSequenceIndicator:
+          $ref: '#/components/schemas/UnscheduledCardOnFileSequenceIndicator'
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 840
+        card:
+          $ref: '#/components/schemas/CardInfo'
+        returnUrl:
+          type: string
+          description: |-
+            The URL that the customer is redirect to after the payment flow has finished. You can add any number of key
+            value pairs in the query string that, for instance help you to identify the customer when they return to
+            your site. Please note that we will also append some additional key value pairs that will also help you with
+            this identification process.
+            Note: The provided URL should be absolute and contain the protocol to use, e.g. http:// or https://. For use
+            on mobile devices a custom protocol can be used in the form of protocol://. This protocol must be registered
+            on the device first.
+            URLs without a protocol will be rejected.
+          maxLength: 200
+          example: https://secure.ogone.com/ncol/test/displayparams.asp
+        cardOnFileRecurringFrequency:
+          type: string
+          description: |-
+            Period of payment occurrence for recurring and installment payments. Allowed values:
+            * Yearly
+            * Quarterly
+            * Monthly
+            
+            * Weekly
+            * Daily
+            Supported soon
+          enum:
+            - Yearly
+            - Quarterly
+            - Monthly
+            - Weekly
+            - Daily
+        cardOnFileRecurringExpiration:
+          maxLength: 8
+          pattern: ^((19|20|21)\d{6})?$
+          type: string
+          description: |-
+            The end date of the last scheduled payment in a series of transactions.
+            Format YYYYMMDD Supported soon
+    CardRecurrenceDetails:
+      type: object
+      description: Object containing data related to recurring.
+      properties:
+        recurringPaymentSequenceIndicator:
+          type: string
+          description: |-
+            * first = This transaction is the first of a series of recurring transactions
+            * recurring = This transaction is a subsequent transaction in a series of recurring transactions
+
+            Note: For any first of a recurring the system will automatically create a token as you will need to use a
+            token for any subsequent recurring transactions. In case a token already exists this is indicated in the
+            response with a value of False for the isNewToken property in the response.
+          enum:
+            - first
+            - recurring
+    CartItemInput:
+      type: object
+      description: This object contains information of all items in the cart.
+        If a cart item is provided, the productPrice and quantity is required.
+      additionalProperties: false
+      properties:
+        invoiceData:
+          $ref: '#/components/schemas/CartItemInvoiceData'
+        orderLineDetails:
+          $ref: '#/components/schemas/OrderLineDetailsInput'
+    CartItemPatch:
+      type: object
+      description: This object contains information of all items in the cart.
+        If a cart item is provided, the productPrice and quantity is required.
+      additionalProperties: false
+      properties:
+        invoiceData:
+          $ref: '#/components/schemas/CartItemInvoiceData'
+        orderLineDetails:
+          $ref: '#/components/schemas/OrderLineDetailsPatch'
+    CartItemResult:
+      type: object
+      description: This object contains information of all items in the cart.
+        If a cart item is provided, the productPrice and quantity is required.
+      additionalProperties: false
+      properties:
+        invoiceData:
+          $ref: '#/components/schemas/CartItemInvoiceData'
+        orderLineDetails:
+          $ref: '#/components/schemas/OrderLineDetailsResult'
+    CheckoutResponse:
+      type: object
+      xml:
+        name: 'checkoutResponse'
+      description: |
+        The Checkout corresponds to the order of the WL API. We do not take additionalInput from the WL API. We have no 
+        shipping and use deliveryAddress instead of address.
+      properties:
+        commerceCaseId:
+          description: reference to the Commerce Case.
+          type: string
+          format: UUID
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        checkoutId:
+          description: reference to the Checkout.
+          type: string
+          format: UUID
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        merchantCustomerId:
+          type: string
+          description: Unique identifier for the customer.
+          maxLength: 20
+          example: "1234"
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        references:
+          $ref: '#/components/schemas/CheckoutReferences'
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartResult'
+        paymentExecutions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentExecution'
+        checkoutStatus:
+          $ref: '#/components/schemas/StatusCheckout'
+        statusOutput:
+          $ref: '#/components/schemas/StatusOutput'
+        paymentInformation:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentInformationResponse'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+        allowedPaymentActions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllowedPaymentActions'
+    CompleteFinancingPaymentMethodSpecificInput:
+      type: object
+      description: |
+        To complete the Payment the completeFinancingMethodSpecificInput has to be provided.
+        At the moment it is only available for PAYONE Secured Installment (paymentProductId 3391).
+      properties:
+        paymentProductId:
+          maximum: 99999
+          minimum: 0
+          type: integer
+          description: |-
+            Payment product identifier. Currently supported payment methods:
+            * 3391 - PAYONE Secured Installment
+          format: int32
+          example: 3391
+        requiresApproval:
+          type: boolean
+          description: |-
+            * true = the payment requires approval before the funds will be captured using the Approve payment or
+            Capture payment API
+            * false = the payment does not require approval, and the funds will be captured automatically
+            
+            If the parameter is not provided in the request, the default value will be true
+        paymentProduct3391SpecificInput:
+          $ref: '#/components/schemas/PaymentProduct3391SpecificInput'
+    CompleteOrderRequest:
+      type: object
+      description: |-
+        The Complete-Order request is the last step to finalize the initial Order. It requires the completePaymentMethodSpecificInput.
+        The previously provided data from the Commerce Case, Checkout and Order will automatically be loaded and used for the completion of the Order.
+      properties:
+        completePaymentMethodSpecificInput:
+          $ref: '#/components/schemas/CompletePaymentMethodSpecificInput'
+    CompletePaymentMethodSpecificInput:
+      type: object
+      description: |
+        To complete the Order the completePaymentMethodSpecificInput has to be provided, containing the selected installmentOptionId as well as the the bankAccountInformation of the customer.
+      properties:
+        paymentProduct3391SpecificInput:
+          $ref: '#/components/schemas/PaymentProduct3391SpecificInput'
+    CompletePaymentRequest:
+      type: object
+      description: |-
+        The Complete request is the last step to finalize the initially created Payment.
+        It requires the completeFinancingPaymentMethodSpecificInput.
+        The data for the order object should not differ from the previously provided information in Commerce Case, Checkout and Payment, but will not be validated nor automatically loaded from the Commerce Platform.
+      properties:
+        financingPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/CompleteFinancingPaymentMethodSpecificInput'
+        order:
+          $ref: '#/components/schemas/Order'
+        device:
+          $ref: '#/components/schemas/CustomerDevice'
+    CompletePaymentResponse:
+      type: object
+      properties:
+        creationOutput:
+          $ref: '#/components/schemas/PaymentCreationOutput'
+        merchantAction:
+          $ref: '#/components/schemas/MerchantAction'
+        payment:
+          $ref: '#/components/schemas/PaymentResponse'
+    CreateCheckoutRequest:
+      type: object
+      description: |
+        Request to create a Checkout for a Commerce Case.
+        The payment for the Checkout can be directly executed if autoExecuteOrder = true.
+        In this case, the paymentMethodSpecificInput must be provided and only a full order is possible.
+        
+        If no amountOfMoney is provided, the platform will calculate the respective Checkout amount based on the
+        cartItem productPrice and quantity.
+        
+        In case of a payment error, the payment can be retried by providing the respective commerceCaseId and checkoutId
+        to the the Order or Payment Execution endpoint.
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        references:
+          $ref: '#/components/schemas/CheckoutReferences'
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartInput'
+        orderRequest:
+          $ref: '#/components/schemas/OrderRequest'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+        autoExecuteOrder:
+          description: |
+            Set this flag to directly execute a payment when creating a Commerce Case or Checkout.
+            If the value for autoExecuteOrder is set to true, the paymentMethodSpecificInput for the order is mandatory
+            and has to be provided. The autoExecuteOrder can only be used for orderType = full.
+            If no shoppingCart information has been provided, a Payment Execution will be created instead of an Order. As a consequence, only Payment Execution endpoints can be used.
+          type: boolean
+          default: false
+    CreateCheckoutResponse:
+      type: object
+      description: Object containing the reference of the Checkout for following requests.
+      properties:
+        checkoutId:
+          description: |-
+            Reference to the Checkout. Can be used for following requests to get and update the Checkout and execute the
+            payment.
+          type: string
+          format: UUID
+          example: "707ef15b-7a0a-48f2-b7d8-c95103418a9c"
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartResult'
+        paymentResponse:
+          $ref: '#/components/schemas/CreatePaymentResponse'
+        errorResponse:
+          $ref: '#/components/schemas/ErrorResponse'
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        references:
+          $ref: '#/components/schemas/CheckoutReferences'
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+        paymentExecution:
+          $ref: '#/components/schemas/PaymentExecution'
+        checkoutStatus:
+          $ref: '#/components/schemas/StatusCheckout'
+        statusOutput:
+          $ref: '#/components/schemas/StatusOutput'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+        allowedPaymentActions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AllowedPaymentActions'
+    CheckoutReferences:
+      type: object
+      description: Object containing all details that are linked to the Checkout.
+      additionalProperties: false
+      properties:
+        merchantReference:
+          type: string
+          description: Unique reference of the Checkout that is also returned for reporting and reconciliation purposes.
+          maxLength: 40
+          example: customer-order-1234
+        merchantShopReference:
+          type: string
+          description:
+            Optional parameter to define the shop or touchpoint where a sale has been realized (e.g. different stores).
+          maxLength: 64
+          example: Shop-12345
+    CheckoutsResponse:
+      type: object
+      description: Object that holds the number of found Checkouts and the requested page of Checkouts
+      additionalProperties: false
+      properties:
+        numberOfCheckouts:
+          minimum: 0
+          type: integer
+          description: Number of found Checkouts
+          format: int64
+          example: 3390
+        checkouts:
+          type: array
+          description: List of Checkouts
+          items:
+            $ref: '#/components/schemas/CheckoutResponse'
+    CompanyInformation:
+      description: Object containing details of the company.
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: Name of company from a customer perspective
+          x-trim-at: 50
+          example: Customer Company Name
+    CommerceCaseResponse:
+      properties:
+        merchantReference:
+          type: string
+          description: |-
+            Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+          maxLength: 40
+          example: customer-commerce-case-123
+        commerceCaseId:
+          type: string
+          format: UUID
+          description: |-
+            Unique ID reference of the Commerce Case. It can be used to add additional Checkouts to the Commerce Case.
+          example: 0c3ab9d7-19ed-40da-9a0e-1f96f4cfb8ae
+        customer:
+          $ref: '#/components/schemas/Customer'
+        checkouts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckoutResponse'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+    CommerceCasesResponse:
+      type: array
+      description: List of Commerce Cases
+      items:
+        $ref: '#/components/schemas/CommerceCaseResponse'
+    CreateCommerceCaseResponse:
+      type: object
+      description: |-
+        The response contains references to the created Commerce case and the Checkout. It also contains the payment
+        response if the flag 'autoExecuteOrder' was set to true.
+      properties:
+        commerceCaseId:
+          description: Unique ID of the Commerce Case. It can used to add additional Checkouts to the Commerce Case.
+          type: string
+          format: UUID
+          example: "707ef15b-7a0a-48f2-b7d8-c95103418a9c"
+        merchantReference:
+          type: string
+          description: |-
+            Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+          maxLength: 40
+          example: customer-commerce-case-123
+        customer:
+          $ref: '#/components/schemas/Customer'
+        checkout:
+          $ref: '#/components/schemas/CreateCheckoutResponse'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+    ContactDetails:
+      type: object
+      description: |-
+        Object containing contact details like email address and phone number.
+      additionalProperties: false
+      properties:
+        emailAddress:
+          type: string
+          description: Email address of the customer
+          x-trim-at: 70
+          example: "wile.e.coyote@acmelabs.com"
+        phoneNumber:
+          type: string
+          description: Phone number of the customer
+          x-trim-at: 20
+          example: "+1234567890"
+    CreateCommerceCaseRequest:
+      properties:
+        merchantReference:
+          type: string
+          description: |-
+            Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+          maxLength: 40
+          example: customer-commerce-case-123
+        customer:
+          $ref: '#/components/schemas/Customer'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+        checkout:
+          $ref: '#/components/schemas/CreateCheckoutRequest'
+    CreationDateTime:
+      type: string
+      format: date-time
+      description: |
+        Creation date and time of the Checkout in RFC3339 format. It can either be provided in the request or
+        otherwise will be automatically set to the time when the request CreateCommerceCase was received.
+        Response values will always be in UTC time, but when providing this field in the requests, the time offset
+        can have different formats.
+        
+        Accepted formats are:
+        * YYYY-MM-DD'T'HH:mm:ss'Z'
+        * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+        * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+        * YYYY-MM-DD'T'HH:mm'Z'
+        * YYYY-MM-DD'T'HH:mm+XX:XX
+        * YYYY-MM-DD'T'HH:mm-XX:XX
+        
+        All other formats may be ignored by the system.
+      example: 2023-12-06T23:59:60Z
+    CreatePaymentResponse:
+      type: object
+      description: Object containing details on the created payment it has directly be executed.
+      additionalProperties: false
+      properties:
+        creationOutput:
+          $ref: '#/components/schemas/PaymentCreationOutput'
+        merchantAction:
+          $ref: '#/components/schemas/MerchantAction'
+        payment:
+          $ref: '#/components/schemas/PaymentResponse'
+        paymentExecutionId:
+          description: reference to the paymentExecution.
+          type: string
+          format: UUID
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+    Customer:
+      type: object
+      description: |
+        Object containing the details of a customer.
+      additionalProperties: false
+      properties:
+        companyInformation:
+          $ref: '#/components/schemas/CompanyInformation'
+        merchantCustomerId:
+          type: string
+          description: Unique identifier for the customer.
+          maxLength: 20
+          example: "1234"
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        contactDetails:
+          $ref: '#/components/schemas/ContactDetails'
+        fiscalNumber:
+          maxLength: 14
+          type: string
+          description: |-
+            Fiscal registration number of the customer or the tax registration number of the company for a business
+            customer. Please find below specifics per country:
+             * Brazil - Consumer (CPF) with a length of 11 digits
+             * Brazil - Company (CNPJ) with a length of 14 digits
+             * Denmark - Consumer (CPR-nummer or personnummer) with a length of 10 digits
+             * Finland - Consumer (Finnish: henkilötunnus (abbreviated as HETU), Swedish: personbeteckning) with a
+            length of 11 characters
+             * Norway - Consumer (fødselsnummer) with a length of 11 digits
+             * Sweden - Consumer (personnummer) with a length of 10 or 12 digits
+        businessRelation:
+          type: string
+          description: |-
+            Business relation to the customer. Possible values:        
+            * B2C - Indicates business to consumer
+            * B2B - Indicates business to business
+
+            Mandatory for the the following payment methods:
+            * 3390 - PAYONE Secured Invoice
+            * 3391 - PAYONE Secured Installment
+            * 3392 - PAYONE Secured Direct Debit
+          enum:
+            - B2C
+            - B2B
+        locale:
+          maxLength: 2
+          type: string
+          description: |-
+            The locale that the customer should be addressed in (for 3rd parties). 
+            
+            Note: Only the language code is supported.
+          example: de
+        personalInformation:
+          $ref: '#/components/schemas/PersonalInformation'
+        account:
+          $ref: '#/components/schemas/CustomerAccount'
+    CustomerAccount:
+      type: object
+      description: Object containing data related to the account the customer has with you.
+      properties:
+        createDate:
+          type: string
+          format: date-time
+          description: |
+            Creation date and time of the customer account in ISO 8601 format (UTC).
+            Accepted formats are:
+            * YYYY-MM-DD'T'HH:mm:ss'Z'
+            * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+            * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+            * YYYY-MM-DD'T'HH:mm'Z'
+            * YYYY-MM-DD'T'HH:mm+XX:XX
+            * YYYY-MM-DD'T'HH:mm-XX:XX
+          example: 2023-10-05T14:30:15.123Z
+
+    CustomerDevice:
+      type: object
+      properties:
+        ipAddress:
+          maxLength: 45
+          type: string
+          description: The IP address of the customer client from the HTTP Headers.
+        deviceToken:
+          maxLength: 255
+          type: string
+          description: Tokenized representation of the end customers device. For example
+            used for PAYONE Buy Now, Pay Later (BNPL).
+      description: |
+        Object containing information about the device of the end customer.
+    DeliveryInformation:
+      type: object
+      description: |-
+        Delivery object contains additional information about the delivery/shipment, which is the basis for the Capture.
+        The amountOfMoney in the cartItem will not be used in the request.
+      properties:
+        items:
+          type: array
+          description: Items delivered.
+          items:
+            $ref: '#/components/schemas/CartItemInput'
+    DeliverItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: UUID
+          description: Id of the item to deliver.
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        quantity:
+          type: integer
+          description: |-
+            Quantity of the units being delivered, should be greater than zero
+            Note: Must not be all spaces or all zeros
+          format: int64
+          maximum: 9999
+          minimum: 1
+          example: 1
+      required:
+        - id
+        - quantity
+    DeliverRequest:
+      type: object
+      description: |
+        Request to mark items of the respective Checkout as delivered and to automatically execute a Capture. 
+        A Deliver can be created for a full or the partial ShoppingCart of the Checkout. 
+        The platform will automatically calculate the respective amount to trigger the Capture. For a partial Deliver a
+        list of items must be provided.
+        The item details for the Capture will be automatically loaded from the Checkout.   
+        
+        The cancellationReason must be provided if deliverType is set to PARTIAL and isFinal is set to true for BNPL
+        payment methods (paymentProductId 3390, 3391 and 3392).
+        For other payment methods the cancellationReason is not mandatory in this case but can be used for reporting
+        and reconciliation purposes.
+      properties:
+        deliverType:
+          $ref: '#/components/schemas/DeliverType'
+        isFinal:
+          type: boolean
+          default: false
+          description: |
+            This property indicates whether this will be the final operation.
+            For deliverType FULL, it is always the final operation.
+            If deliverType PARTIAL is provided and the property is set to true, the remaining amount of the items will be cancelled and the items are marked as CANCELLED.
+        cancellationReason:
+          $ref: '#/components/schemas/CancellationReason'
+        deliverItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeliverItem'
+    DeliverResponse:
+      type: object
+      properties:
+        capturePaymentResponse:
+          $ref: '#/components/schemas/CapturePaymentResponse'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartResult'
+    DeliverType:
+      type: string
+      description: |
+        The deliverType refers to the ShoppingCart items of the Checkout.     
+        deliverType = FULL should be provided if all items should be marked as delivered and the payment for the entire
+        ShoppingCart should be captured.        
+        deliverType = PARTIAL should be provided if only certain items should be marked as delivered and the Capture
+        should not be made for the entire ShoppingCart. For this type the list of items has to be provided.        
+        Following conditions apply to the Deliver request:
+          * items must be in status ORDERED
+          * there was no Capture, Refund or Cancel triggered over the Payment Execution resource
+          * for the deliverType FULL no items are provided in the request
+        Note: If a DISCOUNT productType is among the ShoppingCart items, only deliverType FULL is possible.
+      enum:
+        - FULL
+        - PARTIAL
+
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        errorId:
+          type: string
+          description: Unique reference of this error response for debugging purposes
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+
+    ExtendedCheckoutStatus:
+      type: string
+      description: |
+        The extendedCheckoutStatus provides a more granular status of the Checkout based on the respective amounts. The
+        extendedCheckoutStatus include the regular Checkout status OPEN, DELETED, PENDING_COMPLETION, COMPLETED, BILLED,
+        and CHARGEBACKED as well as three additional status:
+
+        1. PARTIALLY_BILLED: Checkout amount has been partially collected. Overall the Checkout status is BILLED and one
+        of the following conditions is true:
+          (1) the openAmount is greater than zero or
+          (2) the openAmount is zero, the refundAmount is zero and the checkoutAmount is not equal to collectedAmount plus the cancelledAmount.
+        2. PARTIALLY_REFUNDED: The entire Checkout amount has been captured and an amount has been partially refunded to
+        customer. Overall the Checkout status is BILLED, the openAmount is zero and the refundAmount and collectedAmount
+        are greater than zero.
+        3. REFUNDED: The entire Checkout amount has been refunded to the customer. Overall the Checkout status is
+        BILLED, the openAmount and collectedAmount are zero but the refundAmount is greater than zero.
+      enum:
+        - OPEN
+        - DELETED
+        - PENDING_COMPLETION
+        - COMPLETED
+        - PARTIALLY_BILLED
+        - BILLED
+        - CHARGEBACKED
+        - PARTIALLY_REFUNDED
+        - REFUNDED
+      example: OPEN
+    FinancingPaymentMethodSpecificInput:
+      type: object
+      description: Object containing the specific input details for financing payment methods (Buy Now Pay Later)
+      properties:
+        paymentProductId:
+          maximum: 99999
+          minimum: 0
+          type: integer
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+            Currently supported payment methods
+            * 3390 - PAYONE Secured Invoice
+            * 3391 - PAYONE Secured Installment
+            * 3392 - PAYONE Secured Direct Debit
+          format: int32
+          example: 3390
+        requiresApproval:
+          type: boolean
+          description: |-
+            * true = the payment requires approval before the funds will be captured using the Approve payment or
+            Capture payment API
+            * false = the payment does not require approval, and the funds will be captured automatically
+            
+            If the parameter is not provided in the request, the default value will be true
+        paymentProduct3392SpecificInput:
+          $ref: '#/components/schemas/PaymentProduct3392SpecificInput'
+    FinancingPaymentMethodSpecificOutput:
+      type: object
+      description: Object containing the specific output details for financing payment methods (Buy Now Pay Later)
+      properties:
+        paymentProductId:
+          maximum: 99999
+          minimum: 0
+          type: integer
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+            Currently supported payment methods
+            * 3390 - PAYONE Secured Invoice
+            * 3391 - PAYONE Secured Installment
+            * 3392 - PAYONE Secured Direct Debit
+          format: int32
+          example: 3390
+        paymentProduct3391SpecificOutput:
+          $ref: '#/components/schemas/PaymentProduct3391SpecificOutput'
+        paymentInstructions:
+          $ref: '#/components/schemas/PaymentInstructions'
+    InstallmentOption:
+      type: object
+      properties:
+        installmentOptionId:
+          type: string
+          description: Installment option Identifier. Use this in the Complete Payment
+            for the selected installment option.
+          example: IOP_478d44fea0494eea86bc87f9e4a63328
+        numberOfPayments:
+          type: integer
+          description: The number of monthly payments for this installment.
+          format: int32
+          example: 12
+        monthlyAmount:
+          type: object
+          description: Monthly rate amount.
+          allOf:
+            - $ref: '#/components/schemas/AmountOfMoney'
+        lastRateAmount:
+          type: object
+          description: Last rate amount.
+          allOf:
+            - $ref: '#/components/schemas/AmountOfMoney'
+        effectiveInterestRate:
+          type: integer
+          description: Effective interest amount in percent with two decimals.
+          format: int32
+          example: 1209
+        nominalInterestRate:
+          type: integer
+          description: Nominal interest amount in percent with two decimals.
+          format: int32
+          example: 1199
+        totalAmount:
+          type: object
+          description: Total rate amount.
+          allOf:
+            - $ref: '#/components/schemas/AmountOfMoney'
+        firstRateDate:
+          maxLength: 8
+          pattern: ^((19|20|21)\d{6})?$
+          type: string
+          description: |-
+            Due date of first rate.
+            Format: YYYYMMDD
+        creditInformation:
+          type: object
+          description: Link with credit information.
+          allOf:
+            - $ref: '#/components/schemas/LinkInformation'
+      required:
+        - creditInformation
+        - effectiveInterestRate
+        - firstRateDate
+        - installmentOptionId
+        - lastRateAmount
+        - monthlyAmount
+        - nominalInterestRate
+        - numberOfPayments
+        - totalAmount
+    CartItemInvoiceData:
+      type: object
+      description: Object containing the line items of the invoice or shopping cart.
+      properties:
+        description:
+          type: string
+          description: |
+            Shopping cart item description.
+            The description will also be displayed in the portal as the product name.
+          example: Smartwatch
+          x-trim-at: 116
+    LinkInformation:
+      type: object
+      description: URL and content type information for an web resource.
+      properties:
+        href:
+          type: string
+          description: URL of link.
+        type:
+          type: string
+          description: Content type of linked data.
+      required:
+        - href
+        - type
+    CartItemStatus:
+      type: string
+      enum:
+        - ORDERED
+        - DELIVERED
+        - CANCELLED
+        - RETURNED
+        - WAITING_FOR_PAYMENT
+      description: Indicates in which status the line item is
+    MandateRecurrenceType:
+      type: string
+      enum:
+        - UNIQUE
+        - RECURRING
+      description: |-
+        Specifies whether the mandate is for one-off or recurring payments. Possible values are:
+        * UNIQUE
+        * RECURRING
+    MerchantAction:
+      type: object
+      description: |-
+        Object that contains the action, including the needed data, that you should perform next, like showing
+        instructions, showing the transaction results or redirect to a third party to complete the payment
+      additionalProperties: false
+      properties:
+        actionType:
+          type: string
+          description: |-
+            Action merchants needs to take in the online payment process. Possible values are: 
+             * REDIRECT - The customer needs to be redirected using the details found in redirectData 
+             * SHOW_FORM - The customer needs to be shown a form with the fields found in formFields. You can submit the
+            data entered by the user in a Complete payment request. 
+             * SHOW_INSTRUCTIONS - The customer needs to be shown payment instruction using the details found in
+            showData. Alternatively the instructions can be rendered by us using the instructionsRenderingData 
+             * SHOW_TRANSACTION_RESULTS - The customer needs to be shown the transaction results using the details found
+            in showData. Alternatively the instructions can be rendered by us using the instructionsRenderingData 
+             * MOBILE_THREEDS_CHALLENGE - The customer needs to complete a challenge as part of the 3D Secure
+            authentication inside your mobile app. The details contained in mobileThreeDSecureChallengeParameters need
+            to be provided to the EMVco certified Mobile SDK as a challengeParameters object. 
+             * CALL_THIRD_PARTY - The merchant needs to call a third party using the data found in thirdPartyData
+          example: REDIRECT
+          enum:
+            - REDIRECT
+            - SHOW_FORM
+            - SHOW_INSTRUCTIONS
+            - SHOW_TRANSACTION_RESULTS
+            - MOBILE_THREEDS_CHALLENGE
+            - CALL_THIRD_PARTY
+        redirectData:
+          $ref: '#/components/schemas/RedirectData'
+    MobilePaymentMethodSpecificInput:
+      type: object
+      description: Object containing the specific input details for mobile payments.
+      additionalProperties: false
+      properties:
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 840
+        authorizationMode:
+          $ref: '#/components/schemas/AuthorizationMode'
+        encryptedPaymentData:
+          type: string
+          description: |-
+            The payment data if we will do the decryption of the encrypted payment data. Typically you'd use
+            encryptedCustomerInput in the root of the create payment request to provide the encrypted payment data
+            instead.
+        publicKeyHash:
+          type: string
+          description: |-
+            Public Key Hash A unique identifier to retrieve key used by Apple to encrypt information.
+        ephemeralKey:
+          type: string
+          description: Ephemeral Key A unique generated key used by Apple to encrypt data.
+        threeDSecure:
+          $ref: '#/components/schemas/MobilePaymentThreeDSecure'
+        paymentProduct302SpecificInput:
+          $ref: '#/components/schemas/PaymentProduct302SpecificInput'
+    MobilePaymentMethodSpecificOutput:
+      type: object
+      description: Object containing the mobile payment method details.
+      additionalProperties: false
+      properties:
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 302
+        authorisationCode:
+          description: Card Authorization code as returned by the acquirer
+          type: string
+        fraudResults:
+          $ref: '#/components/schemas/CardFraudResults'
+        threeDSecureResults:
+          $ref: '#/components/schemas/ThreeDSecureResults'
+        network:
+          type: string
+          description: The card network that was used for a mobile payment method operation
+    MobilePaymentThreeDSecure:
+      type: object
+      description: |-
+        Object containing specific data regarding 3-D Secure for card digital wallets.
+        Necessary to perform 3D Secure when there is no liability shift from the wallet and corresponding card network.
+      properties:
+        redirectionData:
+          $ref: '#/components/schemas/RedirectionData'
+    Order:
+      type: object
+      description: |-
+        Order object containing order related data Please note that this object is required to be able to submit the
+        amount.
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        customer:
+          $ref: '#/components/schemas/Customer'
+        references:
+          $ref: '#/components/schemas/References'
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartInput'
+      required:
+        - references
+    OrderItem:
+      type: object
+      description: Items should only be provided for orderType = PARTIAL
+      properties:
+        id:
+          type: string
+          format: UUID
+          description: |-
+            Id of the item from the ShoppingCart. The id will be returned in the response from create Checkout request.
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        quantity:
+          type: integer
+          description: |
+            Quantity of the specific item. Must be greater than zero. 
+            Note: Must not be all spaces or all zeros
+          format: int64
+          maximum: 9999
+          minimum: 1
+          example: 1
+      required:
+        - id
+        - quantity
+    OrderLineDetailsInput:
+      type: object
+      description: |
+        Object containing additional information that when supplied can have a beneficial effect on the discountrates.
+      additionalProperties: false
+      properties:
+        productCode:
+          type: string
+          description: Product or UPC Code
+          x-trim-at: 50
+          example: ASP01
+        productPrice:
+          type: integer
+          description: The price of one unit of the product, the value should be zero or greater.
+          format: int64
+          maximum: 2147483647
+          minimum: 0
+          example: 480
+        productType:
+          $ref: '#/components/schemas/ProductType'
+        quantity:
+          type: integer
+          description: |-
+            Quantity of the units being purchased, should be greater than zero
+            Note: Must not be all spaces or all zeros
+          format: int64
+          maximum: 9999
+          minimum: 0
+          example: 1
+        taxAmount:
+          type: integer
+          description: Tax on the line item, with the last two digits implied as decimal places.
+          format: int64
+          maximum: 2147483647
+          minimum: 0
+          example: 0
+        taxAmountPerUnit:
+          type: boolean
+          description: |- 
+            This field indicates if the `taxAmount` is to be interpreted as the tax amount per unit rather than for the entire line item. 
+            This field is included in the response only when `taxAmount` is set; otherwise, it will return as `null`.
+          format: int64
+          example: true
+          default: false
+        productUrl:
+          type: string
+          description: |-
+            URL of the product in shop. 
+
+            Used for PAYONE Buy Now, Pay Later (BNPL).
+          format: uri
+          maxLength: 2048
+          example: https://shop.url/watches/watch01
+        productImageUrl:
+          type: string
+          description: |-
+            URL of a product image. 
+
+            Used for PAYONE Buy Now, Pay Later (BNPL).
+          format: uri
+          maxLength: 2048
+          example: https://shop.url/watches/watch01.jpg
+        productCategoryPath:
+          type: string
+          description: |-
+            Category path of the item. 
+
+            Used for PAYONE Buy Now, Pay Later (BNPL).
+          maxLength: 2048
+          example: Watches > Smartwatches
+        merchantShopDeliveryReference:
+          type: string
+          description: |-
+            Optional parameter to define the delivery shop or touchpoint where an item has been collected (e.g. for
+            Click & Collect or Click & Reserve).
+          x-trim-at: 50
+          example: Store-12345
+      required:
+        - productPrice
+        - quantity
+    OrderLineDetailsPatch:
+      type: object
+      description: |
+        Object containing additional information that when supplied can have a beneficial effect on the discountrates.
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/OrderLineDetailsInput'
+      properties:
+        id:
+          description: Unique identifier of a cart item
+          type: string
+          format: UUID
+          example: 7a3444d3-f6ce-4b6e-b6c4-2486a160cf19
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemOrderStatus'
+    OrderLineDetailsResult:
+      type: object
+      description: |
+        Object containing additional information that when supplied can have a beneficial effect on the discountrates.
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/OrderLineDetailsInput'
+      properties:
+        id:
+          description: Unique identifier of a cart item
+          type: string
+          format: UUID
+          example: 7a3444d3-f6ce-4b6e-b6c4-2486a160cf19
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemOrderStatus'
+    ProductType:
+      type: string
+      description: |-
+        Enum to classify items that are purchased
+        * GOODS - Goods
+        * SHIPMENT - Shipping charges
+        * HANDLING_FEE - Handling fee
+        * DISCOUNT - Voucher / discount
+      enum:
+        - GOODS
+        - SHIPMENT
+        - HANDLING_FEE
+        - DISCOUNT
+    References:
+      type: object
+      description: Object that holds all reference properties that are linked to this transaction.
+      properties:
+        descriptor:
+          type: string
+          description: |-
+            Descriptive text that is used towards to customer, either during an online Checkout at a third party and/or
+            on the statement of the customer. For card transactions this is usually referred to as a Soft Descriptor.
+            The maximum allowed length varies per card acquirer:
+             * AIB - 22 characters
+             * American Express - 25 characters
+             * Atos Origin BNP - 15 characters
+             * Barclays - 25 characters
+             * Catella - 22 characters
+             * CBA - 20 characters
+             * Elavon - 25 characters
+             * First Data - 25 characters
+             * INICIS (INIPAY) - 22-30 characters
+             * JCB - 25 characters
+             * Merchant Solutions - 22-25 characters
+             * Payvision (EU & HK) - 25 characters
+             * SEB Euroline - 22 characters
+             * Sub1 Argentina - 15 characters
+             * Wells Fargo - 25 characters
+
+            Note that we advise you to use 22 characters as the max length as beyond this our experience is that issuers
+            will start to truncate. We currently also only allow per API call overrides for AIB and Barclays
+            For alternative payment products the maximum allowed length varies per payment product:
+             * 402 e-Przelewy - 30 characters
+             * 404 INICIS - 80 characters
+             * 802 Nordea ePayment Finland - 234 characters
+             * 809 iDeal - 32 characters
+             * 836 SOFORT - 42 characters
+             * 840 PayPal - 127 characters
+             * 841 WebMoney - 175 characters
+             * 849 Yandex - 64 characters
+             * 861 Alipay - 256 characters
+             * 863 WeChat Pay - 32 characters
+             * 880 BOKU - 20 characters
+             * 8580 Qiwi - 255 characters
+             * 1504 Konbini - 80 characters
+
+            All other payment products don't support a descriptor.
+          maxLength: 256
+        merchantReference:
+          type: string
+          description: |
+            The merchantReference is a unique identifier for a payment and can be used for reporting purposes. The
+            merchantReference is required for the execution of a payment and has to be unique. In case a payment has
+            failed the same merchantReference can be used again.
+            Once a successful payment has been made the same merchantReference can no longer be used and will be
+            rejected.
+          maxLength: 20
+          example: 5a891df0b8cf11edaeb2af87d8ff0b2f
+        merchantParameters:
+          type: string
+          description:
+            It allows you to store additional parameters for the transaction in JSON format.
+            This field must not contain any personal data.
+          maxLength: 1000
+          example: "{'SessionID':'126548354','ShopperID':'7354131'}"
+      required:
+        - merchantReference
+    OrderRequest:
+      type: object
+      description: |
+        Request to execute an Order for the corresponding Checkout for a specific payment method.
+        The provided data from the Commerce Case and the Checkout regarding customer, shipping, and ShoppingCart will be
+        automatically loaded and used for the Payment Execution. 
+        In case the paymentMethodSpecificInput has already been provided when creating the Commerce Case or Checkout,
+        this input will automatically be used. 
+        An Order can be created for a full or the partial ShoppingCart of the Checkout. For a partial Order a list of
+        items must be provided. The platform will automatically calculate the respective amount to trigger the payment
+        execution.
+      properties:
+        orderType:
+          $ref: '#/components/schemas/OrderType'
+        orderReferences:
+          $ref: '#/components/schemas/References'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        paymentMethodSpecificInput:
+          $ref: '#/components/schemas/PaymentMethodSpecificInput'
+    OrderResponse:
+      type: object
+      description: Object that contains details on the created payment in case one has been created.
+      additionalProperties: false
+      properties:
+        createPaymentResponse:
+          $ref: '#/components/schemas/CreatePaymentResponse'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartResult'
+    OrderType:
+      type: string
+      description: |
+        The orderType refers to the ShoppingCart of the Checkout.        
+        orderType = FULL should be provided if a payment for the entire ShoppingCart should be created.        
+        orderType = PARTIAL should be provided if the payment should be created only for certain items of the
+        ShoppingCart. For this type the list of items has to be provided.
+        Following conditions apply to the Order request:
+          * amount of the Checkout can not be zero
+          * the ShoppingCart cannot be empty
+          * for orderType = FULL the Checkout status is OPEN, there is no other order and/or Payment Execution and no
+        items should be provided in the body
+          * if no paymentMethodSpecificInput has been provided in the creation of the Commerce Case or Checkout it has
+        to be provided in this request
+      enum:
+        - FULL
+        - PARTIAL
+    PatchCheckoutRequest:
+      type: object
+      description: |
+        An existing shopping cart of a Checkout will not be overwritten with the Patch request.
+        New items can be added to the shoppingCart by providing them in the request.
+        To change existing items (delete, modify or add), the respective itemId must be provided. An item can be completely removed if quantity = 0 is provided.
+        
+        The price of an item can be changed as long as no payment has happened for this item (i.e. as long as an item has no specific status).
+        Items with a status can no longer be removed entirely, however the quantity can be increased or decreased (for items without payment) by using the itemId.
+        
+        If no amountOfMoney for the Checkout is provided, the platform will calculate the respective amount based on the cartItem productPrice and productQuantity.
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        references:
+          $ref: '#/components/schemas/CheckoutReferences'
+        shipping:
+          $ref: '#/components/schemas/Shipping'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartPatch'
+        paymentMethodSpecificInput:
+          $ref: '#/components/schemas/PaymentMethodSpecificInput'
+        paymentReferences:
+          $ref: '#/components/schemas/References'
+    PatchCommerceCaseRequest:
+      type: object
+      description: |
+        Update the customer data of the given Commerce Case
+      properties:
+        customer:
+          $ref: '#/components/schemas/Customer'
+    PausePaymentRequest:
+      type: object
+      description: Request to pause a payment for a specific payment method.
+      properties: {}
+    PausePaymentResponse:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/StatusValue'
+    PaymentChannel:
+      type: string
+      enum:
+        - ECOMMERCE
+        - POS
+    PaymentCreationOutput:
+      type: object
+      description: |-
+        Object containing the details of the created payment.
+      additionalProperties: false
+      properties:
+        externalReference:
+          type: string
+          description: |-
+            The external reference is an identifier for this transaction and can be used for reconciliation purposes.
+          example: "C1232O2342"
+    Payee:
+      required:
+        - name
+        - iban
+      type: object
+      properties:
+        iban:
+          type: string
+          description: IBAN of the payee's or beneficiary's bank account. The IBAN is the International Bank Account Number. It is an internationally agreed format for the BBAN and includes the ISO country code and two check digits.
+          example: DE02370502990000684712
+          maxLength: 50
+        bic:
+          type: string
+          description: Bank Identification Code
+          example: COKSDE33XXX
+          maxLength: 11
+        name:
+          type: string
+          description: Name of the payee
+          example: Max Mustermann
+      description: Payee bank account details as part of the payment instructions
+    PaymentEvent:
+      type: object
+      description: Detailed information regarding an occurred payment event.
+      properties:
+        type:
+          $ref: '#/components/schemas/PaymentType'
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        paymentStatus:
+          $ref: '#/components/schemas/StatusValue'
+        cancellationReason:
+          $ref: '#/components/schemas/CancellationReason'
+        returnReason:
+          type: string
+          description: |-
+            Reason of the Refund (e.g. communicated by or to the costumer).
+          maxLength: 255
+          example: Customer complained
+        paymentInstructions:
+          $ref: '#/components/schemas/PaymentInstructions'
+    PaymentExecution:
+      type: object
+      description: |-
+        Object contains information of the payment with a specific payment method.
+      properties:
+        paymentExecutionId:
+          description: Unique ID of paymentExecution.
+          type: string
+          format: UUID
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        paymentId:
+          type: string
+          description: Unique payment transaction identifier of the payment gateway.
+          example: '3066019730_1'
+        cardPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/CardPaymentMethodSpecificInput'
+        mobilePaymentMethodSpecificInput:
+          $ref: '#/components/schemas/MobilePaymentMethodSpecificInput'
+        redirectPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/RedirectPaymentMethodSpecificInput'
+        sepaDirectDebitPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/SepaDirectDebitPaymentMethodSpecificInput'
+        financingPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/FinancingPaymentMethodSpecificInput'
+        bankPayoutMethodSpecificInput:
+          $ref: '#/components/schemas/BankPayoutMethodSpecificInput'
+        paymentChannel:
+          $ref: '#/components/schemas/PaymentChannel'
+        references:
+          $ref: '#/components/schemas/References'
+        previousPayment:
+          type: string
+          format: UUID
+          example: "cee5276d-6b1e-4a4f-a46f-27b7550d484e"
+        creationDateTime:
+          type: string
+          format: date-time
+          description: |-
+            The date and time when the payment was created.
+            
+            Format will be in one of the following formats:
+            * YYYY-MM-DD'T'HH:mm:ss'Z'
+            * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+            * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+          example: 2022-01-01T00:00:00Z
+        lastUpdated:
+          type: string
+          format: date-time
+          description: |-
+            The date and time when the payment was last updated.
+            
+            Format will be in one of the following formats:
+            * YYYY-MM-DD'T'HH:mm:ss'Z'
+            * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+            * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+          example: 2022-01-01T00:00:00Z
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentEvent'
+    PaymentExecutionRequest:
+      type: object
+      description: |
+        Request to trigger a payment for a respective Checkout providing the input for a specific payment method. 
+        The data from the Commerce case and the Checkout will not be loaded automatically and there is no validation
+        between the data input in place. 
+        Depending on the payment method, information of the customer and / or the shopping cart might be required. 
+        For more details regarding payment method specific input please check the documentation.
+      properties:
+        paymentMethodSpecificInput:
+          $ref: '#/components/schemas/PaymentMethodSpecificInput'
+        paymentExecutionSpecificInput:
+          $ref: '#/components/schemas/PaymentExecutionSpecificInput'
+    PaymentExecutionSpecificInput:
+      type: object
+      description: |
+        The amount of the paymentSpecificInput might differ from the Checkout amount in case of partial payments but cannot be higher.
+        Additionally, the total amount of the provided shopping cart cannot exceed the Checkout amount. 
+        If a different currency is provided than in the Checkout, the payment execution will be declined.
+        Provided details of the customer and shipping from the Checkout will be automatically loaded and used in the Payment Execution request.
+        The ShoppingCart might differ from the one provided in the Checkout (e.g., for partial payments) and might be required by the payment provider (e.g., BNPL).
+        If the ShoppingCart elements differ from the data provided in the Checkout, the existing data will not be overwritten.
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartInput'
+        paymentReferences:
+          $ref: '#/components/schemas/References'
+      required:
+        - paymentReferences
+    PaymentInformationRefundRequest:
+      type: object
+      description: |
+        Request to initiate refund for a Payment Information of Checkout.
+        It is possible to initiate multiple partial refunds by providing an amount that is lower than the total captured amount of the Payment Information.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/PositiveAmountOfMoney'
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        accountHolder:
+          maxLength: 50
+          type: string
+          description: |-
+            Account holder of the bank account.
+            Does not necessarily have to be the customer (e.g. joint accounts).
+            The name of the account holder is required for payment methods that will use a credit transfer for the refund (e.g. girocard, SEPA Direct Debit)
+          example: Max Mustermann
+      required:
+        - amountOfMoney
+    PaymentInformationRefundResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        payment:
+          $ref: '#/components/schemas/PayoutResponse'
+        paymentExecutionId:
+          description: reference to the paymentExecution.
+          type: string
+          format: UUID
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+    PaymentInformationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        type:
+          $ref: '#/components/schemas/PaymentType'
+        paymentChannel:
+          $ref: '#/components/schemas/PaymentChannel'
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment method identifier - please check the product documentation for a full overview of possible values.
+        merchantReference:
+          type: string
+          description: |
+            Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR
+            or terminal will be used. It is always the reference for external transactions.
+            (e.g. card present payments, cash payments or payments processed by other payment providers).
+          maxLength: 40
+          example: 6a891660b8cf16edaeb26f87d86f0b2f
+      required:
+        - amountOfMoney
+        - type
+        - paymentChannel
+        - paymentProductId
+    PaymentInformationResponse:
+      type: object
+      description: Object containing the related data of the created Payment Information.
+      properties:
+        commerceCaseId:
+          description: Unique ID of the Commerce Case.
+          type: string
+          format: UUID
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        checkoutId:
+          description: Unique ID of the Commerce Case.
+          type: string
+          format: UUID
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        merchantCustomerId:
+          type: string
+          description: Unique identifier of the customer.
+          maxLength: 20
+          example: "1234"
+        paymentInformationId:
+          description: Unique ID of the Payment Information.
+          type: string
+          format: UUID
+          example: "637ef15b-1a0a-48f2-27d8-c954a344329c"
+        paymentChannel:
+          $ref: '#/components/schemas/PaymentChannel'
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check see product documentation for a full overview of possible values.
+          example: 840
+        terminalId:
+          description: Unique identifier of the POS terminal of the payment transaction.
+          type: string
+          minLength: 8
+          maxLength: 8
+          example: "60023723"
+        cardAcceptorId:
+          description: |-
+            Unique ID that identifies a store location or transaction point and which refers to the contract number of
+            the merchant accepting the card.
+          type: string
+          maxLength: 15
+          example: "455600217015"
+        merchantReference:
+          type: string
+          description: |
+            Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR
+            or terminal will be used. It is always the reference for external transactions.
+            (e.g. card present payments, cash payments or payments processed by other payment providers).
+          maxLength: 40
+          example: 6a891660b8cf16edaeb26f87d86f0b2f
+        creationDateTime:
+          type: string
+          format: date-time
+          description: |-
+            The date and time when the payment was created.
+            
+            Format will be in one of the following formats:
+            * YYYY-MM-DD'T'HH:mm:ss'Z'
+            * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+            * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+          example: 2022-01-01T00:00:00Z
+        lastUpdated:
+          type: string
+          format: date-time
+          description: |-
+            The date and time when the payment was last updated.
+            
+            Format will be in one of the following formats:
+            * YYYY-MM-DD'T'HH:mm:ss'Z'
+            * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+            * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+          example: 2022-01-01T00:00:00Z
+        cardPaymentDetails:
+          $ref: '#/components/schemas/CardPaymentDetails'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentEvent'
+    PaymentInstructions:
+      required:
+        - payee
+        - dueDate
+        - referenceNumber
+      type: object
+      properties:
+        payee:
+          $ref: '#/components/schemas/Payee'
+        dueDate:
+          maxLength: 8
+          pattern: ^((19|20|21)\d{6})?$
+          type: string
+          description: |-
+            Due date of the payment.
+            Format: YYYYMMDD
+        referenceNumber:
+          type: string
+          description: External payment reference number as part of payment instructions for the consumer
+          example: R.1208-368
+        status:
+          type: string
+          description: Status, usually describing the status of the invoice if paid, overdue, open...
+      description: Object containing information on payment instructions details (e.g. on the invoice payments)
+    PaymentMethodSpecificInput:
+      type: object
+      description: |
+        Input for the payment for a respective payment method.
+        In case the paymentMethodSpecificInput has already been provided when creating the Commerce Case or Checkout, it
+        will automatically be used for the Payment Execution.
+        If a new input will be provided, the existing input will be updated.
+      properties:
+        cardPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/CardPaymentMethodSpecificInput'
+        mobilePaymentMethodSpecificInput:
+          $ref: '#/components/schemas/MobilePaymentMethodSpecificInput'
+        redirectPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/RedirectPaymentMethodSpecificInput'
+        sepaDirectDebitPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/SepaDirectDebitPaymentMethodSpecificInput'
+        financingPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/FinancingPaymentMethodSpecificInput'
+        customerDevice:
+          $ref: '#/components/schemas/CustomerDevice'
+        paymentChannel:
+          $ref: '#/components/schemas/PaymentChannel'
+    PaymentOutput:
+      type: object
+      description: |
+        Object containing payment details.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        merchantParameters:
+          type: string
+          description:
+            It allows you to store additional parameters for the transaction in JSON format.
+            This field should not contain any personal data.
+          maxLength: 1000
+          example: "{'SessionID':'126548354','ShopperID':'7354131'}"
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        cardPaymentMethodSpecificOutput:
+          $ref: '#/components/schemas/CardPaymentMethodSpecificOutput'
+        mobilePaymentMethodSpecificOutput:
+          $ref: '#/components/schemas/MobilePaymentMethodSpecificOutput'
+        paymentMethod:
+          type: string
+          description: Payment method identifier based on the paymentProductId.
+        redirectPaymentMethodSpecificOutput:
+          $ref: '#/components/schemas/RedirectPaymentMethodSpecificOutput'
+        sepaDirectDebitPaymentMethodSpecificOutput:
+          $ref: '#/components/schemas/SepaDirectDebitPaymentMethodSpecificOutput'
+        financingPaymentMethodSpecificOutput:
+          $ref: '#/components/schemas/FinancingPaymentMethodSpecificOutput'
+    PayoutOutput:
+      type: object
+      description: |
+        Object containing details from the created payout.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        paymentMethod:
+          type: string
+          description: Payment method identifier based on the paymentProductId.
+    PaymentProduct302SpecificInput:
+      type: object
+      description: Object containing additional Information needed for Apple Pay payment transactions.
+      properties:
+        integrationType:
+          type: string
+          description: |-
+            Type of your Apple Pay integration.
+            * MERCHANT_CERTIFICATE - using your own certificate (paid apple pay account needed)
+            * MASS_ENABLEMENT - using PAYONE certificate
+          enum:
+            - MERCHANT_CERTIFICATE
+            - MASS_ENABLEMENT
+          example: MASS_ENABLEMENT
+        network:
+          type: string
+          description: |-
+            Network/Scheme of the card used for the payment.
+            * MASTERCARD
+            * VISA
+            * AMEX
+            * GIROCARD
+            * DISCOVER (not supported yet)
+            * JCB (not supported yet)
+          enum:
+            - MASTERCARD
+            - VISA
+            - AMEX
+            - GIROCARD
+            - DISCOVER
+            - JCB
+          example: GIROCARD
+        token:
+          $ref: '#/components/schemas/ApplePaymentDataTokenInformation'
+        domainName:
+          type: string
+          description: Domain of your Webshop. Needed for initialization of the Apple Pay payment session with integrationType=MASS_ENABLEMENT.
+        displayName:
+          type: string
+          maxLength: 64
+          description: Name of your Store. Needed for initialization of the Apple Pay payment session with integrationType=MASS_ENABLEMENT.
+    PaymentProduct3391SpecificInput:
+      type: object
+      description: Object containing specific information for PAYONE Secured Installment.
+      properties:
+        installmentOptionId:
+          type: string
+          description: |-
+            ID of the selected installment option. Will be provided in the response of the Order / Payment Execution
+            request.
+        bankAccountInformation:
+          $ref: '#/components/schemas/BankAccountInformation'
+      required:
+        - bankAccountInformation
+        - installmentOptionId
+    PaymentProduct3391SpecificOutput:
+      type: object
+      properties:
+        installmentOptions:
+          type: array
+          description: List of installment options.
+          items:
+            $ref: '#/components/schemas/InstallmentOption'
+      description: Object containing specific information for PAYONE Secured Installment.
+    PaymentProduct3392SpecificInput:
+      type: object
+      description: Object containing specific information for PAYONE Secured Direct Debit.
+      properties:
+        bankAccountInformation:
+          $ref: '#/components/schemas/BankAccountInformation'
+      required:
+        - bankAccountInformation
+    PaymentProduct771SpecificOutput:
+      type: object
+      description: Output that is SEPA Direct Debit specific (i.e. the used mandate).
+      additionalProperties: false
+      properties:
+        mandateReference:
+          type: string
+          description: Unique reference fo a SEPA Mandate
+    PaymentProduct840CustomerAccount:
+      type: object
+      description: |
+        Object containing the details of the PayPal account.
+      additionalProperties: false
+      properties:
+        companyName:
+          type: string
+          description: Name of the company in case the PayPal account is owned by a business
+          example: Customer Company Name
+        firstName:
+          type: string
+          description: First name of the PayPal account holder
+          example: John
+        payerId:
+          type: string
+          description: |-
+            The unique identifier of a PayPal account and will never change in the life cycle of a PayPal account.
+          example: RRCYJUTFJGZTA
+        surname:
+          type: string
+          description: Surname of the PayPal account holder
+          example: Doe
+    PaymentProduct840SpecificOutput:
+      type: object
+      description: |
+        PayPal (payment product 840) specific details.
+      additionalProperties: false
+      properties:
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        customerAccount:
+          $ref: '#/components/schemas/PaymentProduct840CustomerAccount'
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
+    PaymentReferences:
+      type: object
+      description: Object that holds all reference properties that are linked to this transaction.
+      additionalProperties: false
+      properties:
+        merchantReference:
+          type: string
+          description: |-
+            Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+          maxLength: 20
+          example: your-order-6372
+    PaymentResponse:
+      type: object
+      description: Object that holds the payment related properties.
+      additionalProperties: false
+      properties:
+        paymentOutput:
+          $ref: '#/components/schemas/PaymentOutput'
+        status:
+          $ref: '#/components/schemas/StatusValue'
+        statusOutput:
+          $ref: '#/components/schemas/PaymentStatusOutput'
+        id:
+          type: string
+          description: Unique payment transaction identifier of the payment gateway.
+          example: PP1AA7KKLSFB9MBG
+    PayoutResponse:
+      type: object
+      description: Object that holds the payment related properties for the refund of a Payment Information.
+      additionalProperties: false
+      properties:
+        payoutOutput:
+          $ref: '#/components/schemas/PayoutOutput'
+        status:
+          $ref: '#/components/schemas/StatusValue'
+        statusCategory:
+          $ref: '#/components/schemas/StatusCategoryValue'
+        id:
+          type: string
+          description: Unique payment transaction identifier of the payment gateway.
+          example: PP1AA7KKLSFB9MBG
+    PaymentStatusOutput:
+      type: object
+      description: |
+        This object has the numeric representation of the current payment status, timestamp of last status change and
+        performable action on the current payment resource. In case of failed payments and negative scenarios, detailed
+        error information is listed.
+      additionalProperties: false
+      properties:
+        isCancellable:
+          type: boolean
+          description: Flag indicating if the payment can be cancelled
+        statusCategory:
+          $ref: '#/components/schemas/StatusCategoryValue'
+        isAuthorized:
+          description: Indicates if the transaction has been authorized
+          type: boolean
+        isRefundable:
+          description: Flag indicating if the payment can be refunded
+          type: boolean
+    PaymentType:
+      description: Defines the respective payment type.
+      type: string
+      enum:
+        - SALE
+        - RESERVATION
+        - CAPTURE
+        - REFUND
+        - REVERSAL
+        - CHARGEBACK_REVERSAL
+        - CREDIT_NOTE
+        - DEBIT_NOTE
+    PersonalInformation:
+      type: object
+      description: Object containing personal information like name, date of birth and gender.
+      additionalProperties: false
+      properties:
+        dateOfBirth:
+          type: string
+          description: |-
+            The date of birth of the customer of the recipient of the loan.
+            Format YYYYMMDD
+          maxLength: 8
+          pattern: ^((19|20|21)\d{6})?$
+        gender:
+          type: string
+          description: |-
+            The gender of the customer, possible values are:
+             * MALE
+             * FEMALE
+             * UNKNOWN
+          enum:
+            - MALE
+            - FEMALE
+            - UNKNOWN
+        name:
+          $ref: '#/components/schemas/PersonalName'
+    PersonalName:
+      type: object
+      description: Object containing the name details of the customer
+      additionalProperties: false
+      properties:
+        firstName:
+          type: string
+          description: Given name(s) or first name(s) of the customer
+          x-trim-at: 35
+          example: Wile
+        surname:
+          type: string
+          description: Surname(s) or last name(s) of the customer
+          x-trim-at: 35
+          example: E. Coyote
+        title:
+          type: string
+          description: Title of customer
+          x-trim-at: 35
+          example: Dr.
+    PositiveAmountOfMoney:
+      type: object
+      description: Object containing amount and ISO currency code attributes
+      additionalProperties: false
+      properties:
+        amount:
+          type: integer
+          description: Amount in cents and always having 2 decimals
+          format: int64
+          maximum: 999999999999
+          minimum: 1
+          example: 1000
+        currencyCode:
+          type: string
+          description: Three-letter ISO currency code representing the currency for the amount
+          minLength: 3
+          maxLength: 3
+          example: EUR
+      required:
+        - amount
+        - currencyCode
+    ProcessingMandateInformation:
+      type: object
+      description: |
+        Object containing the relevant information of a SEPA Direct Debit
+        mandate for processing (mandatory fields in pain.008).
+        Renamed from CreateMandateWithReturnUrl to ProcessingMandateInformation.
+      properties:
+        bankAccountIban:
+          $ref: '#/components/schemas/BankAccountInformation'
+        recurrenceType:
+          $ref: '#/components/schemas/MandateRecurrenceType'
+        uniqueMandateReference:
+          maxLength: 35
+          pattern: ^[A-Za-z0-9\+\-\.()]{1,35}$
+          type: string
+          description: The unique identifier of the mandate
+          example: your-mandate-id
+        dateOfSignature:
+          maxLength: 8
+          pattern: ^((19|20|21)\d{6})?$
+          type: string
+          description: |-
+            The date of signature of the mandate.
+            Format YYYYMMDD
+          example: 20220101
+        creditorId:
+          maxLength: 31
+          pattern: ^[A-Z]{2}[0-9]{2}[a-zA-Z0-9\+\?\/\-:\(\)\.,\']{1,31}$
+          type: string
+          description: Your unique creditor identifier.
+          example: DE98ZZZ09999999999
+      required:
+        - bankAccountIban
+        - creditorId
+        - dateOfSignature
+        - recurrenceType
+        - uniqueMandateReference
+    RedirectData:
+      type: object
+      description: |-
+        Object containing all data needed to redirect the customer.
+      additionalProperties: false
+      properties:
+        redirectURL:
+          type: string
+          description: The URL that the customer should be redirected to. Be sure to redirect using the GET method
+          example: https://example-mandate-signing-url.com\
+    RedirectionData:
+      type: object
+      description: Object containing browser specific redirection related data.
+      additionalProperties: false
+      properties:
+        returnUrl:
+          type: string
+          description: |-
+            The URL that the customer is redirected to after the payment flow has finished. You can add any number of
+            key value pairs in the query string that, for instance help you to identify the customer when they return to
+            your site. Please note that we will also append some additional key value pairs that will also help you with
+            this identification process.
+            Note: The provided URL should be absolute and contain the protocol to use, e.g. http:// or https://. For use
+            on mobile devices a custom protocol can be used in the form of protocol://. This protocol must be registered
+            on the device first.
+            URLs without a protocol will be rejected.
+          maxLength: 200
+          example: https://secure.ogone.com/ncol/test/displayparams.asp
+      required:
+        - returnUrl
+    RedirectPaymentMethodSpecificInput:
+      type: object
+      description: |-
+        Object containing the specific input details for payments that involve redirects to 3rd parties to complete,
+        like iDeal and PayPal
+      additionalProperties: false
+      properties:
+        requiresApproval:
+          type: boolean
+          description: |-
+            * true = the payment requires approval before the funds will be captured using the Approve payment or
+            Capture payment API
+            * false = the payment does not require approval, and the funds will be captured automatically
+            
+            If the parameter is not provided in the request, the default value will be true
+        paymentProcessingToken:
+          type: string
+          description: ID of the token to use to create the payment.
+          example: 0ca037cc-9079-4df7-8f6f-f2a3443ee521
+          maxLength: 40
+        reportingToken:
+          type: string
+          readOnly: true
+          description: Token to identify the card in the reporting.
+          example: 12a037cc-833d-8b45-8f6f-11c34171f4e1
+          maxLength: 40
+        tokenize:
+          type: boolean
+          description: >-
+            Indicates if this transaction should be tokenized
+              * true - Tokenize the transaction.
+              * false - Do not tokenize the transaction, unless it would be tokenized by other means such as auto-
+            tokenization of recurring payments.
+            example: false
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 840
+        paymentProduct840SpecificInput:
+          $ref: '#/components/schemas/RedirectPaymentProduct840SpecificInput'
+        redirectionData:
+          $ref: '#/components/schemas/RedirectionData'
+    RedirectPaymentMethodSpecificOutput:
+      type: object
+      description: |
+        Object containing the redirect payment product details.
+      additionalProperties: false
+      properties:
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: <-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 840
+        paymentProduct840SpecificOutput:
+          $ref: '#/components/schemas/PaymentProduct840SpecificOutput'
+        paymentProcessingToken:
+          type: string
+          description: ID of the token. This property is populated when the payment was done with a token.
+          example: 0ca037cc-9079-4df7-8f6f-f2a3443ee521
+          maxLength: 40
+        reportingToken:
+          type: string
+          description: Token to identify the card in the reporting.
+          example: 12a037cc-833d-8b45-8f6f-11c34171f4e1
+          maxLength: 40
+    RedirectPaymentProduct840SpecificInput:
+      type: object
+      description: Object containing specific input required for PayPal payments (Payment product ID 840)
+      properties:
+        addressSelectionAtPayPal:
+          type: boolean
+          description: |-
+            Indicates whether to use PayPal Express Checkout Shortcut.
+             * true = When shortcut is enabled, the consumer can select a shipping address during PayPal checkout.
+             * false = When shortcut is disabled, the consumer cannot change the shipping address.
+            Default value is false.
+            Please note that this field is ignored when order.additionalInput.typeInformation.purchaseType is set to
+            "digital"
+        fraudNetId:
+          type: string
+          format: UUID
+          description: |-
+            A unique ID determined by the merchant, to link a Paypal transaction to a FraudNet PayPal risk session. Only applicable to 
+            customer-initiated transactions, when the FraudNet SDK is used, and to be passed in the API request the same tracking ID value 
+            (FraudNet Session Identifier).
+          example: 686e5823-1ffd-42f7-9ba3-42b41b57d8dd
+    RefreshPaymentRequest:
+      type: object
+      description: Request to refresh the payment status of a specific payment.
+      properties:
+        refreshType:
+          $ref: '#/components/schemas/RefreshType'
+      required:
+        - refreshType
+    RefreshType:
+      type: string
+      description: |
+        The refreshType refers to the type of the payment status refresh.
+        * PAYMENT_EVENTS = Refresh the payment status of the payment and return the events. This is a synchronisation
+        of the payment status with the payment platform. This can be used in case of any possible inconsistencies
+        between the commerce platform and the payment platform.
+        * PAYMENT_PROVIDER_DETAILS = Refresh the payment status of the payment and return the payment provider details.
+        This is a synchronisation of the payment with the external payment provider. The current use case is to update
+        the customer status of a transaction using PAYONE Buy Now, Pay Later (BNPL) with the external provider Payla.
+      enum:
+        - PAYMENT_EVENTS
+        - PAYMENT_PROVIDER_DETAILS
+    RefundErrorResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        errorId:
+          type: string
+          description: Unique reference, for debugging purposes, of this error response
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/APIError'
+    RefundOutput:
+      type: object
+      description: |
+        Object containing Refund details
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        merchantParameters:
+          type: string
+          description: |
+            It allows you to store additional parameters for the transaction in JSON format.
+            This field must not contain any personal data.
+          maxLength: 1000
+          example: "{'SessionID':'126548354','ShopperID':'7354131'}"
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        paymentMethod:
+          type: string
+          description: Payment method identifier used by the our payment engine.
+    RefundRequest:
+      type: object
+      description: |
+        Request to refund a payment for a Checkout. It is possible to perform multiple partial refunds by providing an
+        amount that is lower than the total captured amount.
+        The returnReason can be provided for reporting and reconciliation purposes but is not mandatory.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/PositiveAmountOfMoney'
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        return:
+          $ref: '#/components/schemas/ReturnInformation'
+    RefundPaymentResponse:
+      type: object
+      description: |-
+        This object has the numeric representation of the current Refund status, timestamp of last status change and
+        performable action on the current Refund resource. In case of a rejected Refund, detailed error information is
+        listed.
+      additionalProperties: false
+      properties:
+        refundOutput:
+          $ref: '#/components/schemas/RefundOutput'
+        status:
+          $ref: '#/components/schemas/StatusValue'
+        statusOutput:
+          $ref: '#/components/schemas/PaymentStatusOutput'
+        id:
+          type: string
+          description: Unique payment transaction identifier of the payment gateway.
+          example: '3066019730_1'
+    ReturnInformation:
+      type: object
+      description: |-
+        Return object contains additional information about the return/shipment, which is the basis for the Refund.
+        The amountOfMoney in the cartItem will not be used in the request.
+      properties:
+        returnReason:
+          type: string
+          description: |-
+            Reason of the Refund (e.g. communicated by or to the consumer).
+          maxLength: 255
+          example: Customer complained
+        items:
+          type: array
+          description: |-
+            Items returned.
+          items:
+            $ref: '#/components/schemas/CartItemInput'
+    ReturnItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: UUID
+          description: Id of the item to return.
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+        quantity:
+          type: integer
+          description: |-
+            Quantity of the units being returned, should be greater than zero
+            Note: Must not be all spaces or all zeros
+          format: int64
+          maximum: 9999
+          minimum: 1
+          example: 1
+      required:
+        - id
+        - quantity
+    ReturnRequest:
+      type: object
+      description: |
+        Request to mark items of the respective Checkout as returned and to automatically refund a payment for those
+        items. 
+        A Return can be created for a full or the partial ShoppingCart of the Checkout. 
+        The platform will automatically calculate the respective amount to trigger the Refund. For a partial Return a
+        list of items must be provided.
+        The item details for the Refund will be automatically loaded from the Checkout.       
+        The returnReason can be provided for reporting and reconciliation purposes but is not mandatory.
+      properties:
+        returnType:
+          $ref: '#/components/schemas/ReturnType'
+        returnReason:
+          type: string
+          description: |-
+            Reason of the Refund (e.g. communicated by or to the consumer).
+          maxLength: 255
+          example: Customer complained
+        returnItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnItem'
+    ReturnResponse:
+      type: object
+      properties:
+        returnPaymentResponse:
+          $ref: '#/components/schemas/RefundPaymentResponse'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartResult'
+    ReturnType:
+      type: string
+      description: |
+        The returnType refers to the ShoppingCart items of the Checkout.       
+        returnType = FULL should be provided if all items should be marked as returned and the payment for the entire
+        ShoppingCart should be refunded.        
+        returnType = PARTIAL should be provided if only certain items should be marked as returned and the Refund should
+        not be made for the entire ShoppingCart. For this type the list of items has to be provided.       
+        Following conditions apply to the Return request:
+          * items must be in status DELIVERED
+          * there was no Capture, Refund or Cancel triggered over the Payment Execution resource
+          * for the deliverType FULL no items are provided in the request
+        Note: If a DISCOUNT productType is among the ShoppingCart items, only returnType FULL is possible.
+      enum:
+        - FULL
+        - PARTIAL
+    SepaDirectDebitPaymentMethodSpecificInput:
+      type: object
+      description: Object containing the specific input details for SEPA direct debit payments
+      additionalProperties: false
+      properties:
+        paymentProduct771SpecificInput:
+          $ref: '#/components/schemas/SepaDirectDebitPaymentProduct771SpecificInput'
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 840
+    SepaDirectDebitPaymentProduct771SpecificInput:
+      type: object
+      description: Object containing information specific to SEPA Direct Debit
+      properties:
+        existingUniqueMandateReference:
+          type: string
+          description: The unique reference of the existing mandate to use in this payment.
+          example: 'exampleMandateReference'
+        mandate:
+          $ref: '#/components/schemas/ProcessingMandateInformation'
+    SepaDirectDebitPaymentMethodSpecificOutput:
+      type: object
+      description: Object containing the SEPA direct debit details.
+      additionalProperties: false
+      properties:
+        paymentProductId:
+          type: integer
+          format: int32
+          maximum: 99999
+          minimum: 0
+          description: |-
+            Payment product identifier - please check product documentation for a full overview of possible values.
+          example: 840
+        paymentProduct771SpecificOutput:
+          $ref: '#/components/schemas/PaymentProduct771SpecificOutput'
+    SepaTransferPaymentProduct772SpecificInput:
+      type: object
+      description: Object containing the specific input details for SEPA credit transfers excluding cross-border ones
+      properties:
+        bankAccountInformation:
+          $ref: '#/components/schemas/BankAccountInformation'
+    Shipping:
+      type: object
+      description: |
+        Object containing information regarding shipping / delivery
+      additionalProperties: false
+      properties:
+        address:
+          $ref: '#/components/schemas/AddressPersonal'
+    ShoppingCartInput:
+      type: object
+      description: |
+        Shopping cart data, including items and specific amounts.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemInput'
+    ShoppingCartPatch:
+      type: object
+      description: |
+        Shopping cart data, including items and specific amounts.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemPatch'
+    ShoppingCartResult:
+      type: object
+      description: |
+        Shopping cart data, including items and specific amounts.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemResult'
+    StatusCategoryValue:
+      type: string
+      description: Highlevel status of the payment, payout or Refund.
+      enum:
+        - CREATED
+        - UNSUCCESSFUL
+        - PENDING_PAYMENT
+        - PENDING_MERCHANT
+        - PENDING_CONNECT_OR_3RD_PARTY
+        - COMPLETED
+        - REVERSED
+        - REFUNDED
+    StatusCheckout:
+      readOnly: true
+      type: string
+      description: Current high-level status of the Checkout
+      enum:
+        - OPEN
+        - PENDING_COMPLETION
+        - COMPLETED
+        - BILLED
+        - CHARGEBACKED
+        - DELETED
+      example: OPEN
+    StatusOutput:
+      description: |-
+        Contains information about whether the payment of the Checkout has already been completed and how much of the
+        total sum has been collected already.
+      type: object
+      additionalProperties: false
+      readOnly: true
+      properties:
+        paymentStatus:
+          type: string
+          enum:
+            - WAITING_FOR_PAYMENT
+            - PAYMENT_NOT_COMPLETED
+            - PAYMENT_COMPLETED
+            - NO_PAYMENT
+          example: WAITING_FOR_PAYMENT
+          description: |-
+            * WAITING_FOR_PAYMENT - There does not yet exist a PaymentExecution nor a PaymentInformation for this
+            Checkout.
+            * PAYMENT_NOT_COMPLETED - There exists a PaymentExecution or a PaymentInformation for this Checkout, but all
+            or some part of the total amount is still unpaid.
+            * PAYMENT_COMPLETED - There exists a PaymentExecution or a PaymentInformation for this Checkout and the
+            total amount is fully paid.
+            * NO_PAYMENT - Checkout was created and deleted. No Payment Execution and no other actions can be triggered
+            on the Checkout.
+        isModifiable:
+          type: boolean
+          description: |-
+            Indicates whether the Checkout can still be modified. False if any payment is already in progress, true
+            otherwise.
+        openAmount:
+          type: integer
+          description: Amount in cents always having 2 decimals. The amount yet to be paid.
+          format: int64
+          maximum: 999999999999
+          minimum: 0
+        collectedAmount:
+          type: integer
+          description: Amount in cents always having 2 decimals. The amount that has already been collected.
+          format: int64
+          maximum: 999999999999
+          minimum: 0
+        cancelledAmount:
+          type: integer
+          description: Amount in cents always having 2 decimals. The amount that has already been cancelled.
+          format: int64
+          maximum: 999999999999
+          minimum: 0
+        refundedAmount:
+          type: integer
+          description: |-
+            Amount in cents always having 2 decimals. Amount that has been collected but was refunded to the customer.
+          format: int64
+          maximum: 999999999999
+          minimum: 0
+        chargebackAmount:
+          type: integer
+          description: |-
+            Amount in cents always having 2 decimals. Amount that has been collected but was charged back by the
+            customer.
+          format: int64
+          maximum: 999999999999
+          minimum: 0
+    StatusValue:
+      type: string
+      description: Current high-level status of the payment in a human-readable form.
+      enum:
+        - CREATED
+        - CANCELLED
+        - REJECTED
+        - REJECTED_CAPTURE
+        - REJECTED_PAUSE
+        - REJECTED_UPDATE
+        - REDIRECTED
+        - PENDING_PAYMENT
+        - PENDING_COMPLETION
+        - PENDING_CAPTURE
+        - AUTHORIZATION_REQUESTED
+        - CAPTURE_REQUESTED
+        - CAPTURED
+        - REVERSED
+        - REFUND_REQUESTED
+        - REFUNDED
+        - REJECTED_REFUND
+        - CANCELLATION_REQUESTED
+        - PAUSED
+        - CHARGEBACKED
+        - CHARGEBACK_REVERSED
+        - ACCOUNT_CREDITED
+        - ACCOUNT_DEBITED
+        - PAYOUT_REQUESTED
+        - REJECTED_CREDIT
+        - UPDATED
+    ThreeDSecureResults:
+      type: object
+      description: |-
+        3D Secure results object
+      additionalProperties: false
+      properties:
+        version:
+          type: string
+          description: 3D Secure Protocol version used during this transaction.
+          example: 2.2.0
+        schemeEci:
+          type: string
+          maxLength: 2
+          description: 3D Secure ECI (Electronic Commerce Indicator) depending on the Scheme. Returned by DS.
+          example: 05
+        appliedExemption:
+          type: string
+          enum:
+            - low-value
+            - merchant-acquirer-transaction-risk-analysis
+          description: |
+            Exemption requested and applied in the authorization.
+    TransactionChannel:
+      type: string
+      enum:
+        - ECOMMERCE
+        - MOTO
+      description: |-
+        Indicates the channel via which the payment is created. Allowed values:
+          * ECOMMERCE - The transaction is a regular E-Commerce transaction.
+          * MOTO - The transaction is a Mail Order/Telephone Order.
+
+          Defaults to ECOMMERCE.
+    UnscheduledCardOnFileRequestor:
+      type: string
+      description: |-
+        Indicates which party initiated the unscheduled recurring transaction. Allowed values:
+          * merchantInitiated - Merchant Initiated Transaction.
+          * cardholderInitiated - Cardholder Initiated Transaction.
+        Note:
+          * When a customer has chosen to use a token on a hosted Checkout this property is set to
+        "cardholderInitiated".
+      enum:
+        - merchantInitiated
+        - cardholderInitiated
+      x-enum-to-string: false
+    UnscheduledCardOnFileSequenceIndicator:
+      type: string
+      description: |-
+        * first = This transaction is the first of a series of unscheduled recurring transactions
+        * subsequent = This transaction is a subsequent transaction in a series of unscheduled recurring transactions
+        Note: this property is not allowed if isRecurring is true.
+      enum:
+        - first
+        - subsequent
+      x-enum-to-string: false
