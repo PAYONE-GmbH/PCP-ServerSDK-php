@@ -7,6 +7,7 @@ use PayoneCommercePlatform\Sdk\Models\CompanyInformation;
 use PayoneCommercePlatform\Sdk\Models\Address;
 use PayoneCommercePlatform\Sdk\Models\ContactDetails;
 use PayoneCommercePlatform\Sdk\Models\PersonalInformation;
+use PayoneCommercePlatform\Sdk\Models\CustomerAccount;
 
 /**
  * @description Object containing the details of a customer.
@@ -61,6 +62,12 @@ class Customer
     #[SerializedName('personalInformation')]
     protected ?PersonalInformation $personalInformation;
 
+    /**
+     * @var CustomerAccount|null Object containing data related to the customer's account.
+     */
+    #[SerializedName('account')]
+    protected ?CustomerAccount $account;
+
     public function __construct(
         ?CompanyInformation $companyInformation = null,
         ?string $merchantCustomerId = null,
@@ -69,7 +76,8 @@ class Customer
         ?string $fiscalNumber = null,
         ?BusinessRelation $businessRelation = null,
         ?string $locale = null,
-        ?PersonalInformation $personalInformation = null
+        ?PersonalInformation $personalInformation = null,
+        ?CustomerAccount $account = null
     ) {
         $this->companyInformation = $companyInformation;
         $this->merchantCustomerId = $merchantCustomerId;
@@ -79,6 +87,7 @@ class Customer
         $this->businessRelation = $businessRelation;
         $this->locale = $locale;
         $this->personalInformation = $personalInformation;
+        $this->account = $account;
     }
 
     // Getters and Setters
@@ -167,6 +176,17 @@ class Customer
     public function setPersonalInformation(?PersonalInformation $personalInformation): self
     {
         $this->personalInformation = $personalInformation;
+        return $this;
+    }
+
+    public function getAccount(): ?CustomerAccount
+    {
+        return $this->account;
+    }
+
+    public function setAccount(?CustomerAccount $account): self
+    {
+        $this->account = $account;
         return $this;
     }
 }
