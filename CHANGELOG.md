@@ -1,3 +1,24 @@
+# [1.2.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.0.1...v1.2.0) (2025-05-26)
+### Bug Fixes
+* fix: add missing description tag in AvsResult documentation ([c531b34d9e0387c5ed536353b0536a5aa5949a2f](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/c531b34d9e0387c5ed536353b0536a5aa5949a2f))
+* fix: format AVS result descriptions for better readability ([d07830248e7f7f4dc7b886bf6357292e9ed33fca](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/d07830248e7f7f4dc7b886bf6357292e9ed33fca))
+### Documentation
+* docs: enhance documentation for category field in APIError model ([f781a11a6269e2d16708e549ec761e3acbe89d9f](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/f781a11a6269e2d16708e549ec761e3acbe89d9f))
+* docs: improve documentation for taxAmountPerUnit field in OrderLineDetailsInput ([c8347edd32c19123bc21385578327e1d6431ad0c](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/c8347edd32c19123bc21385578327e1d6431ad0c))
+* docs: improve documentation formatting across multiple model files ([a83642018ee5eae11014a148e44c27ffe1aab56e](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/a83642018ee5eae11014a148e44c27ffe1aab56e))
+* docs: update README to include new payment methods and their parameters ([0312ec9b91f28f3c9579a219e7816c5dd22fd154](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/0312ec9b91f28f3c9579a219e7816c5dd22fd154))
+### Features
+* feat: add BusinessRelation enum and update Customer model to use it ([d045ec530e714c6548cf953319295d968282daa2](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/d045ec530e714c6548cf953319295d968282daa2))
+* feat: add CustomerAccount model and integrate it into Customer class ([5a2ff5448daa4abb923f77818bb693e86d391ef9](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/5a2ff5448daa4abb923f77818bb693e86d391ef9))
+* feat: add fraudNetId property and corresponding getters/setters to RedirectPaymentProduct840SpecificInput ([38b3ac4aff99c5340992b67487fd52d1ee00090f](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/38b3ac4aff99c5340992b67487fd52d1ee00090f))
+* feat: add RecurringPaymentSequenceIndicator enum and update CardRecurrenceDetails to use it ([18c20b6edafd7f1b39760f43ddcabd9380c812a6](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/18c20b6edafd7f1b39760f43ddcabd9380c812a6))
+* feat: add SerializedName annotations and improve property types in payment models ([e9c48160619fe9209736e13835d904e4cb40cf3e](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/e9c48160619fe9209736e13835d904e4cb40cf3e))
+* feat: implement api version 1.28.0 ([cd315b09555c227507e8938a23e1cc15ea432d0b](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/cd315b09555c227507e8938a23e1cc15ea432d0b))
+* feat: introduce ActionType enum and update MerchantAction to use it ([24e44c0547904134d3c6636290be32bd9cc6596a](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/24e44c0547904134d3c6636290be32bd9cc6596a))
+* feat: introduce AvsResult enum and update CardFraudResults to use it ([6681a4cee365c705ad6448702d1c9809fa8b75ff](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/6681a4cee365c705ad6448702d1c9809fa8b75ff))
+* feat: update DemoApp to use BusinessRelation enum and add bic field to BankAccountInformation ([bd7338318e2c77509b52b2e338fb4c90ba845e40](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/bd7338318e2c77509b52b2e338fb4c90ba845e40))
+* feat: update merchantAction instantiation to use ActionType enum in PaymentExecutionApiClientTest ([6717183e4166b56b2ad97dd97d4ec505c8505ee3](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/6717183e4166b56b2ad97dd97d4ec505c8505ee3))
+* feat: update payment models to add taxAmountPerUnit parameter ([261cfcfcc738781820b88e9eed141efcd787a5aa](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/261cfcfcc738781820b88e9eed141efcd787a5aa))
 # [1.1.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.28.0...v1.1.0) (2025-03-13)
 
 ### Features
