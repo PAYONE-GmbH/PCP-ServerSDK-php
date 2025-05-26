@@ -6,6 +6,7 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
+use PayoneCommercePlatform\Sdk\Models\ActionType;
 use PayoneCommercePlatform\Sdk\Models\CancelPaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CancelPaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CancellationReason;
@@ -146,7 +147,7 @@ class PaymentExecutionApiClientTest extends TestCase
     {
         $createPaymentResponse = new CreatePaymentResponse(
             creationOutput: new PaymentCreationOutput('ref-to-something'),
-            merchantAction: new MerchantAction('SHOW_FORM', new RedirectData('http://example.com')),
+            merchantAction: new MerchantAction(ActionType::SHOW_FORM, new RedirectData('http://example.com')),
         );
         $this->httpClient->method('send')->willReturn(new Response(status: 200, body: PaymentExecutionApiClient::serializeJson($createPaymentResponse)));
 

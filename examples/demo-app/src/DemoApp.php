@@ -16,6 +16,7 @@ use PayoneCommercePlatform\Sdk\Models\Address;
 use PayoneCommercePlatform\Sdk\Models\AddressPersonal;
 use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
 use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
+use PayoneCommercePlatform\Sdk\Models\BusinessRelation;
 use PayoneCommercePlatform\Sdk\Models\CartItemInput;
 use PayoneCommercePlatform\Sdk\Models\CartItemInvoiceData;
 use PayoneCommercePlatform\Sdk\Models\CheckoutReferences;
@@ -146,6 +147,7 @@ class DemoApp
                             bankAccountIban: new BankAccountInformation(
                                 iban: "DE75512108001245126199",
                                 accountHolder: "Ryan Carniato",
+                                bic: null
                             ),
                             dateOfSignature: "20240730",
                             recurrenceType: MandateRecurrenceType::UNIQUE,
@@ -182,7 +184,7 @@ class DemoApp
             $this->merchantId,
             new CreateCommerceCaseRequest(
                 customer: new Customer(
-                    businessRelation: "B2C",
+                    businessRelation: BusinessRelation::B2C,
                     locale: "de",
                     personalInformation: new PersonalInformation(
                         dateOfBirth: "19840604",
@@ -252,10 +254,10 @@ class DemoApp
         $installmentOptions = [];
         if (
             $order->getCreatePaymentResponse() !== null
-        && $order->getCreatePaymentResponse()->getPayment !== null
-        && $order->getCreatePaymentResponse()->getPayment()->getPaymentOutput() !== null
-        && $order->getCreatePaymentResponse()->getPayment()->getPaymentOutput()->getFinancingPaymentMethodSpecificOutput() !== null
-        && $order->getCreatePaymentResponse()->getPayment()->getPaymentOutput()->getFinancingPaymentMethodSpecificOutput()->getPaymentProduct3391SpecificOutput() !== null
+            && $order->getCreatePaymentResponse()->getPaymentExecutionId() !== null
+            && $order->getCreatePaymentResponse()->getPayment()->getPaymentOutput() !== null
+            && $order->getCreatePaymentResponse()->getPayment()->getPaymentOutput()->getFinancingPaymentMethodSpecificOutput() !== null
+            && $order->getCreatePaymentResponse()->getPayment()->getPaymentOutput()->getFinancingPaymentMethodSpecificOutput()->getPaymentProduct3391SpecificOutput() !== null
         ) {
             $installmentOptions = $order->getCreatePaymentResponse()->getPayment()->getPaymentOutput()->getFinancingPaymentMethodSpecificOutput()->getPaymentProduct3391SpecificOutput()->getInstallmentOptions();
         } else {
@@ -268,6 +270,7 @@ class DemoApp
             $this->merchantId,
             $commerceCase->getCommerceCaseId(),
             $commerceCase->getCheckout()->getCheckoutId(),
+            $order->getCreatePaymentResponse()->getPaymentExecutionId(),
             new CompletePaymentRequest(
                 financingPaymentMethodSpecificInput: new CompleteFinancingPaymentMethodSpecificInput(
                     requiresApproval: false,
@@ -277,6 +280,7 @@ class DemoApp
                         bankAccountInformation: new BankAccountInformation(
                             iban: 'DE75512108001245126199',
                             accountHolder: 'Rich Harris',
+                            bic: null
                         )
                     ),
                 )
@@ -307,7 +311,7 @@ class DemoApp
             $this->merchantId,
             new CreateCommerceCaseRequest(
                 customer: new Customer(
-                    businessRelation: "B2C",
+                    businessRelation: BusinessRelation::B2C,
                     locale: "de",
                     personalInformation: new PersonalInformation(
                         dateOfBirth: "19840604",
@@ -373,6 +377,7 @@ class DemoApp
                             bankAccountInformation: new BankAccountInformation(
                                 iban: 'DE75512108001245126199',
                                 accountHolder: 'Rich Harris',
+                                bic: null
                             ),
                         ),
                     ),
@@ -405,7 +410,7 @@ class DemoApp
             $this->merchantId,
             new CreateCommerceCaseRequest(
                 customer: new Customer(
-                    businessRelation: "B2C",
+                    businessRelation: BusinessRelation::B2C,
                     locale: "de",
                     personalInformation: new PersonalInformation(
                         dateOfBirth: "19840604",
@@ -470,6 +475,7 @@ class DemoApp
                                 bankAccountIban: new BankAccountInformation(
                                     iban: 'DE75512108001245126199',
                                     accountHolder: 'Rich Harris',
+                                    bic: null
                                 ),
                                 dateOfSignature: '20240730',
                                 recurrenceType: MandateRecurrenceType::UNIQUE,
@@ -548,6 +554,7 @@ class DemoApp
                                         bankAccountIban: new BankAccountInformation(
                                             iban: 'DE75512108001245126199',
                                             accountHolder: 'Rich Harris',
+                                            bic: null
                                         ),
                                         dateOfSignature: '20240730',
                                         recurrenceType: MandateRecurrenceType::UNIQUE,
@@ -598,7 +605,6 @@ class DemoApp
         $this->runMultistepCheckoutForPayoneSecuredDirectDebit('com1a3b', $customerDevice);
         // https://docs.payone.com/pcp/commerce-platform-payment-methods/payone-bnpl/payone-secured-installment
         $this->runMultistepCheckoutForPayoneSecuredInstallment(commerceCaseMerchantReference: 'com1a4b', customerDevice: $customerDevice);
-
     }
 
     public static function run(): void
