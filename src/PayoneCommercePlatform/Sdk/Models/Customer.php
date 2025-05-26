@@ -7,6 +7,7 @@ use PayoneCommercePlatform\Sdk\Models\CompanyInformation;
 use PayoneCommercePlatform\Sdk\Models\Address;
 use PayoneCommercePlatform\Sdk\Models\ContactDetails;
 use PayoneCommercePlatform\Sdk\Models\PersonalInformation;
+use PayoneCommercePlatform\Sdk\Models\CustomerAccount;
 
 /**
  * @description Object containing the details of a customer.
@@ -44,10 +45,10 @@ class Customer
     protected ?string $fiscalNumber;
 
     /**
-     * @var string|null Business relation to the customer.
+     * @var BusinessRelation|null Business relation to the customer.
      */
     #[SerializedName('businessRelation')]
-    protected ?string $businessRelation;
+    protected ?BusinessRelation $businessRelation;
 
     /**
      * @var string|null The locale that the customer should be addressed in (for 3rd parties).
@@ -61,15 +62,22 @@ class Customer
     #[SerializedName('personalInformation')]
     protected ?PersonalInformation $personalInformation;
 
+    /**
+     * @var CustomerAccount|null Object containing data related to the customer's account.
+     */
+    #[SerializedName('account')]
+    protected ?CustomerAccount $account;
+
     public function __construct(
         ?CompanyInformation $companyInformation = null,
         ?string $merchantCustomerId = null,
         ?Address $billingAddress = null,
         ?ContactDetails $contactDetails = null,
         ?string $fiscalNumber = null,
-        ?string $businessRelation = null,
+        ?BusinessRelation $businessRelation = null,
         ?string $locale = null,
-        ?PersonalInformation $personalInformation = null
+        ?PersonalInformation $personalInformation = null,
+        ?CustomerAccount $account = null
     ) {
         $this->companyInformation = $companyInformation;
         $this->merchantCustomerId = $merchantCustomerId;
@@ -79,6 +87,7 @@ class Customer
         $this->businessRelation = $businessRelation;
         $this->locale = $locale;
         $this->personalInformation = $personalInformation;
+        $this->account = $account;
     }
 
     // Getters and Setters
@@ -137,12 +146,12 @@ class Customer
         return $this;
     }
 
-    public function getBusinessRelation(): ?string
+    public function getBusinessRelation(): ?BusinessRelation
     {
         return $this->businessRelation;
     }
 
-    public function setBusinessRelation(?string $businessRelation): self
+    public function setBusinessRelation(?BusinessRelation $businessRelation): self
     {
         $this->businessRelation = $businessRelation;
         return $this;
@@ -167,6 +176,17 @@ class Customer
     public function setPersonalInformation(?PersonalInformation $personalInformation): self
     {
         $this->personalInformation = $personalInformation;
+        return $this;
+    }
+
+    public function getAccount(): ?CustomerAccount
+    {
+        return $this->account;
+    }
+
+    public function setAccount(?CustomerAccount $account): self
+    {
+        $this->account = $account;
         return $this;
     }
 }

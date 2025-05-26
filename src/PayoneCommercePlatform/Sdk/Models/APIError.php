@@ -13,13 +13,15 @@ class APIError
     protected string $errorCode;
 
     /**
-     * @var string|null Category the error belongs to. The category should give an indication of the type of error you are dealing with. Possible values:
-     * DIRECT_PLATFORM_ERROR - indicating that a functional error has occurred in the platform.
-     * PAYMENT_PLATFORM_ERROR - indicating that a functional error has occurred in the payment platform.
-     * IO_ERROR - indicating that a technical error has occurred within the payment platform or between the
-     * payment platform and third party systems.
-     * COMMERCE_PLATFORM_ERROR - indicating an error originating from the Commerce Platform.
-     * COMMERCE_PORTAL_BACKEND_ERROR - indicating an error originating from the Commerce Portal Backend.
+     * @var string|null Category the error belongs to. The category should give an indication of the type of error you are dealing with.
+     * Do not expect a finite set of possible categories, as they are subject to change.
+     * Common values are:
+     *
+     * * DIRECT_PLATFORM_ERROR - indicating that a functional error has occurred in the platform.
+     * * PAYMENT_PLATFORM_ERROR - indicating that a functional error has occurred in the payment platform.
+     * * IO_ERROR - indicating that a technical error has occurred within the payment platform or between the payment platform and third party systems.
+     * * COMMERCE_PLATFORM_ERROR - indicating an error originating from the Commerce Platform.
+     * * COMMERCE_PORTAL_BACKEND_ERROR - indicating an error originating from the Commerce Portal Backend.
      */
     #[SerializedName('category')]
     protected ?string $category;
