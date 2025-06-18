@@ -1,3 +1,6 @@
+## [1.2.1](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.2.0...v1.2.1) (2025-06-18)
+### Bug Fixes
+* fix: fix wrong parameter name ([a38ec994a4bcaab7394bf04fa10a8a90aecb38cf](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/a38ec994a4bcaab7394bf04fa10a8a90aecb38cf))
 # [1.2.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.0.1...v1.2.0) (2025-05-26)
 ### Bug Fixes
 * fix: add missing description tag in AvsResult documentation ([c531b34d9e0387c5ed536353b0536a5aa5949a2f](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/c531b34d9e0387c5ed536353b0536a5aa5949a2f))
