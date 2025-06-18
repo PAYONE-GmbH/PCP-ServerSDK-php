@@ -12,24 +12,24 @@ class RedirectData
     /**
      * @var string|null The URL that the customer should be redirected to. Be sure to redirect using the GET method.
      */
-    #[SerializedName('returnUrl')]
-    protected ?string $returnUrl;
+    #[SerializedName('redirectURL')]
+    protected ?string $redirectURL;
 
     public function __construct(
-        ?string $returnUrl = null
+        ?string $redirectURL = null
     ) {
-        $this->returnUrl = $returnUrl;
+        $this->redirectURL = $redirectURL;
     }
 
     // Getters and Setters
-    public function getReturnUrl(): ?string
+    public function getRedirectURL(): ?string
     {
-        return $this->returnUrl;
+        return $this->redirectURL;
     }
 
-    public function setReturnUrl(?string $returnUrl): self
+    public function setRedirectURL(?string $redirectURL): self
     {
-        $this->returnUrl = $returnUrl;
+        $this->redirectURL = $redirectURL;
         return $this;
     }
 }
