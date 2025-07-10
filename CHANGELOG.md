@@ -1,3 +1,6 @@
+# [1.3.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.2.0...v1.3.0) (2025-07-10)
+### Features
+* feat: add authentication token retrieval functionality and example ([06381e09c054f031d20095c9b40fac14c5be96da](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/06381e09c054f031d20095c9b40fac14c5be96da))
 # [1.2.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.0.1...v1.2.0) (2025-05-26)
 ### Bug Fixes
 * fix: add missing description tag in AvsResult documentation ([c531b34d9e0387c5ed536353b0536a5aa5949a2f](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/c531b34d9e0387c5ed536353b0536a5aa5949a2f))
