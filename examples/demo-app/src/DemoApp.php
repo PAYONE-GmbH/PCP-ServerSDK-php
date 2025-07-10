@@ -616,15 +616,7 @@ class DemoApp
     public function runApp(): void
     {
 
-        try {
-            $token = $this->authenticationClient->getAuthenticationTokens($this->merchantId);
-            echo "JWT Token: " . $token->getToken() . "\n";
-            echo "Token ID: " . $token->getId() . "\n";
-            echo "Created: " . $token->getCreationDate() . "\n";
-            echo "Expires: " . $token->getExpirationDate() . "\n";
-        } catch (\Exception $e) {
-            echo "Error retrieving authentication token: " . $e->getMessage() . "\n";
-        }
+        $this->printAuthenticationToken();
 
         // see: https://docs.payone.com/pcp/checkout-flows/one-step-checkout
         // not that the given reference must be unique and has to renewed after each run
