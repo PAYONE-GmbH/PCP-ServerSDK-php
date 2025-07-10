@@ -44,7 +44,7 @@ class AuthenticationApiClient extends BaseApiClient
 
         $operationHost = $this->config->getHost();
         return new Request(
-            'GET',
+            'POST',
             $operationHost . $resourcePath,
             $headers
         );
