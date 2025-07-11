@@ -2,10 +2,11 @@
 
 namespace DemoApp;
 
-require_once __DIR__ . '/../vendor/autoload.php';
+// require_once __DIR__ . '../vendor/autoload.php';
 // remove this line when installing from github. This is needed to ensure Symfony's autoloader is used
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
+use PayoneCommercePlatform\Sdk\ApiClient\AuthenticationApiClient;
 use PayoneCommercePlatform\Sdk\ApiClient\CheckoutApiClient;
 use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
 use PayoneCommercePlatform\Sdk\ApiClient\OrderManagementCheckoutActionsApiClient;
@@ -50,6 +51,7 @@ use PayoneCommercePlatform\Sdk\Models\SepaDirectDebitPaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\SepaDirectDebitPaymentProduct771SpecificInput;
 use PayoneCommercePlatform\Sdk\Models\Shipping;
 use PayoneCommercePlatform\Sdk\Models\ShoppingCartInput;
+use PayoneCommercePlatform\Sdk\Models\AuthenticationToken;
 
 class DemoApp
 {
@@ -59,6 +61,7 @@ class DemoApp
     protected CommerceCaseApiClient $commerceCaseClient;
     protected OrderManagementCheckoutActionsApiClient $orderManagementCheckoutClient;
     protected PaymentExecutionApiClient $paymentExecutionClient;
+    protected AuthenticationApiClient $authenticationClient;
 
     public function __construct()
     {
@@ -83,6 +86,7 @@ class DemoApp
         $this->commerceCaseClient = new CommerceCaseApiClient($this->config);
         $this->paymentExecutionClient = new PaymentExecutionApiClient($this->config);
         $this->orderManagementCheckoutClient = new OrderManagementCheckoutActionsApiClient($this->config);
+        $this->authenticationClient = new AuthenticationApiClient($this->config);
     }
 
     protected function runCheckoutWithPaymentExecution(string $commerceCaseMerchantReference): void
@@ -118,16 +122,18 @@ class DemoApp
                     )
                 ),
                 shoppingCart: new ShoppingCartInput(
-                    items: [new CartItemInput(
-                        invoiceData: new CartItemInvoiceData(
-                            description: "T-Shirt - Scaleshape Logo - S",
-                        ),
-                        orderLineDetails: new OrderLineDetailsInput(
-                            productPrice: 3599,
-                            quantity: 1,
-                            productType: ProductType::GOODS,
-                        ),
-                    )],
+                    items: [
+                        new CartItemInput(
+                            invoiceData: new CartItemInvoiceData(
+                                description: "T-Shirt - Scaleshape Logo - S",
+                            ),
+                            orderLineDetails: new OrderLineDetailsInput(
+                                productPrice: 3599,
+                                quantity: 1,
+                                productType: ProductType::GOODS,
+                            ),
+                        )
+                    ],
                 ),
             )
         );
@@ -201,16 +207,18 @@ class DemoApp
                 ),
                 checkout: new CreateCheckoutRequest(
                     shoppingCart: new ShoppingCartInput(
-                        items: [new CartItemInput(
-                            invoiceData: new CartItemInvoiceData('Frankenstein - Mary Shelley - Hardcover'),
-                            orderLineDetails: new OrderLineDetailsInput(
-                                productCode: 'shelley-42',
-                                productPrice: 1999,
-                                quantity: 1,
-                                productType: ProductType::GOODS,
-                                taxAmount: 19,
-                            ),
-                        )],
+                        items: [
+                            new CartItemInput(
+                                invoiceData: new CartItemInvoiceData('Frankenstein - Mary Shelley - Hardcover'),
+                                orderLineDetails: new OrderLineDetailsInput(
+                                    productCode: 'shelley-42',
+                                    productPrice: 1999,
+                                    quantity: 1,
+                                    productType: ProductType::GOODS,
+                                    taxAmount: 19,
+                                ),
+                            )
+                        ],
                     ),
                 ),
             )
@@ -328,16 +336,18 @@ class DemoApp
                 ),
                 checkout: new CreateCheckoutRequest(
                     shoppingCart: new ShoppingCartInput(
-                        items: [new CartItemInput(
-                            invoiceData: new CartItemInvoiceData('Frankenstein - Mary Shelley - Hardcover'),
-                            orderLineDetails: new OrderLineDetailsInput(
-                                productCode: 'shelley-42',
-                                productPrice: 1999,
-                                quantity: 1,
-                                productType: ProductType::GOODS,
-                                taxAmount: 19,
-                            ),
-                        )],
+                        items: [
+                            new CartItemInput(
+                                invoiceData: new CartItemInvoiceData('Frankenstein - Mary Shelley - Hardcover'),
+                                orderLineDetails: new OrderLineDetailsInput(
+                                    productCode: 'shelley-42',
+                                    productPrice: 1999,
+                                    quantity: 1,
+                                    productType: ProductType::GOODS,
+                                    taxAmount: 19,
+                                ),
+                            )
+                        ],
                     ),
                 ),
             )
@@ -427,16 +437,18 @@ class DemoApp
                 ),
                 checkout: new CreateCheckoutRequest(
                     shoppingCart: new ShoppingCartInput(
-                        items: [new CartItemInput(
-                            invoiceData: new CartItemInvoiceData('Frankenstein - Mary Shelley - Hardcover'),
-                            orderLineDetails: new OrderLineDetailsInput(
-                                productCode: 'shelley-42',
-                                productPrice: 1999,
-                                quantity: 1,
-                                productType: ProductType::GOODS,
-                                taxAmount: 19,
-                            ),
-                        )],
+                        items: [
+                            new CartItemInput(
+                                invoiceData: new CartItemInvoiceData('Frankenstein - Mary Shelley - Hardcover'),
+                                orderLineDetails: new OrderLineDetailsInput(
+                                    productCode: 'shelley-42',
+                                    productPrice: 1999,
+                                    quantity: 1,
+                                    productType: ProductType::GOODS,
+                                    taxAmount: 19,
+                                ),
+                            )
+                        ],
                     ),
                 ),
             )
@@ -534,14 +546,16 @@ class DemoApp
                         )
                     ),
                     shoppingCart: new ShoppingCartInput(
-                        items: [new CartItemInput(
-                            invoiceData: new CartItemInvoiceData('Hoodie - Scaleshape Logo - L'),
-                            orderLineDetails: new OrderLineDetailsInput(
-                                productPrice: 5199,
-                                quantity: 1,
-                                productType: ProductType::GOODS,
-                            ),
-                        )]
+                        items: [
+                            new CartItemInput(
+                                invoiceData: new CartItemInvoiceData('Hoodie - Scaleshape Logo - L'),
+                                orderLineDetails: new OrderLineDetailsInput(
+                                    productPrice: 5199,
+                                    quantity: 1,
+                                    productType: ProductType::GOODS,
+                                ),
+                            )
+                        ]
                     ),
                     orderRequest: new OrderRequest(
                         orderReferences: new References(merchantReference: 'o-' . $commerceCaseMerchantReference),
@@ -583,8 +597,27 @@ class DemoApp
         }
     }
 
+    /**
+     * Demonstrates how to retrieve an authentication token for the merchant and print it to the console.
+     */
+    protected function printAuthenticationToken(): void
+    {
+        try {
+            $token = $this->authenticationClient->getAuthenticationTokens($this->merchantId);
+            echo "JWT Token: " . $token->getToken() . "\n";
+            echo "Token ID: " . $token->getId() . "\n";
+            echo "Created: " . $token->getCreationDate() . "\n";
+            echo "Expires: " . $token->getExpirationDate() . "\n";
+        } catch (\Exception $e) {
+            echo "Error retrieving authentication token: " . $e->getMessage() . "\n";
+        }
+    }
+
     public function runApp(): void
     {
+
+        $this->printAuthenticationToken();
+
         // see: https://docs.payone.com/pcp/checkout-flows/one-step-checkout
         // not that the given reference must be unique and has to renewed after each run
         $this->runSingleStepCheckout('comb1b3');
@@ -605,6 +638,7 @@ class DemoApp
         $this->runMultistepCheckoutForPayoneSecuredDirectDebit('com1a3b', $customerDevice);
         // https://docs.payone.com/pcp/commerce-platform-payment-methods/payone-bnpl/payone-secured-installment
         $this->runMultistepCheckoutForPayoneSecuredInstallment(commerceCaseMerchantReference: 'com1a4b', customerDevice: $customerDevice);
+
     }
 
     public static function run(): void
