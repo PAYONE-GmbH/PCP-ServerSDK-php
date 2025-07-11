@@ -20,6 +20,7 @@ For a general introduction to the API and various checkout flows, see the docume
   - [Error Handling](#error-handling)
   - [Client Side](#client-side)
   - [Apple Pay](#apple-pay)
+  - [Authentication Token Retrieval](#authentication-token-retrieval)
 - [Demo App](#demo-app)
 - [API Reference](#api-reference)
   - [CommunicatorConfiguration](#communicatorconfiguration)
@@ -183,6 +184,40 @@ use PayoneCommercePlatform\Sdk\Transformer\ApplePayTransformer;
 
 $mobilePaymentMethodSpecificInput = ApplePayTransformer::transformApplePayPaymentToMobilePaymentMethodSpecificInput($applePayPayment);
 ```
+
+**[back to top](#table-of-contents)**
+
+## Authentication Token Retrieval
+
+To interact with certain client-side SDKs (such as the credit card tokenizer), you need to generate a short-lived authentication JWT token for your merchant. This token can be retrieved using the SDK as follows:
+
+```php
+<?php
+
+use PayoneCommercePlatform\Sdk\ApiClient\AuthenticationApiClient;
+use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
+
+$apiKey = getenv('API_KEY');
+$apiSecret = getenv('API_SECRET');
+$merchantId = getenv('MERCHANT_ID');
+
+$config = new CommunicatorConfiguration(
+    apiKey: $apiKey,
+    apiSecret: $apiSecret,
+    integrator: 'YOUR COMPANY NAME'
+);
+$authClient = new AuthenticationApiClient($config);
+
+$token = $authClient->getAuthenticationTokens($merchantId);
+echo "JWT Token: " . $token->getToken() . "\n";
+echo "Token ID: " . $token->getId() . "\n";
+echo "Created: " . $token->getCreationDate() . "\n";
+echo "Expires: " . $token->getExpirationDate() . "\n";
+```
+
+This token can then be used for secure operations such as initializing the credit card tokenizer or other client-side SDKs that require merchant authentication. The token is valid for a limited time (10 minutes) and should be handled securely.
+
+**Note:** The `getAuthenticationTokens` method requires a valid `merchantId`. Optionally, you can provide an `X-Request-ID` header for tracing requests.
 
 **[back to top](#table-of-contents)**
 
