@@ -20,6 +20,7 @@ For a general introduction to the API and various checkout flows, see the docume
   - [Error Handling](#error-handling)
   - [Client Side](#client-side)
   - [Apple Pay](#apple-pay)
+  - [HTTP Client Customization](#http-client-customization)
   - [Authentication Token Retrieval](#authentication-token-retrieval)
 - [Demo App](#demo-app)
 - [API Reference](#api-reference)
@@ -183,6 +184,196 @@ You can use the `PayoneCommercePlatform\Sdk\Transformer\ApplePayTransformer` to 
 use PayoneCommercePlatform\Sdk\Transformer\ApplePayTransformer;
 
 $mobilePaymentMethodSpecificInput = ApplePayTransformer::transformApplePayPaymentToMobilePaymentMethodSpecificInput($applePayPayment);
+```
+
+**[back to top](#table-of-contents)**
+
+## HTTP Client Customization
+
+The SDK allows you to customize the underlying Guzzle HTTP client used for API requests. This provides flexibility to configure timeouts, add interceptors, set up proxies, implement custom authentication mechanisms, and more.
+
+### Overview
+
+HTTP client customization enables you to:
+- Configure custom timeouts and connection settings
+- Set up proxy servers for corporate environments
+- Add custom headers and authentication
+- Implement request/response middleware for logging or monitoring
+- Configure SSL/TLS settings
+- Add retry logic and error handling
+
+### Global HTTP Client Configuration
+
+You can set a global HTTP client that will be used by all API clients by passing it to the `CommunicatorConfiguration`:
+
+```php
+<?php
+
+use GuzzleHttp\Client;
+use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
+use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
+
+// Create a custom Guzzle client with specific configuration
+$customHttpClient = new Client([
+    'timeout' => 30,
+    'connect_timeout' => 10,
+    'verify' => true,
+    'headers' => [
+        'User-Agent' => 'MyApp/1.0'
+    ]
+]);
+
+// Pass the custom client to the configuration
+$config = new CommunicatorConfiguration(
+    apiKey: getenv('API_KEY'),
+    apiSecret: getenv('API_SECRET'),
+    host: CommunicatorConfiguration::getPredefinedHosts()['prod']['url'],
+    integrator: 'YOUR COMPANY NAME',
+    httpClient: $customHttpClient
+);
+
+// All API clients created with this configuration will use the custom HTTP client
+$commerceCaseClient = new CommerceCaseApiClient($config);
+```
+
+### Client-Specific HTTP Client Configuration
+
+You can also set a custom HTTP client for individual API clients, which will override the global configuration:
+
+```php
+<?php
+
+use GuzzleHttp\Client;
+use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
+
+// Create a client-specific HTTP client
+$clientSpecificHttpClient = new Client([
+    'timeout' => 60,  // Different timeout for this specific client
+    'proxy' => 'http://proxy.example.com:8080'
+]);
+
+// Pass the client-specific HTTP client to the API client constructor
+$commerceCaseClient = new CommerceCaseApiClient($config, $clientSpecificHttpClient);
+
+// Or set it after construction
+$commerceCaseClient->setHttpClient($clientSpecificHttpClient);
+```
+
+### Advanced Configuration Examples
+
+#### HTTP Client with Middleware
+
+```php
+<?php
+
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+
+// Create a handler stack and add middleware
+$stack = HandlerStack::create();
+
+// Add logging middleware
+$stack->push(Middleware::mapRequest(function ($request) {
+    error_log("Making request to: " . $request->getUri());
+    return $request;
+}));
+
+// Add retry middleware for failed requests
+$stack->push(Middleware::retry(function ($retries, $request, $response, $exception) {
+    return $retries < 3 && ($exception || ($response && $response->getStatusCode() >= 500));
+}));
+
+// Create HTTP client with the custom handler stack
+$httpClientWithMiddleware = new Client([
+    'handler' => $stack,
+    'timeout' => 30,
+    'headers' => [
+        'X-SDK-Version' => '1.3.0'
+    ]
+]);
+
+$config = new CommunicatorConfiguration(
+    apiKey: getenv('API_KEY'),
+    apiSecret: getenv('API_SECRET'),
+    httpClient: $httpClientWithMiddleware
+);
+```
+
+#### Proxy Configuration
+
+```php
+<?php
+
+use GuzzleHttp\Client;
+
+// Configure HTTP client with proxy settings
+$proxyHttpClient = new Client([
+    'proxy' => [
+        'http'  => 'http://proxy.example.com:8080',
+        'https' => 'https://proxy.example.com:8080',
+    ],
+    'timeout' => 30,
+    'verify' => '/path/to/ca-bundle.crt'  // Custom CA bundle
+]);
+
+$config = new CommunicatorConfiguration(
+    apiKey: getenv('API_KEY'),
+    apiSecret: getenv('API_SECRET'),
+    httpClient: $proxyHttpClient
+);
+```
+
+### Priority Logic
+
+The SDK uses the following priority order when determining which HTTP client to use:
+
+1. **Client-specific HTTP client** (highest priority) - Set via constructor parameter or `setHttpClient()` method
+2. **Global HTTP client** - Set in `CommunicatorConfiguration`
+3. **Default Guzzle client** (lowest priority) - Used when no custom client is configured
+
+This allows you to have a global configuration for most clients while still being able to customize specific clients when needed.
+
+### Backward Compatibility
+
+The HTTP client customization feature maintains full backward compatibility:
+- Existing code continues to work without any changes
+- Default behavior remains unchanged when no custom HTTP client is provided
+- All existing tests continue to pass
+
+### Common Use Cases
+
+#### Corporate Environment with Proxy
+```php
+$corporateClient = new Client([
+    'proxy' => getenv('CORPORATE_PROXY'),
+    'timeout' => 45,
+    'verify' => '/etc/ssl/certs/ca-certificates.crt'
+]);
+```
+
+#### Development Environment with Debugging
+```php
+$debugClient = new Client([
+    'timeout' => 120,  // Longer timeout for debugging
+    'debug' => true,   // Enable debug output
+    'verify' => false  // Disable SSL verification for local testing
+]);
+```
+
+#### Production Environment with Monitoring
+```php
+$stack = HandlerStack::create();
+$stack->push(Middleware::mapRequest(function ($request) {
+    // Log request metrics to monitoring system
+    return $request;
+}));
+
+$productionClient = new Client([
+    'handler' => $stack,
+    'timeout' => 15,
+    'connect_timeout' => 5
+]);
 ```
 
 **[back to top](#table-of-contents)**
