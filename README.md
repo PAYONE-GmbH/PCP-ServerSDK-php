@@ -187,6 +187,79 @@ $mobilePaymentMethodSpecificInput = ApplePayTransformer::transformApplePayPaymen
 
 **[back to top](#table-of-contents)**
 
+## HTTP Client Customization
+
+The SDK allows you to customize the underlying HTTP client used for API requests. This provides flexibility to configure timeouts, add interceptors, set up proxies, or implement custom authentication mechanisms.
+
+### Global HTTP Client Configuration
+
+You can set a global HTTP client that will be used by all API clients by passing it to the `CommunicatorConfiguration`:
+
+```php
+<?php
+
+use GuzzleHttp\Client;
+use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
+use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
+
+// Create a custom Guzzle client with specific configuration
+$customHttpClient = new Client([
+    'timeout' => 30,
+    'connect_timeout' => 10,
+    'verify' => true,
+    'headers' => [
+        'User-Agent' => 'MyApp/1.0'
+    ]
+]);
+
+// Pass the custom client to the configuration
+$config = new CommunicatorConfiguration(
+    apiKey: getenv('API_KEY'),
+    apiSecret: getenv('API_SECRET'),
+    host: CommunicatorConfiguration::getPredefinedHosts()['prod']['url'],
+    integrator: 'YOUR COMPANY NAME',
+    httpClient: $customHttpClient
+);
+
+// All API clients created with this configuration will use the custom HTTP client
+$commerceCaseClient = new CommerceCaseApiClient($config);
+```
+
+### Client-Specific HTTP Client Configuration
+
+You can also set a custom HTTP client for individual API clients, which will override the global configuration:
+
+```php
+<?php
+
+use GuzzleHttp\Client;
+use PayoneCommercePlatform\Sdk\ApiClient\CommerceCaseApiClient;
+
+// Create a client-specific HTTP client
+$clientSpecificHttpClient = new Client([
+    'timeout' => 60,  // Different timeout for this specific client
+    'proxy' => 'http://proxy.example.com:8080'
+]);
+
+// Pass the client-specific HTTP client to the API client constructor
+$commerceCaseClient = new CommerceCaseApiClient($config, $clientSpecificHttpClient);
+
+// Or set it after construction
+$commerceCaseClient->setHttpClient($clientSpecificHttpClient);
+```
+
+### Priority Logic
+
+The SDK uses the following priority order when determining which HTTP client to use:
+
+1. **Client-specific HTTP client** (highest priority) - Set via constructor parameter or `setHttpClient()` method
+2. **Global HTTP client** - Set in `CommunicatorConfiguration`
+3. **Default Guzzle client** (lowest priority) - Used when no custom client is configured
+
+This allows you to have a global configuration for most clients while still being able to customize specific clients when needed.
+
+**[back to top](#table-of-contents)**
+
 ## Authentication Token Retrieval
 
 To interact with certain client-side SDKs (such as the credit card tokenizer), you need to generate a short-lived authentication JWT token for your merchant. This token can be retrieved using the SDK as follows:
