@@ -45,6 +45,11 @@ class BaseApiClient
     protected $requestHeaderGenerator;
 
     /**
+     * @var ClientInterface|null
+     */
+    protected $clientSpecificHttpClient;
+
+    /**
      * @param CommunicatorConfiguration   $config
      * @param ClientInterface             $client
      */
@@ -53,7 +58,8 @@ class BaseApiClient
         ClientInterface|null $client = null,
     ) {
         $this->config = $config;
-        $this->client = $client ?: new Client();
+        $this->clientSpecificHttpClient = $client;
+        $this->client = $this->getClient();
         $this->requestHeaderGenerator = new RequestHeaderGenerator($this->config);
     }
 
@@ -63,6 +69,45 @@ class BaseApiClient
     public function getConfig(): CommunicatorConfiguration
     {
         return $this->config;
+    }
+
+    /**
+     * Gets the HTTP client with priority logic:
+     * 1. Client-specific HTTP client (if set)
+     * 2. Global HTTP client from configuration (if set)
+     * 3. Default Guzzle client
+     *
+     * @return ClientInterface
+     */
+    protected function getClient(): ClientInterface
+    {
+        // Priority 1: Client-specific HTTP client
+        if ($this->clientSpecificHttpClient !== null) {
+            return $this->clientSpecificHttpClient;
+        }
+
+        // Priority 2: Global HTTP client from configuration
+        $globalHttpClient = $this->config->getHttpClient();
+        if ($globalHttpClient !== null) {
+            return $globalHttpClient;
+        }
+
+        // Priority 3: Default Guzzle client
+        return new Client();
+    }
+
+    /**
+     * Sets the client-specific HTTP client
+     *
+     * @param ClientInterface|null $httpClient HTTP client
+     *
+     * @return $this
+     */
+    public function setHttpClient(?ClientInterface $httpClient): self
+    {
+        $this->clientSpecificHttpClient = $httpClient;
+        $this->client = $this->getClient();
+        return $this;
     }
 
     /**

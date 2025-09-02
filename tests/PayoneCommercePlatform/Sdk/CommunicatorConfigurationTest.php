@@ -2,6 +2,8 @@
 
 namespace PayoneCommercePlatform\Sdk;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use PHPUnit\Framework\TestCase;
 
 class CommunicatorConfigurationTest extends TestCase
@@ -24,5 +26,30 @@ class CommunicatorConfigurationTest extends TestCase
         $this->assertEquals('https://api.example.com', $config->getHost());
         $this->assertEquals(['hi' => 'there', 'meta' => 'meta'], $config->getServerMetaInfo());
         $this->assertEquals(['dog' => 'bark'], $config->getClientMetaInfo());
+    }
+
+    public function testHttpClientConfiguration(): void
+    {
+        // Test default HTTP client (should be null)
+        $config = new CommunicatorConfiguration(apiKey: 'test', apiSecret: 'secret');
+        $this->assertNull($config->getHttpClient());
+
+        // Test setting HTTP client via constructor
+        $customClient = new Client(['timeout' => 30]);
+        $configWithClient = new CommunicatorConfiguration(
+            apiKey: 'test',
+            apiSecret: 'secret',
+            httpClient: $customClient
+        );
+        $this->assertSame($customClient, $configWithClient->getHttpClient());
+
+        // Test setting HTTP client via setter
+        $anotherClient = new Client(['timeout' => 60]);
+        $config->setHttpClient($anotherClient);
+        $this->assertSame($anotherClient, $config->getHttpClient());
+
+        // Test setting null HTTP client
+        $config->setHttpClient(null);
+        $this->assertNull($config->getHttpClient());
     }
 }
