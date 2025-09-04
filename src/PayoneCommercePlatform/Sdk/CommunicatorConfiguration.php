@@ -2,9 +2,11 @@
 
 namespace PayoneCommercePlatform\Sdk;
 
+use GuzzleHttp\ClientInterface;
+
 class CommunicatorConfiguration
 {
-    public const SDK_VERSION = '1.3.0';
+    public const SDK_VERSION = '1.3.1';
 
     /**
      * Api key for the PAYONE Commerce Platform
@@ -52,6 +54,13 @@ class CommunicatorConfiguration
     protected array $clientMetaInfo;
 
     /**
+     * HTTP client for making API requests
+     *
+     * @var ClientInterface|null
+     */
+    protected ?ClientInterface $httpClient;
+
+    /**
      * Constructor
      *
      * @param string                  $apiKey
@@ -60,6 +69,7 @@ class CommunicatorConfiguration
      * @param string|null             $integrator
      * @param array<string, string>   $serverMetaInfo
      * @param array<string, string>   $clientMetaInfo
+     * @param ClientInterface|null    $httpClient
      */
     public function __construct(
         string              $apiKey,
@@ -68,6 +78,7 @@ class CommunicatorConfiguration
         ?string             $integrator = null,
         ?array              $serverMetaInfo = null,
         ?array              $clientMetaInfo = null,
+        ?ClientInterface    $httpClient = null,
     ) {
 
         $this->apiKey = $apiKey;
@@ -84,6 +95,7 @@ class CommunicatorConfiguration
             "sdkCreator"         => 'PAYONE GmbH'
         ];
         $this->clientMetaInfo = $clientMetaInfo !== null ? $clientMetaInfo : [];
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -245,6 +257,29 @@ class CommunicatorConfiguration
     public function addServerMetaInfo(string $key, string $value): self
     {
         $this->serverMetaInfo[$key] = $value;
+        return $this;
+    }
+
+    /**
+     * Gets the HTTP client
+     *
+     * @return ClientInterface|null HTTP client
+     */
+    public function getHttpClient(): ?ClientInterface
+    {
+        return $this->httpClient;
+    }
+
+    /**
+     * Sets the HTTP client
+     *
+     * @param ClientInterface|null $httpClient HTTP client
+     *
+     * @return $this
+     */
+    public function setHttpClient(?ClientInterface $httpClient): self
+    {
+        $this->httpClient = $httpClient;
         return $this;
     }
 

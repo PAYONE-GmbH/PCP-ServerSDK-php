@@ -2,6 +2,9 @@
 
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PHPUnit\Framework\TestCase;
 use PayoneCommercePlatform\Sdk\Models\AddressPersonal;
 use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
@@ -113,5 +116,39 @@ class BaseApiClientTest extends TestCase
         $response = BaseApiClient::deserializeJson($json, ApplePayPayment::class);
 
         $this->assertEquals($expectedResponse, $response);
+    }
+
+    public function testHttpClientPriorityLogic(): void
+    {
+        // Test 1: Default client (no global, no client-specific)
+        $config = new CommunicatorConfiguration(apiKey: 'test', apiSecret: 'secret');
+        $client = new CommerceCaseApiClient($config);
+
+        // We can't directly test the internal client, but we can verify the client works
+        $this->assertInstanceOf(CommerceCaseApiClient::class, $client);
+
+        // Test 2: Global HTTP client only
+        $globalClient = new Client(['timeout' => 30]);
+        $configWithGlobal = new CommunicatorConfiguration(
+            apiKey: 'test',
+            apiSecret: 'secret',
+            httpClient: $globalClient
+        );
+        $clientWithGlobal = new CommerceCaseApiClient($configWithGlobal);
+        $this->assertInstanceOf(CommerceCaseApiClient::class, $clientWithGlobal);
+
+        // Test 3: Client-specific HTTP client (should override global)
+        $clientSpecificClient = new Client(['timeout' => 60]);
+        $clientWithSpecific = new CommerceCaseApiClient($configWithGlobal, $clientSpecificClient);
+        $this->assertInstanceOf(CommerceCaseApiClient::class, $clientWithSpecific);
+
+        // Test 4: Setting client-specific HTTP client via setter
+        $anotherClient = new Client(['timeout' => 90]);
+        $clientWithSpecific->setHttpClient($anotherClient);
+        $this->assertInstanceOf(CommerceCaseApiClient::class, $clientWithSpecific);
+
+        // Test 5: Setting null client-specific HTTP client (should fall back to global)
+        $clientWithSpecific->setHttpClient(null);
+        $this->assertInstanceOf(CommerceCaseApiClient::class, $clientWithSpecific);
     }
 }

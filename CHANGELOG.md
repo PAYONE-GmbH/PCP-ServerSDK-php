@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.2.0...v1.3.1) (2025-09-04)
+### Documentation
+* docs: add section about customization of http client ([ecaf659a7bcd0099b418ed93c440f0b9b9ec163b](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/ecaf659a7bcd0099b418ed93c440f0b9b9ec163b))
+* docs: move dedicate docs into readme ([0d9d3f96d8d1971e3b70a5f25a2c2bfb44150280](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/0d9d3f96d8d1971e3b70a5f25a2c2bfb44150280))
+### Features
+* feat: add authentication token retrieval functionality and example ([06381e09c054f031d20095c9b40fac14c5be96da](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/06381e09c054f031d20095c9b40fac14c5be96da))
+* feat: customize http client ([32db9d19a4a20652511aad5220be881b88f8cf0f](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/32db9d19a4a20652511aad5220be881b88f8cf0f))
 # [1.3.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.2.0...v1.3.0) (2025-07-10)
 ### Features
 * feat: add authentication token retrieval functionality and example ([06381e09c054f031d20095c9b40fac14c5be96da](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/06381e09c054f031d20095c9b40fac14c5be96da))
