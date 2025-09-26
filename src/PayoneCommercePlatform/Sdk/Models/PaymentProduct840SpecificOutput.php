@@ -37,15 +37,15 @@ class PaymentProduct840SpecificOutput
 
 
     public function __construct(
+        string $payPalTransactionId,
         ?Address $billingAddress = null,
         ?PaymentProduct840CustomerAccount $customerAccount = null,
         ?Address $shippingAddress = null,
-        string $payPalTransactionId
     ) {
+        $this->payPalTransactionId = $payPalTransactionId;
         $this->billingAddress = $billingAddress;
         $this->customerAccount = $customerAccount;
         $this->shippingAddress = $shippingAddress;
-        $this->payPalTransactionId = $payPalTransactionId;
     }
 
     // Getters and Setters
