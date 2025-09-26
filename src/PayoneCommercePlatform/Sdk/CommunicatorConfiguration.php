@@ -6,7 +6,7 @@ use GuzzleHttp\ClientInterface;
 
 class CommunicatorConfiguration
 {
-    public const SDK_VERSION = '1.3.1';
+    public const SDK_VERSION = '1.4.0';
 
     /**
      * Api key for the PAYONE Commerce Platform
