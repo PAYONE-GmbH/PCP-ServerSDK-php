@@ -12,6 +12,12 @@ use PayoneCommercePlatform\Sdk\Models\PaymentProduct840CustomerAccount;
 class PaymentProduct840SpecificOutput
 {
     /**
+     * @var string PayPal transaction ID (required).
+     */
+    #[SerializedName('payPalTransactionId')]
+    protected string $payPalTransactionId;
+
+    /**
      * @var Address|null Billing address associated with the PayPal account.
      */
     #[SerializedName('billingAddress')]
@@ -29,11 +35,6 @@ class PaymentProduct840SpecificOutput
     #[SerializedName('shippingAddress')]
     protected ?Address $shippingAddress;
 
-    /**
-     * @var string PayPal transaction ID (required).
-     */
-    #[SerializedName('payPalTransactionId')]
-    protected string $payPalTransactionId;
 
     public function __construct(
         ?Address $billingAddress = null,
@@ -48,6 +49,17 @@ class PaymentProduct840SpecificOutput
     }
 
     // Getters and Setters
+
+    public function getPayPalTransactionId(): string
+    {
+        return $this->payPalTransactionId;
+    }
+
+    public function setPayPalTransactionId(string $payPalTransactionId): self
+    {
+        $this->payPalTransactionId = $payPalTransactionId;
+        return $this;
+    }
     public function getBillingAddress(): ?Address
     {
         return $this->billingAddress;
@@ -81,14 +93,5 @@ class PaymentProduct840SpecificOutput
         return $this;
     }
 
-    public function getPayPalTransactionId(): string
-    {
-        return $this->payPalTransactionId;
-    }
 
-    public function setPayPalTransactionId(string $payPalTransactionId): self
-    {
-        $this->payPalTransactionId = $payPalTransactionId;
-        return $this;
-    }
 }
