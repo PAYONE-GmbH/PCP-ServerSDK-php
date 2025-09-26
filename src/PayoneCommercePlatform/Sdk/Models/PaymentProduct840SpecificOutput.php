@@ -30,16 +30,16 @@ class PaymentProduct840SpecificOutput
     protected ?Address $shippingAddress;
 
     /**
-     * @var string|null PayPal transaction ID.
+     * @var string PayPal transaction ID (required).
      */
     #[SerializedName('payPalTransactionId')]
-    protected ?string $payPalTransactionId;
+    protected string $payPalTransactionId;
 
     public function __construct(
         ?Address $billingAddress = null,
         ?PaymentProduct840CustomerAccount $customerAccount = null,
         ?Address $shippingAddress = null,
-        ?string $payPalTransactionId = null
+        string $payPalTransactionId
     ) {
         $this->billingAddress = $billingAddress;
         $this->customerAccount = $customerAccount;
@@ -81,12 +81,12 @@ class PaymentProduct840SpecificOutput
         return $this;
     }
 
-    public function getPayPalTransactionId(): ?string
+    public function getPayPalTransactionId(): string
     {
         return $this->payPalTransactionId;
     }
 
-    public function setPayPalTransactionId(?string $payPalTransactionId): self
+    public function setPayPalTransactionId(string $payPalTransactionId): self
     {
         $this->payPalTransactionId = $payPalTransactionId;
         return $this;
