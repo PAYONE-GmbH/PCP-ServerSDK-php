@@ -1,3 +1,4 @@
+# [1.4.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.3.1...v1.4.0) (2025-09-26)
 ## [1.3.1](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.2.0...v1.3.1) (2025-09-04)
 ### Documentation
 * docs: add section about customization of http client ([ecaf659a7bcd0099b418ed93c440f0b9b9ec163b](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/ecaf659a7bcd0099b418ed93c440f0b9b9ec163b))
