@@ -29,14 +29,22 @@ class PaymentProduct840SpecificOutput
     #[SerializedName('shippingAddress')]
     protected ?Address $shippingAddress;
 
+    /**
+     * @var string|null Unique identifier of the PayPal transaction needed for JavaScript SDK flows.
+     */
+    #[SerializedName('payPalTransactionId')]
+    protected ?string $payPalTransactionId;
+
     public function __construct(
         ?Address $billingAddress = null,
         ?PaymentProduct840CustomerAccount $customerAccount = null,
-        ?Address $shippingAddress = null
+        ?Address $shippingAddress = null,
+        ?string $payPalTransactionId = null
     ) {
         $this->billingAddress = $billingAddress;
         $this->customerAccount = $customerAccount;
         $this->shippingAddress = $shippingAddress;
+        $this->payPalTransactionId = $payPalTransactionId;
     }
 
     // Getters and Setters
@@ -70,6 +78,17 @@ class PaymentProduct840SpecificOutput
     public function setShippingAddress(?Address $shippingAddress): self
     {
         $this->shippingAddress = $shippingAddress;
+        return $this;
+    }
+
+    public function getPayPalTransactionId(): ?string
+    {
+        return $this->payPalTransactionId;
+    }
+
+    public function setPayPalTransactionId(?string $payPalTransactionId): self
+    {
+        $this->payPalTransactionId = $payPalTransactionId;
         return $this;
     }
 }

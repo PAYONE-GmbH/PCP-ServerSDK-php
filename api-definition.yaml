@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.35.0
+  version: 1.40.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -260,7 +260,10 @@ paths:
     post:
       summary: Complete an Order
       description: |-
-        For PAYONE Secured Installment (paymentProductId 3391) a two-step process is required.
+        This endpoint can be used to complete an Order that was created with the OrderManagementCheckoutActions endpoint.
+        It is needed for all payment flows where the payment needs interaction with the customer like:
+        * For PAYONE Secured Installment (paymentProductId 3391) to select the installment options.
+        * For PayPal (paymentProductId 840) if the JavaScript SDK flow is used to inform about the successful payment.
         The first step is creating an Order, the second step is completing it by calling this API endpoint.
       tags:
         - OrderManagementCheckoutActions
@@ -1005,8 +1008,11 @@ paths:
     post:
       summary: Complete a Payment
       description: |-
-        For PAYONE Secured Installment (paymentProductId 3391) a two-step process is required.
-        The first step is creating a Payment, the second step is completing it by calling this API endpoint.
+        This endpoint can be used to complete a Payment Execution.
+        It is needed for all payment flows where the payment needs interaction with the customer like:
+        * For PAYONE Secured Installment (paymentProductId 3391) to select the installment options.
+        * For PayPal (paymentProductId 840) if the JavaScript SDK flow is used to inform about the successful payment.
+        The first step is creating an Payment Execution, the second step is completing it by calling this API endpoint.
         OrderManagementActions will be impossible after using a PaymentExecution endpoint.
       tags:
         - PaymentExecution
@@ -1909,45 +1915,6 @@ components:
       required:
         - amount
         - currencyCode
-    ApplePaymentDataTokenInformation:
-      type: object
-      description: |-
-        Additional information about the Apple payment data token. This information are needed for checking the validity
-        of the payment data token before decryption.
-      properties:
-        version:
-          type: string
-          description: |-
-            Version information about the payment token. Currently only EC_v1 for ECC-encrypted data is supported.
-          enum:
-            - EC_V1
-          example: EC_V1
-        signature:
-          type: string
-          description: |-
-            Detached PKCS #7 signature, Base64 encoded as string. Signature of the payment and header data. The
-            signature includes the signing certificate, its intermediate CA certificate, and information about the
-            signing algorithm.
-        header:
-          $ref: '#/components/schemas/ApplePaymentDataTokenHeaderInformation'
-      required:
-        - version
-        - signature
-        - header
-    ApplePaymentDataTokenHeaderInformation:
-      type: object
-      description: Additional information about the Apple payment data token header.
-      properties:
-        transactionId:
-          type: string
-          description: A hexadecimal Transaction identifier identifier as a string.
-        applicationData:
-          type: string
-          description: |-
-            SHA–256 hash, hex encoded as a string. Hash of the applicationData property of the original PKPaymentRequest
-            object.
-      required:
-        - transactionId
     APIError:
       description: Contains detailed information on one single error.
       type: object
@@ -1999,6 +1966,45 @@ components:
           example: paymentId
       required:
         - errorCode
+    ApplePaymentDataTokenHeaderInformation:
+      type: object
+      description: Additional information about the Apple payment data token header.
+      properties:
+        transactionId:
+          type: string
+          description: A hexadecimal Transaction identifier identifier as a string.
+        applicationData:
+          type: string
+          description: |-
+            SHA–256 hash, hex encoded as a string. Hash of the applicationData property of the original PKPaymentRequest
+            object.
+      required:
+        - transactionId
+    ApplePaymentDataTokenInformation:
+      type: object
+      description: |-
+        Additional information about the Apple payment data token. This information are needed for checking the validity
+        of the payment data token before decryption.
+      properties:
+        version:
+          type: string
+          description: |-
+            Version information about the payment token. Currently only EC_v1 for ECC-encrypted data is supported.
+          enum:
+            - EC_V1
+          example: EC_V1
+        signature:
+          type: string
+          description: |-
+            Detached PKCS #7 signature, Base64 encoded as string. Signature of the payment and header data. The
+            signature includes the signing certificate, its intermediate CA certificate, and information about the
+            signing algorithm.
+        header:
+          $ref: '#/components/schemas/ApplePaymentDataTokenHeaderInformation'
+      required:
+        - version
+        - signature
+        - header
     AuthorizationMode:
       type: string
       x-enum-to-string: false
@@ -2334,27 +2340,6 @@ components:
           maximum: 9999
           minimum: 0
           example: 1
-    CardPaymentMethodSpecificOutput:
-      type: object
-      description: |
-        Object containing the card payment method details.
-      additionalProperties: false
-      properties:
-        paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: |-
-            Payment product identifier - please check product documentation for a full overview of possible values.
-          example: 840
-        authorisationCode:
-          description: Card Authorization code as returned by the acquirer
-          type: string
-        fraudResults:
-          $ref: '#/components/schemas/CardFraudResults'
-        threeDSecureResults:
-          $ref: '#/components/schemas/ThreeDSecureResults'
     CardPaymentMethodSpecificInput:
       type: object
       description: |
@@ -2383,13 +2368,7 @@ components:
         unscheduledCardOnFileSequenceIndicator:
           $ref: '#/components/schemas/UnscheduledCardOnFileSequenceIndicator'
         paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: |-
-            Payment product identifier - please check product documentation for a full overview of possible values.
-          example: 840
+          $ref: '#/components/schemas/PaymentProductId'
         card:
           $ref: '#/components/schemas/CardInfo'
         returnUrl:
@@ -2429,6 +2408,21 @@ components:
           description: |-
             The end date of the last scheduled payment in a series of transactions.
             Format YYYYMMDD Supported soon
+    CardPaymentMethodSpecificOutput:
+      type: object
+      description: |
+        Object containing the card payment method details.
+      additionalProperties: false
+      properties:
+        paymentProductId:
+          $ref: '#/components/schemas/PaymentProductId'
+        authorisationCode:
+          description: Card Authorization code as returned by the acquirer
+          type: string
+        fraudResults:
+          $ref: '#/components/schemas/CardFraudResults'
+        threeDSecureResults:
+          $ref: '#/components/schemas/ThreeDSecureResults'
     CardRecurrenceDetails:
       type: object
       description: Object containing data related to recurring.
@@ -2439,9 +2433,12 @@ components:
             * first = This transaction is the first of a series of recurring transactions
             * recurring = This transaction is a subsequent transaction in a series of recurring transactions
 
-            Note: For any first of a recurring the system will automatically create a token as you will need to use a
-            token for any subsequent recurring transactions. In case a token already exists this is indicated in the
-            response with a value of False for the isNewToken property in the response.
+            For the initial transaction of a recurring payment, the system will automatically generate a token 
+            that you will need for all subsequent transactions in the series. If a token has already been created, 
+            the response will indicate this with isNewToken set to False.
+
+            Important: This token generation mechanism is intended for regularly scheduled recurring payments initiated by you. 
+            It should not be used in conjunction with UnscheduledCardOnFileRequestor or unscheduledCardOnFileSequenceIndicator.
           enum:
             - first
             - recurring
@@ -2455,6 +2452,17 @@ components:
           $ref: '#/components/schemas/CartItemInvoiceData'
         orderLineDetails:
           $ref: '#/components/schemas/OrderLineDetailsInput'
+    CartItemInvoiceData:
+      type: object
+      description: Object containing the line items of the invoice or shopping cart.
+      properties:
+        description:
+          type: string
+          description: |
+            Shopping cart item description.
+            The description will also be displayed in the portal as the product name.
+          example: Smartwatch
+          x-trim-at: 116
     CartItemPatch:
       type: object
       description: This object contains information of all items in the cart.
@@ -2475,6 +2483,15 @@ components:
           $ref: '#/components/schemas/CartItemInvoiceData'
         orderLineDetails:
           $ref: '#/components/schemas/OrderLineDetailsResult'
+    CartItemStatus:
+      type: string
+      enum:
+        - ORDERED
+        - DELIVERED
+        - CANCELLED
+        - RETURNED
+        - WAITING_FOR_PAYMENT
+      description: Indicates in which status the line item is
     CheckoutResponse:
       type: object
       xml:
@@ -2564,6 +2581,31 @@ components:
       properties:
         paymentProduct3391SpecificInput:
           $ref: '#/components/schemas/PaymentProduct3391SpecificInput'
+        paymentProduct840SpecificInput:
+          $ref: '#/components/schemas/CompletePaymentProduct840SpecificInput'
+    CompletePaymentProduct840SpecificInput:
+      type: object
+      description: |-
+        Object containing the specific input details for PayPal payments completed by the merchant.
+      properties:
+        javaScriptSdkFlow:
+          type: boolean
+          description: |-
+            Indicates whether the PayPal JavaScript SDK flow is used.
+            * true = The PayPal JavaScript SDK flow is used.
+            * false = The PayPal JavaScript SDK flow is not used.
+            Default value is false.
+          default: false
+          example: true
+        action:
+          type: string
+          description: |-
+            Confirmation of the order status in case of PayPal SDK integration.
+          enum:
+            - CONFIRM_ORDER_STATUS
+          example: CONFIRM_ORDER_STATUS
+      required:
+        - action
     CompletePaymentRequest:
       type: object
       description: |-
@@ -2573,12 +2615,16 @@ components:
       properties:
         financingPaymentMethodSpecificInput:
           $ref: '#/components/schemas/CompleteFinancingPaymentMethodSpecificInput'
+        redirectPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/CompleteRedirectPaymentMethodSpecificInput'
         order:
           $ref: '#/components/schemas/Order'
         device:
           $ref: '#/components/schemas/CustomerDevice'
     CompletePaymentResponse:
       type: object
+      description: |-
+        Object containing the response of the completed Payment.
       properties:
         creationOutput:
           $ref: '#/components/schemas/PaymentCreationOutput'
@@ -2586,6 +2632,15 @@ components:
           $ref: '#/components/schemas/MerchantAction'
         payment:
           $ref: '#/components/schemas/PaymentResponse'
+    CompleteRedirectPaymentMethodSpecificInput:
+      type: object
+      description: |-
+        Object containing the redirect payment product details.
+      properties:
+        paymentProductId:
+          $ref: '#/components/schemas/PaymentProductId'
+        paymentProduct840SpecificInput:
+          $ref: '#/components/schemas/CompletePaymentProduct840SpecificInput'
     CreateCheckoutRequest:
       type: object
       description: |
@@ -2723,29 +2778,6 @@ components:
       description: List of Commerce Cases
       items:
         $ref: '#/components/schemas/CommerceCaseResponse'
-    CreateCommerceCaseResponse:
-      type: object
-      description: |-
-        The response contains references to the created Commerce case and the Checkout. It also contains the payment
-        response if the flag 'autoExecuteOrder' was set to true.
-      properties:
-        commerceCaseId:
-          description: Unique ID of the Commerce Case. It can used to add additional Checkouts to the Commerce Case.
-          type: string
-          format: UUID
-          example: "707ef15b-7a0a-48f2-b7d8-c95103418a9c"
-        merchantReference:
-          type: string
-          description: |-
-            Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
-          maxLength: 40
-          example: customer-commerce-case-123
-        customer:
-          $ref: '#/components/schemas/Customer'
-        checkout:
-          $ref: '#/components/schemas/CreateCheckoutResponse'
-        creationDateTime:
-          $ref: '#/components/schemas/CreationDateTime'
     ContactDetails:
       type: object
       description: |-
@@ -2776,6 +2808,45 @@ components:
           $ref: '#/components/schemas/CreationDateTime'
         checkout:
           $ref: '#/components/schemas/CreateCheckoutRequest'
+    CreateCommerceCaseResponse:
+      type: object
+      description: |-
+        The response contains references to the created Commerce case and the Checkout. It also contains the payment
+        response if the flag 'autoExecuteOrder' was set to true.
+      properties:
+        commerceCaseId:
+          description: Unique ID of the Commerce Case. It can used to add additional Checkouts to the Commerce Case.
+          type: string
+          format: UUID
+          example: "707ef15b-7a0a-48f2-b7d8-c95103418a9c"
+        merchantReference:
+          type: string
+          description: |-
+            Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+          maxLength: 40
+          example: customer-commerce-case-123
+        customer:
+          $ref: '#/components/schemas/Customer'
+        checkout:
+          $ref: '#/components/schemas/CreateCheckoutResponse'
+        creationDateTime:
+          $ref: '#/components/schemas/CreationDateTime'
+    CreatePaymentResponse:
+      type: object
+      description: Object containing details on the created payment it has directly be executed.
+      additionalProperties: false
+      properties:
+        creationOutput:
+          $ref: '#/components/schemas/PaymentCreationOutput'
+        merchantAction:
+          $ref: '#/components/schemas/MerchantAction'
+        payment:
+          $ref: '#/components/schemas/PaymentResponse'
+        paymentExecutionId:
+          description: reference to the paymentExecution.
+          type: string
+          format: UUID
+          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
     CreationDateTime:
       type: string
       format: date-time
@@ -2795,22 +2866,6 @@ components:
         
         All other formats may be ignored by the system.
       example: 2023-12-06T23:59:60Z
-    CreatePaymentResponse:
-      type: object
-      description: Object containing details on the created payment it has directly be executed.
-      additionalProperties: false
-      properties:
-        creationOutput:
-          $ref: '#/components/schemas/PaymentCreationOutput'
-        merchantAction:
-          $ref: '#/components/schemas/MerchantAction'
-        payment:
-          $ref: '#/components/schemas/PaymentResponse'
-        paymentExecutionId:
-          description: reference to the paymentExecution.
-          type: string
-          format: UUID
-          example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
     Customer:
       type: object
       description: |
@@ -2884,10 +2939,16 @@ components:
             * YYYY-MM-DD'T'HH:mm+XX:XX
             * YYYY-MM-DD'T'HH:mm-XX:XX
           example: 2023-10-05T14:30:15.123Z
-
     CustomerDevice:
       type: object
       properties:
+        acceptHeader:
+          type: string
+          description: |
+            The accept-header of the customer client from the HTTP Headers. 
+            This field can be mandatory depending on the selected payment method and routing option.
+          maxLength: 2048
+          example: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
         ipAddress:
           maxLength: 45
           type: string
@@ -2897,19 +2958,15 @@ components:
           type: string
           description: Tokenized representation of the end customers device. For example
             used for PAYONE Buy Now, Pay Later (BNPL).
+        userAgent:
+          type: string
+          description: |
+            User-Agent of the client device/browser from the HTTP Headers.
+            This field can be mandatory depending on the selected payment method and routing option
+          example: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36
+          maxLength: 2048
       description: |
         Object containing information about the device of the end customer.
-    DeliveryInformation:
-      type: object
-      description: |-
-        Delivery object contains additional information about the delivery/shipment, which is the basis for the Capture.
-        The amountOfMoney in the cartItem will not be used in the request.
-      properties:
-        items:
-          type: array
-          description: Items delivered.
-          items:
-            $ref: '#/components/schemas/CartItemInput'
     DeliverItem:
       type: object
       properties:
@@ -2982,7 +3039,17 @@ components:
       enum:
         - FULL
         - PARTIAL
-
+    DeliveryInformation:
+      type: object
+      description: |-
+        Delivery object contains additional information about the delivery/shipment, which is the basis for the Capture.
+        The amountOfMoney in the cartItem will not be used in the request.
+      properties:
+        items:
+          type: array
+          description: Items delivered.
+          items:
+            $ref: '#/components/schemas/CartItemInput'
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -2994,7 +3061,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/APIError'
-
     ExtendedCheckoutStatus:
       type: string
       description: |
@@ -3128,17 +3194,6 @@ components:
         - nominalInterestRate
         - numberOfPayments
         - totalAmount
-    CartItemInvoiceData:
-      type: object
-      description: Object containing the line items of the invoice or shopping cart.
-      properties:
-        description:
-          type: string
-          description: |
-            Shopping cart item description.
-            The description will also be displayed in the portal as the product name.
-          example: Smartwatch
-          x-trim-at: 116
     LinkInformation:
       type: object
       description: URL and content type information for an web resource.
@@ -3152,15 +3207,6 @@ components:
       required:
         - href
         - type
-    CartItemStatus:
-      type: string
-      enum:
-        - ORDERED
-        - DELIVERED
-        - CANCELLED
-        - RETURNED
-        - WAITING_FOR_PAYMENT
-      description: Indicates in which status the line item is
     MandateRecurrenceType:
       type: string
       enum:
@@ -3208,13 +3254,7 @@ components:
       additionalProperties: false
       properties:
         paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: |-
-            Payment product identifier - please check product documentation for a full overview of possible values.
-          example: 840
+          $ref: '#/components/schemas/PaymentProductId'
         authorizationMode:
           $ref: '#/components/schemas/AuthorizationMode'
         encryptedPaymentData:
@@ -3343,7 +3383,7 @@ components:
           example: 0
         taxAmountPerUnit:
           type: boolean
-          description: |- 
+          description: |-
             This field indicates if the `taxAmount` is to be interpreted as the tax amount per unit rather than for the entire line item. 
             This field is included in the response only when `taxAmount` is set; otherwise, it will return as `null`.
           format: int64
@@ -3419,83 +3459,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CartItemOrderStatus'
-    ProductType:
-      type: string
-      description: |-
-        Enum to classify items that are purchased
-        * GOODS - Goods
-        * SHIPMENT - Shipping charges
-        * HANDLING_FEE - Handling fee
-        * DISCOUNT - Voucher / discount
-      enum:
-        - GOODS
-        - SHIPMENT
-        - HANDLING_FEE
-        - DISCOUNT
-    References:
-      type: object
-      description: Object that holds all reference properties that are linked to this transaction.
-      properties:
-        descriptor:
-          type: string
-          description: |-
-            Descriptive text that is used towards to customer, either during an online Checkout at a third party and/or
-            on the statement of the customer. For card transactions this is usually referred to as a Soft Descriptor.
-            The maximum allowed length varies per card acquirer:
-             * AIB - 22 characters
-             * American Express - 25 characters
-             * Atos Origin BNP - 15 characters
-             * Barclays - 25 characters
-             * Catella - 22 characters
-             * CBA - 20 characters
-             * Elavon - 25 characters
-             * First Data - 25 characters
-             * INICIS (INIPAY) - 22-30 characters
-             * JCB - 25 characters
-             * Merchant Solutions - 22-25 characters
-             * Payvision (EU & HK) - 25 characters
-             * SEB Euroline - 22 characters
-             * Sub1 Argentina - 15 characters
-             * Wells Fargo - 25 characters
-
-            Note that we advise you to use 22 characters as the max length as beyond this our experience is that issuers
-            will start to truncate. We currently also only allow per API call overrides for AIB and Barclays
-            For alternative payment products the maximum allowed length varies per payment product:
-             * 402 e-Przelewy - 30 characters
-             * 404 INICIS - 80 characters
-             * 802 Nordea ePayment Finland - 234 characters
-             * 809 iDeal - 32 characters
-             * 836 SOFORT - 42 characters
-             * 840 PayPal - 127 characters
-             * 841 WebMoney - 175 characters
-             * 849 Yandex - 64 characters
-             * 861 Alipay - 256 characters
-             * 863 WeChat Pay - 32 characters
-             * 880 BOKU - 20 characters
-             * 8580 Qiwi - 255 characters
-             * 1504 Konbini - 80 characters
-
-            All other payment products don't support a descriptor.
-          maxLength: 256
-        merchantReference:
-          type: string
-          description: |
-            The merchantReference is a unique identifier for a payment and can be used for reporting purposes. The
-            merchantReference is required for the execution of a payment and has to be unique. In case a payment has
-            failed the same merchantReference can be used again.
-            Once a successful payment has been made the same merchantReference can no longer be used and will be
-            rejected.
-          maxLength: 20
-          example: 5a891df0b8cf11edaeb2af87d8ff0b2f
-        merchantParameters:
-          type: string
-          description:
-            It allows you to store additional parameters for the transaction in JSON format.
-            This field must not contain any personal data.
-          maxLength: 1000
-          example: "{'SessionID':'126548354','ShopperID':'7354131'}"
-      required:
-        - merchantReference
     OrderRequest:
       type: object
       description: |
@@ -3775,12 +3738,7 @@ components:
         paymentChannel:
           $ref: '#/components/schemas/PaymentChannel'
         paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: |-
-            Payment method identifier - please check the product documentation for a full overview of possible values.
+          $ref: '#/components/schemas/PaymentProductId'
         merchantReference:
           type: string
           description: |
@@ -3821,13 +3779,7 @@ components:
         paymentChannel:
           $ref: '#/components/schemas/PaymentChannel'
         paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: |-
-            Payment product identifier - please check see product documentation for a full overview of possible values.
-          example: 840
+          $ref: '#/components/schemas/PaymentProductId'
         terminalId:
           description: Unique identifier of the POS terminal of the payment transaction.
           type: string
@@ -3953,19 +3905,6 @@ components:
           $ref: '#/components/schemas/SepaDirectDebitPaymentMethodSpecificOutput'
         financingPaymentMethodSpecificOutput:
           $ref: '#/components/schemas/FinancingPaymentMethodSpecificOutput'
-    PayoutOutput:
-      type: object
-      description: |
-        Object containing details from the created payout.
-      additionalProperties: false
-      properties:
-        amountOfMoney:
-          $ref: '#/components/schemas/AmountOfMoney'
-        references:
-          $ref: '#/components/schemas/PaymentReferences'
-        paymentMethod:
-          type: string
-          description: Payment method identifier based on the paymentProductId.
     PaymentProduct302SpecificInput:
       type: object
       description: Object containing additional Information needed for Apple Pay payment transactions.
@@ -4081,6 +4020,21 @@ components:
           $ref: '#/components/schemas/PaymentProduct840CustomerAccount'
         shippingAddress:
           $ref: '#/components/schemas/Address'
+        payPalTransactionId:
+          type: string
+          maxLength: 20
+          description: |-
+            A 17-character unique identifier of the PayPal transaction. This identifier is used to identify the transaction in the
+            PayPal system and needed for the PayPal Javascript SDK flow.
+          example: 9A1234567890123
+    PaymentProductId:
+      type: integer
+      format: int32
+      maximum: 99999
+      minimum: 0
+      description: |-
+        Payment product identifier - please check product documentation for a full overview of possible values.
+      example: 840
     PaymentReferences:
       type: object
       description: Object that holds all reference properties that are linked to this transaction.
@@ -4103,21 +4057,6 @@ components:
           $ref: '#/components/schemas/StatusValue'
         statusOutput:
           $ref: '#/components/schemas/PaymentStatusOutput'
-        id:
-          type: string
-          description: Unique payment transaction identifier of the payment gateway.
-          example: PP1AA7KKLSFB9MBG
-    PayoutResponse:
-      type: object
-      description: Object that holds the payment related properties for the refund of a Payment Information.
-      additionalProperties: false
-      properties:
-        payoutOutput:
-          $ref: '#/components/schemas/PayoutOutput'
-        status:
-          $ref: '#/components/schemas/StatusValue'
-        statusCategory:
-          $ref: '#/components/schemas/StatusCategoryValue'
         id:
           type: string
           description: Unique payment transaction identifier of the payment gateway.
@@ -4150,9 +4089,38 @@ components:
         - CAPTURE
         - REFUND
         - REVERSAL
+        - CHARGEBACK
         - CHARGEBACK_REVERSAL
         - CREDIT_NOTE
         - DEBIT_NOTE
+    PayoutOutput:
+      type: object
+      description: |
+        Object containing details from the created payout.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        paymentMethod:
+          type: string
+          description: Payment method identifier based on the paymentProductId.
+    PayoutResponse:
+      type: object
+      description: Object that holds the payment related properties for the refund of a Payment Information.
+      additionalProperties: false
+      properties:
+        payoutOutput:
+          $ref: '#/components/schemas/PayoutOutput'
+        status:
+          $ref: '#/components/schemas/StatusValue'
+        statusCategory:
+          $ref: '#/components/schemas/StatusCategoryValue'
+        id:
+          type: string
+          description: Unique payment transaction identifier of the payment gateway.
+          example: PP1AA7KKLSFB9MBG
     PersonalInformation:
       type: object
       description: Object containing personal information like name, date of birth and gender.
@@ -4256,6 +4224,19 @@ components:
         - dateOfSignature
         - recurrenceType
         - uniqueMandateReference
+    ProductType:
+      type: string
+      description: |-
+        Enum to classify items that are purchased
+        * GOODS - Goods
+        * SHIPMENT - Shipping charges
+        * HANDLING_FEE - Handling fee
+        * DISCOUNT - Voucher / discount
+      enum:
+        - GOODS
+        - SHIPMENT
+        - HANDLING_FEE
+        - DISCOUNT
     RedirectData:
       type: object
       description: |-
@@ -4321,13 +4302,7 @@ components:
             tokenization of recurring payments.
             example: false
         paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: |-
-            Payment product identifier - please check product documentation for a full overview of possible values.
-          example: 840
+          $ref: '#/components/schemas/PaymentProductId'
         paymentProduct840SpecificInput:
           $ref: '#/components/schemas/RedirectPaymentProduct840SpecificInput'
         redirectionData:
@@ -4339,13 +4314,7 @@ components:
       additionalProperties: false
       properties:
         paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: <-
-            Payment product identifier - please check product documentation for a full overview of possible values.
-          example: 840
+          $ref: '#/components/schemas/PaymentProductId'
         paymentProduct840SpecificOutput:
           $ref: '#/components/schemas/PaymentProduct840SpecificOutput'
         paymentProcessingToken:
@@ -4379,6 +4348,79 @@ components:
             customer-initiated transactions, when the FraudNet SDK is used, and to be passed in the API request the same tracking ID value 
             (FraudNet Session Identifier).
           example: 686e5823-1ffd-42f7-9ba3-42b41b57d8dd
+        javaScriptSdkFlow:
+          type: boolean
+          description: |-
+            Indicates whether the PayPal JavaScript SDK flow is used.
+            * true = The PayPal JavaScript SDK flow is used.
+            * false = The PayPal JavaScript SDK flow is not used.
+            Default value is false.
+          default: false
+          example: true
+    References:
+      type: object
+      description: Object that holds all reference properties that are linked to this transaction.
+      properties:
+        descriptor:
+          type: string
+          description: |-
+            Descriptive text that is used towards to customer, either during an online Checkout at a third party and/or
+            on the statement of the customer. For card transactions this is usually referred to as a Soft Descriptor.
+            The maximum allowed length varies per card acquirer:
+             * AIB - 22 characters
+             * American Express - 25 characters
+             * Atos Origin BNP - 15 characters
+             * Barclays - 25 characters
+             * Catella - 22 characters
+             * CBA - 20 characters
+             * Elavon - 25 characters
+             * First Data - 25 characters
+             * INICIS (INIPAY) - 22-30 characters
+             * JCB - 25 characters
+             * Merchant Solutions - 22-25 characters
+             * Payvision (EU & HK) - 25 characters
+             * SEB Euroline - 22 characters
+             * Sub1 Argentina - 15 characters
+             * Wells Fargo - 25 characters
+
+            Note that we advise you to use 22 characters as the max length as beyond this our experience is that issuers
+            will start to truncate. We currently also only allow per API call overrides for AIB and Barclays
+            For alternative payment products the maximum allowed length varies per payment product:
+             * 402 e-Przelewy - 30 characters
+             * 404 INICIS - 80 characters
+             * 802 Nordea ePayment Finland - 234 characters
+             * 809 iDeal - 32 characters
+             * 836 SOFORT - 42 characters
+             * 840 PayPal - 127 characters
+             * 841 WebMoney - 175 characters
+             * 849 Yandex - 64 characters
+             * 861 Alipay - 256 characters
+             * 863 WeChat Pay - 32 characters
+             * 880 BOKU - 20 characters
+             * 8580 Qiwi - 255 characters
+             * 1504 Konbini - 80 characters
+
+            All other payment products don't support a descriptor.
+          maxLength: 256
+        merchantReference:
+          type: string
+          description: |
+            The merchantReference is a unique identifier for a payment and can be used for reporting purposes. The
+            merchantReference is required for the execution of a payment and has to be unique. In case a payment has
+            failed the same merchantReference can be used again.
+            Once a successful payment has been made the same merchantReference can no longer be used and will be
+            rejected.
+          maxLength: 20
+          example: 5a891df0b8cf11edaeb2af87d8ff0b2f
+        merchantParameters:
+          type: string
+          description:
+            It allows you to store additional parameters for the transaction in JSON format.
+            This field must not contain any personal data.
+          maxLength: 1000
+          example: "{'SessionID':'126548354','ShopperID':'7354131'}"
+      required:
+        - merchantReference
     RefreshPaymentRequest:
       type: object
       description: Request to refresh the payment status of a specific payment.
@@ -4431,20 +4473,6 @@ components:
         paymentMethod:
           type: string
           description: Payment method identifier used by the our payment engine.
-    RefundRequest:
-      type: object
-      description: |
-        Request to refund a payment for a Checkout. It is possible to perform multiple partial refunds by providing an
-        amount that is lower than the total captured amount.
-        The returnReason can be provided for reporting and reconciliation purposes but is not mandatory.
-      additionalProperties: false
-      properties:
-        amountOfMoney:
-          $ref: '#/components/schemas/PositiveAmountOfMoney'
-        references:
-          $ref: '#/components/schemas/PaymentReferences'
-        return:
-          $ref: '#/components/schemas/ReturnInformation'
     RefundPaymentResponse:
       type: object
       description: |-
@@ -4463,6 +4491,20 @@ components:
           type: string
           description: Unique payment transaction identifier of the payment gateway.
           example: '3066019730_1'
+    RefundRequest:
+      type: object
+      description: |
+        Request to refund a payment for a Checkout. It is possible to perform multiple partial refunds by providing an
+        amount that is lower than the total captured amount.
+        The returnReason can be provided for reporting and reconciliation purposes but is not mandatory.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/PositiveAmountOfMoney'
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        return:
+          $ref: '#/components/schemas/ReturnInformation'
     ReturnInformation:
       type: object
       description: |-
@@ -4555,13 +4597,16 @@ components:
         paymentProduct771SpecificInput:
           $ref: '#/components/schemas/SepaDirectDebitPaymentProduct771SpecificInput'
         paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: |-
-            Payment product identifier - please check product documentation for a full overview of possible values.
-          example: 840
+          $ref: '#/components/schemas/PaymentProductId'
+    SepaDirectDebitPaymentMethodSpecificOutput:
+      type: object
+      description: Object containing the SEPA direct debit details.
+      additionalProperties: false
+      properties:
+        paymentProductId:
+          $ref: '#/components/schemas/PaymentProductId'
+        paymentProduct771SpecificOutput:
+          $ref: '#/components/schemas/PaymentProduct771SpecificOutput'
     SepaDirectDebitPaymentProduct771SpecificInput:
       type: object
       description: Object containing information specific to SEPA Direct Debit
@@ -4572,21 +4617,6 @@ components:
           example: 'exampleMandateReference'
         mandate:
           $ref: '#/components/schemas/ProcessingMandateInformation'
-    SepaDirectDebitPaymentMethodSpecificOutput:
-      type: object
-      description: Object containing the SEPA direct debit details.
-      additionalProperties: false
-      properties:
-        paymentProductId:
-          type: integer
-          format: int32
-          maximum: 99999
-          minimum: 0
-          description: |-
-            Payment product identifier - please check product documentation for a full overview of possible values.
-          example: 840
-        paymentProduct771SpecificOutput:
-          $ref: '#/components/schemas/PaymentProduct771SpecificOutput'
     SepaTransferPaymentProduct772SpecificInput:
       type: object
       description: Object containing the specific input details for SEPA credit transfers excluding cross-border ones

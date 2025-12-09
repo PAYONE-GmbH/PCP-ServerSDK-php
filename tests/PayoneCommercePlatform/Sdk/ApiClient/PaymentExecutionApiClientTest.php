@@ -14,6 +14,9 @@ use PayoneCommercePlatform\Sdk\Models\CapturePaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CapturePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\CompleteRedirectPaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840Action;
 use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CustomerDevice;
 use PayoneCommercePlatform\Sdk\Models\MerchantAction;
@@ -115,7 +118,16 @@ class PaymentExecutionApiClientTest extends TestCase
         $completePaymentResponse = new CompletePaymentResponse(payment: new PaymentResponse(id: 'unicorn'));
         $this->httpClient->method('send')->willReturn(new Response(status: 200, body: PaymentExecutionApiClient::serializeJson($completePaymentResponse)));
 
-        $payload = new CompletePaymentRequest(device: new CustomerDevice('127.0.0.1', 'token'));
+        $payload = new CompletePaymentRequest(
+            redirectPaymentMethodSpecificInput: new CompleteRedirectPaymentMethodSpecificInput(
+                paymentProductId: 840,
+                paymentProduct840SpecificInput: new CompletePaymentProduct840SpecificInput(
+                    javaScriptSdkFlow: true,
+                    action: CompletePaymentProduct840Action::CONFIRM_ORDER_STATUS
+                )
+            ),
+            device: new CustomerDevice('127.0.0.1', 'token', 'text/html', 'Mozilla/5.0')
+        );
         $response = $this->paymentExecutionClient->completePayment('1', '2', '3', '4', $payload);
 
         $this->assertEquals($completePaymentResponse, $response);
