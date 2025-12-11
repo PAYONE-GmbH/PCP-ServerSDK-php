@@ -41,6 +41,7 @@ class PaymentProduct840SpecificOutput
         ?Address $shippingAddress = null,
         ?string $payPalTransactionId = null
     ) {
+        $this->payPalTransactionId = $payPalTransactionId;
         $this->billingAddress = $billingAddress;
         $this->customerAccount = $customerAccount;
         $this->shippingAddress = $shippingAddress;
@@ -48,6 +49,7 @@ class PaymentProduct840SpecificOutput
     }
 
     // Getters and Setters
+
     public function getBillingAddress(): ?Address
     {
         return $this->billingAddress;
