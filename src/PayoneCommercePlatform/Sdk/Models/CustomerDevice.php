@@ -21,12 +21,28 @@ class CustomerDevice
     #[SerializedName('deviceToken')]
     protected ?string $deviceToken;
 
+    /**
+     * @var string|null The accept-header of the customer client from the HTTP Headers.
+     */
+    #[SerializedName('acceptHeader')]
+    protected ?string $acceptHeader;
+
+    /**
+     * @var string|null User-Agent of the client device/browser from the HTTP Headers.
+     */
+    #[SerializedName('userAgent')]
+    protected ?string $userAgent;
+
     public function __construct(
         ?string $ipAddress = null,
-        ?string $deviceToken = null
+        ?string $deviceToken = null,
+        ?string $acceptHeader = null,
+        ?string $userAgent = null
     ) {
         $this->ipAddress = $ipAddress;
         $this->deviceToken = $deviceToken;
+        $this->acceptHeader = $acceptHeader;
+        $this->userAgent = $userAgent;
     }
 
     // Getters and Setters
@@ -49,6 +65,28 @@ class CustomerDevice
     public function setDeviceToken(?string $deviceToken): self
     {
         $this->deviceToken = $deviceToken;
+        return $this;
+    }
+
+    public function getAcceptHeader(): ?string
+    {
+        return $this->acceptHeader;
+    }
+
+    public function setAcceptHeader(?string $acceptHeader): self
+    {
+        $this->acceptHeader = $acceptHeader;
+        return $this;
+    }
+
+    public function getUserAgent(): ?string
+    {
+        return $this->userAgent;
+    }
+
+    public function setUserAgent(?string $userAgent): self
+    {
+        $this->userAgent = $userAgent;
         return $this;
     }
 }

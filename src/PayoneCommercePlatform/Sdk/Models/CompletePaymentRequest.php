@@ -4,6 +4,7 @@ namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\CompleteFinancingPaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompleteRedirectPaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\Order;
 use PayoneCommercePlatform\Sdk\Models\CustomerDevice;
 
@@ -19,6 +20,12 @@ class CompletePaymentRequest
     protected ?CompleteFinancingPaymentMethodSpecificInput $financingPaymentMethodSpecificInput;
 
     /**
+     * @var CompleteRedirectPaymentMethodSpecificInput|null The specific input for redirect payment method completions.
+     */
+    #[SerializedName('redirectPaymentMethodSpecificInput')]
+    protected ?CompleteRedirectPaymentMethodSpecificInput $redirectPaymentMethodSpecificInput;
+
+    /**
      * @var Order|null The order details.
      */
     #[SerializedName('order')]
@@ -32,10 +39,12 @@ class CompletePaymentRequest
 
     public function __construct(
         ?CompleteFinancingPaymentMethodSpecificInput $financingPaymentMethodSpecificInput = null,
+        ?CompleteRedirectPaymentMethodSpecificInput $redirectPaymentMethodSpecificInput = null,
         ?Order $order = null,
         ?CustomerDevice $device = null
     ) {
         $this->financingPaymentMethodSpecificInput = $financingPaymentMethodSpecificInput;
+        $this->redirectPaymentMethodSpecificInput = $redirectPaymentMethodSpecificInput;
         $this->order = $order;
         $this->device = $device;
     }
@@ -49,6 +58,17 @@ class CompletePaymentRequest
     public function setFinancingPaymentMethodSpecificInput(?CompleteFinancingPaymentMethodSpecificInput $financingPaymentMethodSpecificInput): self
     {
         $this->financingPaymentMethodSpecificInput = $financingPaymentMethodSpecificInput;
+        return $this;
+    }
+
+    public function getRedirectPaymentMethodSpecificInput(): ?CompleteRedirectPaymentMethodSpecificInput
+    {
+        return $this->redirectPaymentMethodSpecificInput;
+    }
+
+    public function setRedirectPaymentMethodSpecificInput(?CompleteRedirectPaymentMethodSpecificInput $redirectPaymentMethodSpecificInput): self
+    {
+        $this->redirectPaymentMethodSpecificInput = $redirectPaymentMethodSpecificInput;
         return $this;
     }
 

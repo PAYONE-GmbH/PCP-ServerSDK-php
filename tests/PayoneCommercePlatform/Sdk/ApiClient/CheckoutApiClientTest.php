@@ -22,6 +22,8 @@ use PayoneCommercePlatform\Sdk\Models\CompleteOrderRequest;
 use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\PaymentProduct3391SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840Action;
 use PayoneCommercePlatform\Sdk\Models\Shipping;
 use PayoneCommercePlatform\Sdk\Queries\GetCheckoutsQuery;
 
@@ -233,6 +235,10 @@ class CheckoutApiClientTest extends TestCase
                         bic: 'COBADEFFXXX',
                         accountHolder: 'Max Mustermann'
                     )
+                ),
+                paymentProduct840SpecificInput: new CompletePaymentProduct840SpecificInput(
+                    javaScriptSdkFlow: true,
+                    action: CompletePaymentProduct840Action::CONFIRM_ORDER_STATUS
                 )
             )
         );
