@@ -35,22 +35,15 @@ class RedirectPaymentProduct840SpecificInput
     #[SerializedName('javaScriptSdkFlow')]
     protected bool $javaScriptSdkFlow = false;
 
-    /**
-     * @var string|null Required parameter for a COMPLETE CALL (not only an ORDER CALL) which with value "CONFIRM_ORDER_STATUS" signals process is finished on merchant side.
-     */
-    #[SerializedName('action')]
-    protected ?string $action = null;
 
     public function __construct(
         bool $addressSelectionAtPayPal = false,
         ?string $fraudNetId = null,
-        bool $javaScriptSdkFlow = false,
-        ?string $action = null
+        bool $javaScriptSdkFlow = false
     ) {
         $this->addressSelectionAtPayPal = $addressSelectionAtPayPal;
         $this->fraudNetId = $fraudNetId;
         $this->javaScriptSdkFlow = $javaScriptSdkFlow;
-        $this->action = $action;
     }
 
     // Getters and Setters
@@ -84,17 +77,6 @@ class RedirectPaymentProduct840SpecificInput
     public function setJavaScriptSdkFlow(bool $javaScriptSdkFlow): self
     {
         $this->javaScriptSdkFlow = $javaScriptSdkFlow;
-        return $this;
-    }
-
-    public function getAction(): ?string
-    {
-        return $this->action;
-    }
-
-    public function setAction(?string $action): self
-    {
-        $this->action = $action;
         return $this;
     }
 }

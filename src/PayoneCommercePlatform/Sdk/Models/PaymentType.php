@@ -12,6 +12,7 @@ enum PaymentType: string
     case CAPTURE = 'CAPTURE';
     case REFUND = 'REFUND';
     case REVERSAL = 'REVERSAL';
+    case CHARGEBACK = 'CHARGEBACK';
     case CHARGEBACK_REVERSAL = 'CHARGEBACK_REVERSAL';
     case CREDIT_NOTE = 'CREDIT_NOTE';
     case DEBIT_NOTE = 'DEBIT_NOTE';

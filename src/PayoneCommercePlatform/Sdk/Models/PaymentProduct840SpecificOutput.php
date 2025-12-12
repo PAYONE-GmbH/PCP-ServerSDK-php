@@ -12,12 +12,6 @@ use PayoneCommercePlatform\Sdk\Models\PaymentProduct840CustomerAccount;
 class PaymentProduct840SpecificOutput
 {
     /**
-     * @var string PayPal transaction ID (required).
-     */
-    #[SerializedName('payPalTransactionId')]
-    protected string $payPalTransactionId;
-
-    /**
      * @var Address|null Billing address associated with the PayPal account.
      */
     #[SerializedName('billingAddress')]
@@ -35,31 +29,27 @@ class PaymentProduct840SpecificOutput
     #[SerializedName('shippingAddress')]
     protected ?Address $shippingAddress;
 
+    /**
+     * @var string|null Unique identifier of the PayPal transaction needed for JavaScript SDK flows.
+     */
+    #[SerializedName('payPalTransactionId')]
+    protected ?string $payPalTransactionId;
 
     public function __construct(
-        string $payPalTransactionId,
         ?Address $billingAddress = null,
         ?PaymentProduct840CustomerAccount $customerAccount = null,
         ?Address $shippingAddress = null,
+        ?string $payPalTransactionId = null
     ) {
         $this->payPalTransactionId = $payPalTransactionId;
         $this->billingAddress = $billingAddress;
         $this->customerAccount = $customerAccount;
         $this->shippingAddress = $shippingAddress;
+        $this->payPalTransactionId = $payPalTransactionId;
     }
 
     // Getters and Setters
 
-    public function getPayPalTransactionId(): string
-    {
-        return $this->payPalTransactionId;
-    }
-
-    public function setPayPalTransactionId(string $payPalTransactionId): self
-    {
-        $this->payPalTransactionId = $payPalTransactionId;
-        return $this;
-    }
     public function getBillingAddress(): ?Address
     {
         return $this->billingAddress;
@@ -93,5 +83,14 @@ class PaymentProduct840SpecificOutput
         return $this;
     }
 
+    public function getPayPalTransactionId(): ?string
+    {
+        return $this->payPalTransactionId;
+    }
 
+    public function setPayPalTransactionId(?string $payPalTransactionId): self
+    {
+        $this->payPalTransactionId = $payPalTransactionId;
+        return $this;
+    }
 }

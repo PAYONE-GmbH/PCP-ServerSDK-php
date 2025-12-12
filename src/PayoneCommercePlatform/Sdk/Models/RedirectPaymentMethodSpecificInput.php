@@ -53,6 +53,12 @@ class RedirectPaymentMethodSpecificInput
     #[SerializedName('redirectionData')]
     protected ?RedirectionData $redirectionData;
 
+    /**
+     * @var bool|null Indicates whether the PayPal JavaScript SDK flow is used.
+     */
+    #[SerializedName('javaScriptSdkFlow')]
+    protected ?bool $javaScriptSdkFlow;
+
     public function __construct(
         bool $requiresApproval = true,
         ?string $paymentProcessingToken = null,
@@ -60,7 +66,8 @@ class RedirectPaymentMethodSpecificInput
         bool $tokenize = false,
         ?int $paymentProductId = null,
         ?RedirectPaymentProduct840SpecificInput $paymentProduct840SpecificInput = null,
-        ?RedirectionData $redirectionData = null
+        ?RedirectionData $redirectionData = null,
+        ?bool $javaScriptSdkFlow = null
     ) {
         $this->requiresApproval = $requiresApproval;
         $this->paymentProcessingToken = $paymentProcessingToken;
@@ -69,6 +76,7 @@ class RedirectPaymentMethodSpecificInput
         $this->paymentProductId = $paymentProductId;
         $this->paymentProduct840SpecificInput = $paymentProduct840SpecificInput;
         $this->redirectionData = $redirectionData;
+        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
     }
 
     // Getters and Setters
@@ -146,6 +154,17 @@ class RedirectPaymentMethodSpecificInput
     public function setRedirectionData(?RedirectionData $redirectionData): self
     {
         $this->redirectionData = $redirectionData;
+        return $this;
+    }
+
+    public function getJavaScriptSdkFlow(): ?bool
+    {
+        return $this->javaScriptSdkFlow;
+    }
+
+    public function setJavaScriptSdkFlow(?bool $javaScriptSdkFlow): self
+    {
+        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
         return $this;
     }
 }
