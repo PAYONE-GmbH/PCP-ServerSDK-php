@@ -27,12 +27,23 @@ class RedirectPaymentProduct840SpecificInput
     #[SerializedName('fraudNetId')]
     protected ?string $fraudNetId;
 
+    /**
+     * @var bool Required parameter which defines how PayPal is being integrated inside the checkout page.
+     * * true = the current integration uses PayPal SDK
+     * * false = classic usage with PayPal Redirect flow
+     */
+    #[SerializedName('javaScriptSdkFlow')]
+    protected bool $javaScriptSdkFlow = false;
+
+
     public function __construct(
         bool $addressSelectionAtPayPal = false,
-        ?string $fraudNetId = null
+        ?string $fraudNetId = null,
+        bool $javaScriptSdkFlow = false
     ) {
         $this->addressSelectionAtPayPal = $addressSelectionAtPayPal;
         $this->fraudNetId = $fraudNetId;
+        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
     }
 
     // Getters and Setters
@@ -55,6 +66,17 @@ class RedirectPaymentProduct840SpecificInput
     public function setFraudNetId(?string $fraudNetId): self
     {
         $this->fraudNetId = $fraudNetId;
+        return $this;
+    }
+
+    public function getJavaScriptSdkFlow(): bool
+    {
+        return $this->javaScriptSdkFlow;
+    }
+
+    public function setJavaScriptSdkFlow(bool $javaScriptSdkFlow): self
+    {
+        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
         return $this;
     }
 }
