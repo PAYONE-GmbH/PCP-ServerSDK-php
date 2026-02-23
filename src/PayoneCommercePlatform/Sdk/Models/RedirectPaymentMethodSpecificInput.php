@@ -12,10 +12,10 @@ use PayoneCommercePlatform\Sdk\Models\RedirectionData;
 class RedirectPaymentMethodSpecificInput
 {
     /**
-     * @var bool Indicates whether the payment requires approval before the funds will be captured using the Approve payment or Capture payment API.
+     * @var bool|null Indicates whether the payment requires approval before the funds will be captured using the Approve payment or Capture payment API.
      */
     #[SerializedName('requiresApproval')]
-    protected bool $requiresApproval;
+    protected ?bool $requiresApproval;
 
     /**
      * @var string|null ID of the token to use to create the payment.
@@ -30,10 +30,10 @@ class RedirectPaymentMethodSpecificInput
     protected ?string $reportingToken;
 
     /**
-     * @var bool Indicates if this transaction should be tokenized.
+     * @var bool|null Indicates if this transaction should be tokenized.
      */
     #[SerializedName('tokenize')]
-    protected bool $tokenize;
+    protected ?bool $tokenize;
 
     /**
      * @var int|null Payment product identifier - please check product documentation for a full overview of possible values.
@@ -53,21 +53,14 @@ class RedirectPaymentMethodSpecificInput
     #[SerializedName('redirectionData')]
     protected ?RedirectionData $redirectionData;
 
-    /**
-     * @var bool|null Indicates whether the PayPal JavaScript SDK flow is used.
-     */
-    #[SerializedName('javaScriptSdkFlow')]
-    protected ?bool $javaScriptSdkFlow;
-
     public function __construct(
-        bool $requiresApproval = true,
+        ?bool $requiresApproval = null,
         ?string $paymentProcessingToken = null,
         ?string $reportingToken = null,
-        bool $tokenize = false,
+        ?bool $tokenize = null,
         ?int $paymentProductId = null,
         ?RedirectPaymentProduct840SpecificInput $paymentProduct840SpecificInput = null,
-        ?RedirectionData $redirectionData = null,
-        ?bool $javaScriptSdkFlow = null
+        ?RedirectionData $redirectionData = null
     ) {
         $this->requiresApproval = $requiresApproval;
         $this->paymentProcessingToken = $paymentProcessingToken;
@@ -76,16 +69,15 @@ class RedirectPaymentMethodSpecificInput
         $this->paymentProductId = $paymentProductId;
         $this->paymentProduct840SpecificInput = $paymentProduct840SpecificInput;
         $this->redirectionData = $redirectionData;
-        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
     }
 
     // Getters and Setters
-    public function getRequiresApproval(): bool
+    public function getRequiresApproval(): ?bool
     {
         return $this->requiresApproval;
     }
 
-    public function setRequiresApproval(bool $requiresApproval): self
+    public function setRequiresApproval(?bool $requiresApproval): self
     {
         $this->requiresApproval = $requiresApproval;
         return $this;
@@ -113,12 +105,12 @@ class RedirectPaymentMethodSpecificInput
         return $this;
     }
 
-    public function getTokenize(): bool
+    public function getTokenize(): ?bool
     {
         return $this->tokenize;
     }
 
-    public function setTokenize(bool $tokenize): self
+    public function setTokenize(?bool $tokenize): self
     {
         $this->tokenize = $tokenize;
         return $this;
@@ -154,17 +146,6 @@ class RedirectPaymentMethodSpecificInput
     public function setRedirectionData(?RedirectionData $redirectionData): self
     {
         $this->redirectionData = $redirectionData;
-        return $this;
-    }
-
-    public function getJavaScriptSdkFlow(): ?bool
-    {
-        return $this->javaScriptSdkFlow;
-    }
-
-    public function setJavaScriptSdkFlow(?bool $javaScriptSdkFlow): self
-    {
-        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
         return $this;
     }
 }

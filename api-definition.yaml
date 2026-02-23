@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.40.0
+  version: 1.48.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -2214,6 +2214,8 @@ components:
           $ref: '#/components/schemas/PaymentReferences'
         delivery:
           $ref: '#/components/schemas/DeliveryInformation'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     CapturePaymentResponse:
       type: object
       additionalProperties: false
@@ -2224,6 +2226,8 @@ components:
           $ref: '#/components/schemas/StatusValue'
         statusOutput:
           $ref: '#/components/schemas/PaymentStatusOutput'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
         id:
           type: string
           description: Unique payment transaction identifier of the payment gateway.
@@ -2452,6 +2456,8 @@ components:
           $ref: '#/components/schemas/CartItemInvoiceData'
         orderLineDetails:
           $ref: '#/components/schemas/OrderLineDetailsInput'
+        supplierReferences:
+          $ref: '#/components/schemas/CartItemSupplierReferences'
     CartItemInvoiceData:
       type: object
       description: Object containing the line items of the invoice or shopping cart.
@@ -2473,6 +2479,8 @@ components:
           $ref: '#/components/schemas/CartItemInvoiceData'
         orderLineDetails:
           $ref: '#/components/schemas/OrderLineDetailsPatch'
+        supplierReferences:
+          $ref: '#/components/schemas/CartItemSupplierReferences'
     CartItemResult:
       type: object
       description: This object contains information of all items in the cart.
@@ -2483,6 +2491,8 @@ components:
           $ref: '#/components/schemas/CartItemInvoiceData'
         orderLineDetails:
           $ref: '#/components/schemas/OrderLineDetailsResult'
+        supplierReferences:
+          $ref: '#/components/schemas/CartItemSupplierReferences'
     CartItemStatus:
       type: string
       enum:
@@ -2492,6 +2502,23 @@ components:
         - RETURNED
         - WAITING_FOR_PAYMENT
       description: Indicates in which status the line item is
+    CartItemSupplierReferences:
+      type: object
+      description: |
+        This object contains references of the seller of the cart item.
+      additionalProperties: false
+      properties:
+        supplierId:
+          type: string
+          description: Unique identifier for the supplier.
+          maxLength: 64
+          example: "5678"
+        orderReference:
+          type: string
+          description: |-
+            Reference of the order for the supplier.
+          maxLength: 64
+          example: "Order-5678"
     CheckoutResponse:
       type: object
       xml:
@@ -2842,6 +2869,8 @@ components:
           $ref: '#/components/schemas/MerchantAction'
         payment:
           $ref: '#/components/schemas/PaymentResponse'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
         paymentExecutionId:
           description: reference to the paymentExecution.
           type: string
@@ -2944,7 +2973,7 @@ components:
       properties:
         acceptHeader:
           type: string
-          description: |
+          description: | 
             The accept-header of the customer client from the HTTP Headers. 
             This field can be mandatory depending on the selected payment method and routing option.
           maxLength: 2048
@@ -3016,6 +3045,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeliverItem'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     DeliverResponse:
       type: object
       properties:
@@ -3134,6 +3165,75 @@ components:
           $ref: '#/components/schemas/PaymentProduct3391SpecificOutput'
         paymentInstructions:
           $ref: '#/components/schemas/PaymentInstructions'
+    FundDistribution:
+      type: object
+      description: Instructions for distributing funds to multiple sellers or partners in a marketplace context.
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: UUID
+          readOnly: true
+        accountId:
+          type: string
+          description: >-
+            Unique identifier of the beneficiary (seller/partner/sub-account) to receive funds (e.g., payout account ID).
+        description:
+          type: string
+          description: Human-readable description for reconciliation. Appears on reports.
+          example: "Commission for order #ORD-2025-0001"
+          maxLength: 128
+        amount:
+          type: integer
+          description: Amount in cents and always having 2 decimals, in the currency of the original transaction
+          format: int64
+          maximum: 999999999999
+          minimum: 1
+          example: 1000
+        type:
+          type: string
+          format: string
+          description: Classification or purpose of the fund distribution to the receiving account within a given order.
+          enum:
+            - SELLER_REVENUE
+            - COMMISSION_FEE
+            - SHIPPING_COSTS
+            - TAX
+            - PLATFORM_FEE
+            - OTHER
+        merchantReference:
+          type: string
+          description: Unique reference of the part of the fund/payment to be distributed that is also returned for reporting and reconciliation purposes.
+          maxLength: 40
+          example: customer-order-1234
+        merchantParameters:
+          type: string
+          maxLength: 1000
+          description: >-
+            It allows you to store additional parameters for the transaction in JSON format.
+            This field must not contain any personal data.
+          example: "{'marketplaceOrderId':'ORD-2025-0001','sellerId':'seller-789'}"
+      required:
+        - accountId
+        - amount
+        - type
+    FundSplit:
+      type: object
+      description: Instructions for distributing funds to multiple sellers or partners in a marketplace context.
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: UUID
+          readOnly: true
+        paymentEventId:
+          type: string
+          format: UUID
+          readOnly: true
+        fundDistributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundDistribution'
     InstallmentOption:
       type: object
       properties:
@@ -3274,6 +3374,8 @@ components:
           $ref: '#/components/schemas/MobilePaymentThreeDSecure'
         paymentProduct302SpecificInput:
           $ref: '#/components/schemas/PaymentProduct302SpecificInput'
+        paymentProduct5002SpecificInput:
+          $ref: '#/components/schemas/PaymentProduct5002SpecificInput'
     MobilePaymentMethodSpecificOutput:
       type: object
       description: Object containing the mobile payment method details.
@@ -3297,6 +3399,24 @@ components:
         network:
           type: string
           description: The card network that was used for a mobile payment method operation
+    MobilePaymentNetwork:
+      type: string
+      description: |-
+        Network/Scheme of the card used for the payment.
+        * MASTERCARD
+        * VISA
+        * AMEX 
+        * GIROCARD 
+        * DISCOVER (not supported yet)
+        * JCB (not supported yet)
+      enum:
+        - MASTERCARD
+        - VISA
+        - AMEX
+        - GIROCARD
+        - DISCOVER
+        - JCB
+      example: MASTERCARD
     MobilePaymentThreeDSecure:
       type: object
       description: |-
@@ -3383,7 +3503,7 @@ components:
           example: 0
         taxAmountPerUnit:
           type: boolean
-          description: |-
+          description: |- 
             This field indicates if the `taxAmount` is to be interpreted as the tax amount per unit rather than for the entire line item. 
             This field is included in the response only when `taxAmount` is set; otherwise, it will return as `null`.
           format: int64
@@ -3481,6 +3601,8 @@ components:
             $ref: '#/components/schemas/OrderItem'
         paymentMethodSpecificInput:
           $ref: '#/components/schemas/PaymentMethodSpecificInput'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     OrderResponse:
       type: object
       description: Object that contains details on the created payment in case one has been created.
@@ -3507,6 +3629,7 @@ components:
       enum:
         - FULL
         - PARTIAL
+      readOnly: true
     PatchCheckoutRequest:
       type: object
       description: |
@@ -3604,6 +3727,22 @@ components:
           example: Customer complained
         paymentInstructions:
           $ref: '#/components/schemas/PaymentInstructions'
+        paymentEventId:
+          type: string
+          format: UUID
+          readOnly: true
+        creationDateTime:
+          type: string
+          format: date-time
+          readOnly: true
+          description: |-
+            The date and time when the payment event was created.
+            
+            Format will be in one of the following formats:
+            * YYYY-MM-DD'T'HH:mm:ss'Z'
+            * YYYY-MM-DD'T'HH:mm:ss+XX:XX
+            * YYYY-MM-DD'T'HH:mm:ss-XX:XX
+          example: 2022-01-01T00:00:00Z
     PaymentExecution:
       type: object
       description: |-
@@ -3664,6 +3803,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentEvent'
+        fundSplits:
+          type: array
+          items:
+            $ref: '#/components/schemas/FundSplit'
     PaymentExecutionRequest:
       type: object
       description: |
@@ -3693,6 +3836,8 @@ components:
           $ref: '#/components/schemas/ShoppingCartInput'
         paymentReferences:
           $ref: '#/components/schemas/References'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
       required:
         - paymentReferences
     PaymentInformationRefundRequest:
@@ -3920,23 +4065,7 @@ components:
             - MASS_ENABLEMENT
           example: MASS_ENABLEMENT
         network:
-          type: string
-          description: |-
-            Network/Scheme of the card used for the payment.
-            * MASTERCARD
-            * VISA
-            * AMEX
-            * GIROCARD
-            * DISCOVER (not supported yet)
-            * JCB (not supported yet)
-          enum:
-            - MASTERCARD
-            - VISA
-            - AMEX
-            - GIROCARD
-            - DISCOVER
-            - JCB
-          example: GIROCARD
+          $ref: '#/components/schemas/MobilePaymentNetwork'
         token:
           $ref: '#/components/schemas/ApplePaymentDataTokenInformation'
         domainName:
@@ -3977,6 +4106,22 @@ components:
           $ref: '#/components/schemas/BankAccountInformation'
       required:
         - bankAccountInformation
+    PaymentProduct5002SpecificInput:
+      type: object
+      description: Object containing additional Information needed for Click To Pay processing.
+      properties:
+        network:
+          $ref: '#/components/schemas/MobilePaymentNetwork'
+        paymentCheckoutData:
+          type: string
+          description: |-
+            JWS Token Value (checkoutResponseSignature) as received in the Checkout Response on Client Side, Base64URL encoded.
+          example: rhHAQUrR118u[...]cwDw==
+        srcDpaId:
+          type: string
+          description: |-
+            DPA Identifier provided by PAYONE during client side initialization for the corresponding card type selected by the end consumer in the Click to Pay flow.
+          maxLength: 64
     PaymentProduct771SpecificOutput:
       type: object
       description: Output that is SEPA Direct Debit specific (i.e. the used mandate).
@@ -4487,6 +4632,8 @@ components:
           $ref: '#/components/schemas/StatusValue'
         statusOutput:
           $ref: '#/components/schemas/PaymentStatusOutput'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
         id:
           type: string
           description: Unique payment transaction identifier of the payment gateway.
@@ -4505,6 +4652,8 @@ components:
           $ref: '#/components/schemas/PaymentReferences'
         return:
           $ref: '#/components/schemas/ReturnInformation'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     ReturnInformation:
       type: object
       description: |-
@@ -4566,6 +4715,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ReturnItem'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     ReturnResponse:
       type: object
       properties:
@@ -4831,3 +4982,4 @@ components:
         - first
         - subsequent
       x-enum-to-string: false
+      

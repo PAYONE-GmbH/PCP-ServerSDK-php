@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\PositiveAmountOfMoney;
 use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
 use PayoneCommercePlatform\Sdk\Models\ReturnInformation;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 /**
  * @description Request to refund a payment for a Checkout. It is possible to perform multiple partial refunds by providing an amount that is lower than the total captured amount. The returnReason can be provided for reporting and reconciliation purposes but is not mandatory.
@@ -30,14 +31,22 @@ class RefundRequest
     #[SerializedName('return')]
     protected ?ReturnInformation $return;
 
+    /**
+     * @var FundSplit|null Fund split details for this refund.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
     public function __construct(
         ?PositiveAmountOfMoney $amountOfMoney = null,
         ?PaymentReferences $references = null,
-        ?ReturnInformation $return = null
+        ?ReturnInformation $return = null,
+        ?FundSplit $fundSplit = null
     ) {
         $this->amountOfMoney = $amountOfMoney;
         $this->references = $references;
         $this->return = $return;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -71,6 +80,17 @@ class RefundRequest
     public function setReturn(?ReturnInformation $return): self
     {
         $this->return = $return;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }

@@ -7,24 +7,24 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class SepaTransferPaymentProduct772SpecificInput
 {
     /**
-     * @var BankAccountInformation
+     * @var BankAccountInformation|null
      */
     #[SerializedName('bankAccountInformation')]
-    private BankAccountInformation $bankAccountInformation;
+    private ?BankAccountInformation $bankAccountInformation;
 
-    public function __construct(BankAccountInformation $bankAccountInformation)
+    public function __construct(?BankAccountInformation $bankAccountInformation = null)
     {
         $this->bankAccountInformation = $bankAccountInformation;
     }
 
 
     // Getters and Setters
-    public function getBankAccountInformation(): BankAccountInformation
+    public function getBankAccountInformation(): ?BankAccountInformation
     {
         return $this->bankAccountInformation;
     }
 
-    public function setBankAccountInformation(BankAccountInformation $bankAccountInformation): self
+    public function setBankAccountInformation(?BankAccountInformation $bankAccountInformation): self
     {
         $this->bankAccountInformation = $bankAccountInformation;
         return $this;

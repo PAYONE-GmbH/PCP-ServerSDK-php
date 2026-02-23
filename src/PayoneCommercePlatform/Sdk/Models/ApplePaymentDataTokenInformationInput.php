@@ -14,29 +14,29 @@ use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformationInpu
 class ApplePaymentDataTokenInformationInput
 {
     /**
-     * @var string|null Version information about the payment token. Currently only EC_v1 for ECC-encrypted data is supported.
+     * @var string Version information about the payment token. Currently only EC_v1 for ECC-encrypted data is supported.
      */
     #[SerializedName('version')]
-    protected ?string $version;
+    protected string $version;
 
     /**
-     * @var string|null Detached PKCS #7 signature, Base64 encoded as string. Signature of the payment and header data. The
+     * @var string Detached PKCS #7 signature, Base64 encoded as string. Signature of the payment and header data. The
      * signature includes the signing certificate, its intermediate CA certificate, and information about the
      * signing algorithm.
      */
     #[SerializedName('signature')]
-    protected ?string $signature;
+    protected string $signature;
 
     /**
-     * @var ApplePaymentDataTokenHeaderInformationInput|null Additional information about the Apple payment data token header.
+     * @var ApplePaymentDataTokenHeaderInformationInput Additional information about the Apple payment data token header.
      */
     #[SerializedName('header')]
-    protected ?ApplePaymentDataTokenHeaderInformationInput $header;
+    protected ApplePaymentDataTokenHeaderInformationInput $header;
 
     public function __construct(
-        ?string $version = null,
-        ?string $signature = null,
-        ?ApplePaymentDataTokenHeaderInformationInput $header = null
+        string $version,
+        string $signature,
+        ApplePaymentDataTokenHeaderInformationInput $header
     ) {
         $this->version = $version;
         $this->signature = $signature;
@@ -44,34 +44,34 @@ class ApplePaymentDataTokenInformationInput
     }
 
     // Getters and Setters
-    public function getVersion(): ?string
+    public function getVersion(): string
     {
         return $this->version;
     }
 
-    public function setVersion(?string $version): self
+    public function setVersion(string $version): self
     {
         $this->version = $version;
         return $this;
     }
 
-    public function getSignature(): ?string
+    public function getSignature(): string
     {
         return $this->signature;
     }
 
-    public function setSignature(?string $signature): self
+    public function setSignature(string $signature): self
     {
         $this->signature = $signature;
         return $this;
     }
 
-    public function getHeader(): ?ApplePaymentDataTokenHeaderInformationInput
+    public function getHeader(): ApplePaymentDataTokenHeaderInformationInput
     {
         return $this->header;
     }
 
-    public function setHeader(?ApplePaymentDataTokenHeaderInformationInput $header): self
+    public function setHeader(ApplePaymentDataTokenHeaderInformationInput $header): self
     {
         $this->header = $header;
         return $this;

@@ -11,6 +11,7 @@ use PayoneCommercePlatform\Sdk\Models\FinancingPaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
 use PayoneCommercePlatform\Sdk\Models\References;
 use PayoneCommercePlatform\Sdk\Models\PaymentEvent;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 /**
  * @description Object contains information of the payment with a specific payment method.
@@ -102,6 +103,12 @@ class PaymentExecution
     protected ?array $events;
 
     /**
+     * @var FundSplit[]|null List of fund splits associated with this payment execution.
+     */
+    #[SerializedName('fundSplits')]
+    protected ?array $fundSplits;
+
+    /**
      * @param string|null $paymentExecutionId Unique ID of paymentExecution.
      * @param string|null $paymentId Unique payment transaction identifier of the payment gateway.
      * @param CardPaymentMethodSpecificInput|null $cardPaymentMethodSpecificInput Card payment method specific input details.
@@ -116,6 +123,7 @@ class PaymentExecution
      * @param string|null $creationDateTime The date and time when the payment was created.
      * @param string|null $lastUpdated The date and time when the payment was last updated.
      * @param PaymentEvent[]|null $events List of payment events.
+     * @param FundSplit[]|null $fundSplits List of fund splits associated with this payment execution.
      */
     public function __construct(
         ?string $paymentExecutionId = null,
@@ -131,7 +139,8 @@ class PaymentExecution
         ?string $previousPayment = null,
         ?string $creationDateTime = null,
         ?string $lastUpdated = null,
-        ?array $events = null
+        ?array $events = null,
+        ?array $fundSplits = null
     ) {
         $this->paymentExecutionId = $paymentExecutionId;
         $this->paymentId = $paymentId;
@@ -147,6 +156,7 @@ class PaymentExecution
         $this->creationDateTime = $creationDateTime;
         $this->lastUpdated = $lastUpdated;
         $this->events = $events;
+        $this->fundSplits = $fundSplits;
     }
 
     // Getters and Setters
@@ -308,6 +318,24 @@ class PaymentExecution
     public function setEvents(?array $events): self
     {
         $this->events = $events;
+        return $this;
+    }
+
+    /**
+     * @return FundSplit[]|null List of fund splits associated with this payment execution.
+     */
+    public function getFundSplits(): ?array
+    {
+        return $this->fundSplits;
+    }
+
+    /**
+     * @param FundSplit[]|null $fundSplits List of fund splits associated with this payment execution.
+     * @return self
+     */
+    public function setFundSplits(?array $fundSplits): self
+    {
+        $this->fundSplits = $fundSplits;
         return $this;
     }
 }

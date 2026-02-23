@@ -34,24 +34,16 @@ class RedirectPaymentMethodSpecificOutput
     #[SerializedName('reportingToken')]
     protected ?string $reportingToken;
 
-    /**
-     * @var bool|null Indicates whether the PayPal JavaScript SDK flow is used.
-     */
-    #[SerializedName('javaScriptSdkFlow')]
-    protected ?bool $javaScriptSdkFlow;
-
     public function __construct(
         ?int $paymentProductId = null,
         ?PaymentProduct840SpecificOutput $paymentProduct840SpecificOutput = null,
         ?string $paymentProcessingToken = null,
-        ?string $reportingToken = null,
-        ?bool $javaScriptSdkFlow = null
+        ?string $reportingToken = null
     ) {
         $this->paymentProductId = $paymentProductId;
         $this->paymentProduct840SpecificOutput = $paymentProduct840SpecificOutput;
         $this->paymentProcessingToken = $paymentProcessingToken;
         $this->reportingToken = $reportingToken;
-        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
     }
 
     // Getters and Setters
@@ -96,17 +88,6 @@ class RedirectPaymentMethodSpecificOutput
     public function setReportingToken(?string $reportingToken): self
     {
         $this->reportingToken = $reportingToken;
-        return $this;
-    }
-
-    public function getJavaScriptSdkFlow(): ?bool
-    {
-        return $this->javaScriptSdkFlow;
-    }
-
-    public function setJavaScriptSdkFlow(?bool $javaScriptSdkFlow): self
-    {
-        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
         return $this;
     }
 }

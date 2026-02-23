@@ -7,6 +7,7 @@ use PayoneCommercePlatform\Sdk\Models\OrderType;
 use PayoneCommercePlatform\Sdk\Models\References;
 use PayoneCommercePlatform\Sdk\Models\OrderItem;
 use PayoneCommercePlatform\Sdk\Models\PaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 /**
  * @description Request to execute an Order for the corresponding Checkout for a specific payment method. The provided data from the Commerce Case and the Checkout regarding customer, shipping, and ShoppingCart will be automatically loaded and used for the Payment Execution. In case the paymentMethodSpecificInput has already been provided when creating the Commerce Case or Checkout, this input will automatically be used. An Order can be created for a full or the partial ShoppingCart of the Checkout. For a partial Order a list of items must be provided. The platform will automatically calculate the respective amount to trigger the payment execution.
@@ -38,21 +39,30 @@ class OrderRequest
     protected ?PaymentMethodSpecificInput $paymentMethodSpecificInput;
 
     /**
+     * @var FundSplit|null Fund split details for this order.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
+    /**
      * @param OrderType|null $orderType The orderType refers to the ShoppingCart of the Checkout.
      * @param References $orderReferences|null References for the order.
      * @param OrderItem[]|null $items List of items for the order, required for orderType = PARTIAL.
      * @param PaymentMethodSpecificInput|null $paymentMethodSpecificInput Specific input details for the payment method.
+     * @param FundSplit|null $fundSplit Fund split details for this order.
      */
     public function __construct(
         ?References $orderReferences = null,
         ?OrderType $orderType = null,
         ?array $items = null,
-        ?PaymentMethodSpecificInput $paymentMethodSpecificInput = null
+        ?PaymentMethodSpecificInput $paymentMethodSpecificInput = null,
+        ?FundSplit $fundSplit = null
     ) {
         $this->orderType = $orderType;
         $this->orderReferences = $orderReferences;
         $this->items = $items;
         $this->paymentMethodSpecificInput = $paymentMethodSpecificInput;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -104,6 +114,17 @@ class OrderRequest
     public function setPaymentMethodSpecificInput(?PaymentMethodSpecificInput $paymentMethodSpecificInput): self
     {
         $this->paymentMethodSpecificInput = $paymentMethodSpecificInput;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }

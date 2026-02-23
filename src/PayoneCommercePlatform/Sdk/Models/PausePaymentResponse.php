@@ -2,27 +2,31 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
+use Symfony\Component\Serializer\Annotation\SerializedName;
+
+/**
+ * @description Response to a pause payment request.
+ */
 class PausePaymentResponse
 {
     /**
-     * @var StatusValue
+     * @var StatusValue|null Current high-level status of the payment.
      */
-    private StatusValue $status;
+    #[SerializedName('status')]
+    protected ?StatusValue $status;
 
-    public function __construct(StatusValue $status)
+    public function __construct(?StatusValue $status = null)
     {
         $this->status = $status;
     }
 
-
     // Getters and Setters
-    public function getStatus(): StatusValue
+    public function getStatus(): ?StatusValue
     {
         return $this->status;
     }
 
-
-    public function setStatus(StatusValue $status): self
+    public function setStatus(?StatusValue $status): self
     {
         $this->status = $status;
         return $this;

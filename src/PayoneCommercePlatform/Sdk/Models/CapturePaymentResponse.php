@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\CaptureOutput;
 use PayoneCommercePlatform\Sdk\Models\StatusValue;
 use PayoneCommercePlatform\Sdk\Models\PaymentStatusOutput;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 class CapturePaymentResponse
 {
@@ -18,6 +19,7 @@ class CapturePaymentResponse
     /**
      * @var StatusValue|null Current high-level status of the payment in a human-readable form.
      */
+    #[SerializedName('status')]
     protected ?StatusValue $status;
 
     /**
@@ -32,16 +34,24 @@ class CapturePaymentResponse
     #[SerializedName('id')]
     protected ?string $id;
 
+    /**
+     * @var FundSplit|null Fund split details for this capture.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
     public function __construct(
         ?CaptureOutput $captureOutput = null,
         ?StatusValue $status = null,
         ?PaymentStatusOutput $statusOutput = null,
-        ?string $id = null
+        ?string $id = null,
+        ?FundSplit $fundSplit = null
     ) {
         $this->captureOutput = $captureOutput;
         $this->status = $status;
         $this->statusOutput = $statusOutput;
         $this->id = $id;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -86,6 +96,17 @@ class CapturePaymentResponse
     public function setId(?string $id): self
     {
         $this->id = $id;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }
