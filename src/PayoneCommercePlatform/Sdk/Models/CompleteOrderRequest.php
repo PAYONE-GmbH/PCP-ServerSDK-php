@@ -13,7 +13,7 @@ class CompleteOrderRequest
     #[SerializedName('completePaymentMethodSpecificInput')]
     protected ?CompletePaymentMethodSpecificInput $completePaymentMethodSpecificInput;
 
-    public function __construct(?CompletePaymentMethodSpecificInput $completePaymentMethodSpecificInput)
+    public function __construct(?CompletePaymentMethodSpecificInput $completePaymentMethodSpecificInput = null)
     {
         $this->completePaymentMethodSpecificInput = $completePaymentMethodSpecificInput;
     }

@@ -17,17 +17,17 @@ class CompletePaymentProduct840SpecificInput
     protected ?bool $javaScriptSdkFlow;
 
     /**
-     * @var CompletePaymentProduct840Action|null Confirmation of the order status in case of PayPal SDK integration.
+     * @var CompletePaymentProduct840Action Confirmation of the order status in case of PayPal SDK integration.
      */
     #[SerializedName('action')]
-    protected ?CompletePaymentProduct840Action $action;
+    protected CompletePaymentProduct840Action $action;
 
     public function __construct(
-        ?bool $javaScriptSdkFlow = null,
-        ?CompletePaymentProduct840Action $action = null
+        CompletePaymentProduct840Action $action,
+        ?bool $javaScriptSdkFlow = null
     ) {
-        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
         $this->action = $action;
+        $this->javaScriptSdkFlow = $javaScriptSdkFlow;
     }
 
     public function getJavaScriptSdkFlow(): ?bool
@@ -41,12 +41,12 @@ class CompletePaymentProduct840SpecificInput
         return $this;
     }
 
-    public function getAction(): ?CompletePaymentProduct840Action
+    public function getAction(): CompletePaymentProduct840Action
     {
         return $this->action;
     }
 
-    public function setAction(?CompletePaymentProduct840Action $action): self
+    public function setAction(CompletePaymentProduct840Action $action): self
     {
         $this->action = $action;
         return $this;

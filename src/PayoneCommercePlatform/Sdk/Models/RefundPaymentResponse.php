@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\RefundOutput;
 use PayoneCommercePlatform\Sdk\Models\StatusValue;
 use PayoneCommercePlatform\Sdk\Models\PaymentStatusOutput;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 /**
  * @description This object has the numeric representation of the current Refund status, timestamp of last status change and performable action on the current Refund resource. In case of a rejected Refund, detailed error information is listed.
@@ -36,16 +37,24 @@ class RefundPaymentResponse
     #[SerializedName('id')]
     protected ?string $id;
 
+    /**
+     * @var FundSplit|null Fund split details for this refund.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
     public function __construct(
         ?RefundOutput $refundOutput = null,
         ?StatusValue $status = null,
         ?PaymentStatusOutput $statusOutput = null,
-        ?string $id = null
+        ?string $id = null,
+        ?FundSplit $fundSplit = null
     ) {
         $this->refundOutput = $refundOutput;
         $this->status = $status;
         $this->statusOutput = $statusOutput;
         $this->id = $id;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -90,6 +99,17 @@ class RefundPaymentResponse
     public function setId(?string $id): self
     {
         $this->id = $id;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }

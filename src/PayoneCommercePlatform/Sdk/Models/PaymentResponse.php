@@ -21,6 +21,7 @@ class PaymentResponse
     /**
      * @var StatusValue|null Current high-level status of the payment in a human-readable form.
      */
+    #[SerializedName('status')]
     protected ?StatusValue $status;
 
     /**

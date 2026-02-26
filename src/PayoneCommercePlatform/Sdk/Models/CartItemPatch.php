@@ -5,6 +5,7 @@ namespace PayoneCommercePlatform\Sdk\Models;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\CartItemInvoiceData;
 use PayoneCommercePlatform\Sdk\Models\OrderLineDetailsPatch;
+use PayoneCommercePlatform\Sdk\Models\CartItemSupplierReferences;
 
 /**
  * @description This object contains information of all items in the cart. If a cart item is provided, the productPrice and quantity is required.
@@ -23,12 +24,20 @@ class CartItemPatch
     #[SerializedName('orderLineDetails')]
     protected ?OrderLineDetailsPatch $orderLineDetails;
 
+    /**
+     * @var CartItemSupplierReferences|null Supplier references for the cart item.
+     */
+    #[SerializedName('supplierReferences')]
+    protected ?CartItemSupplierReferences $supplierReferences;
+
     public function __construct(
         ?CartItemInvoiceData $invoiceData = null,
-        ?OrderLineDetailsPatch $orderLineDetails = null
+        ?OrderLineDetailsPatch $orderLineDetails = null,
+        ?CartItemSupplierReferences $supplierReferences = null
     ) {
         $this->invoiceData = $invoiceData;
         $this->orderLineDetails = $orderLineDetails;
+        $this->supplierReferences = $supplierReferences;
     }
 
     // Getters and Setters
@@ -51,6 +60,17 @@ class CartItemPatch
     public function setOrderLineDetails(?OrderLineDetailsPatch $orderLineDetails): self
     {
         $this->orderLineDetails = $orderLineDetails;
+        return $this;
+    }
+
+    public function getSupplierReferences(): ?CartItemSupplierReferences
+    {
+        return $this->supplierReferences;
+    }
+
+    public function setSupplierReferences(?CartItemSupplierReferences $supplierReferences): self
+    {
+        $this->supplierReferences = $supplierReferences;
         return $this;
     }
 }

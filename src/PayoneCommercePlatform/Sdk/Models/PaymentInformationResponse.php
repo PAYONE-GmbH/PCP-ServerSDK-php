@@ -13,16 +13,16 @@ use PayoneCommercePlatform\Sdk\Models\PaymentEvent;
 class PaymentInformationResponse
 {
     /**
-     * @var string Unique ID of the Commerce Case.
+     * @var string|null Unique ID of the Commerce Case.
      */
     #[SerializedName('commerceCaseId')]
-    protected string $commerceCaseId;
+    protected ?string $commerceCaseId;
 
     /**
-     * @var string Unique ID of the Checkout.
+     * @var string|null Unique ID of the Checkout.
      */
     #[SerializedName('checkoutId')]
-    protected string $checkoutId;
+    protected ?string $checkoutId;
 
     /**
      * @var string|null Unique identifier of the customer.
@@ -31,10 +31,10 @@ class PaymentInformationResponse
     protected ?string $merchantCustomerId;
 
     /**
-     * @var string Unique ID of the Payment Information.
+     * @var string|null Unique ID of the Payment Information.
      */
     #[SerializedName('paymentInformationId')]
-    protected string $paymentInformationId;
+    protected ?string $paymentInformationId;
 
     /**
      * @var PaymentChannel|null Payment channel.
@@ -43,10 +43,10 @@ class PaymentInformationResponse
     protected ?PaymentChannel $paymentChannel;
 
     /**
-     * @var int Payment product identifier.
+     * @var int|null Payment product identifier.
      */
     #[SerializedName('paymentProductId')]
-    protected int $paymentProductId;
+    protected ?int $paymentProductId;
 
     /**
      * @var string|null Unique identifier of the POS terminal of the payment transaction.
@@ -91,11 +91,11 @@ class PaymentInformationResponse
     protected ?array $events;
 
     /**
-     * @param string $commerceCaseId Unique ID of the Commerce Case.
-     * @param string $checkoutId Unique ID of the Checkout.
-     * @param string $paymentInformationId Unique ID of the Payment Information.
+     * @param string|null $commerceCaseId Unique ID of the Commerce Case.
+     * @param string|null $checkoutId Unique ID of the Checkout.
+     * @param string|null $paymentInformationId Unique ID of the Payment Information.
      * @param PaymentChannel|null $paymentChannel Payment channel.
-     * @param int $paymentProductId Payment product identifier.
+     * @param int|null $paymentProductId Payment product identifier.
      * @param string|null $cardAcceptorId Unique ID that identifies a store location or transaction point and which refers to the contract number of the merchant accepting the card.
      * @param string|null $merchantReference Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR or terminal will be used. It is always the reference for external transactions. (e.g. card present payments, cash payments or payments processed by other payment providers).
      * @param string|null $terminalId Unique identifier of the POS terminal of the payment transaction.
@@ -106,10 +106,10 @@ class PaymentInformationResponse
      * @param PaymentEvent[]|null $events List of payment events.
      */
     public function __construct(
-        string $commerceCaseId,
-        string $checkoutId,
-        string $paymentInformationId,
-        int $paymentProductId,
+        ?string $commerceCaseId = null,
+        ?string $checkoutId = null,
+        ?string $paymentInformationId = null,
+        ?int $paymentProductId = null,
         ?string $cardAcceptorId = null,
         ?string $merchantReference = null,
         ?string $terminalId = null,
@@ -136,23 +136,23 @@ class PaymentInformationResponse
     }
 
     // Getters and Setters
-    public function getCommerceCaseId(): string
+    public function getCommerceCaseId(): ?string
     {
         return $this->commerceCaseId;
     }
 
-    public function setCommerceCaseId(string $commerceCaseId): self
+    public function setCommerceCaseId(?string $commerceCaseId): self
     {
         $this->commerceCaseId = $commerceCaseId;
         return $this;
     }
 
-    public function getCheckoutId(): string
+    public function getCheckoutId(): ?string
     {
         return $this->checkoutId;
     }
 
-    public function setCheckoutId(string $checkoutId): self
+    public function setCheckoutId(?string $checkoutId): self
     {
         $this->checkoutId = $checkoutId;
         return $this;
@@ -169,12 +169,12 @@ class PaymentInformationResponse
         return $this;
     }
 
-    public function getPaymentInformationId(): string
+    public function getPaymentInformationId(): ?string
     {
         return $this->paymentInformationId;
     }
 
-    public function setPaymentInformationId(string $paymentInformationId): self
+    public function setPaymentInformationId(?string $paymentInformationId): self
     {
         $this->paymentInformationId = $paymentInformationId;
         return $this;
@@ -191,12 +191,12 @@ class PaymentInformationResponse
         return $this;
     }
 
-    public function getPaymentProductId(): int
+    public function getPaymentProductId(): ?int
     {
         return $this->paymentProductId;
     }
 
-    public function setPaymentProductId(int $paymentProductId): self
+    public function setPaymentProductId(?int $paymentProductId): self
     {
         $this->paymentProductId = $paymentProductId;
         return $this;

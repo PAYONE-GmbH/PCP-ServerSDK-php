@@ -10,55 +10,55 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class StatusOutput
 {
     /**
-     * @var string The payment status of the checkout.
+     * @var string|null The payment status of the checkout.
      */
     #[SerializedName('paymentStatus')]
-    protected string $paymentStatus;
+    protected ?string $paymentStatus;
 
     /**
-     * @var bool Indicates whether the Checkout can still be modified. False if any payment is already in progress, true otherwise.
+     * @var bool|null Indicates whether the Checkout can still be modified. False if any payment is already in progress, true otherwise.
      */
     #[SerializedName('isModifiable')]
-    protected bool $isModifiable;
+    protected ?bool $isModifiable;
 
     /**
-     * @var int The amount yet to be paid in cents, always having 2 decimals.
+     * @var int|null The amount yet to be paid in cents, always having 2 decimals.
      */
     #[SerializedName('openAmount')]
-    protected int $openAmount;
+    protected ?int $openAmount;
 
     /**
-     * @var int The amount that has already been collected in cents, always having 2 decimals.
+     * @var int|null The amount that has already been collected in cents, always having 2 decimals.
      */
     #[SerializedName('collectedAmount')]
-    protected int $collectedAmount;
+    protected ?int $collectedAmount;
 
     /**
-     * @var int The amount that has already been cancelled in cents, always having 2 decimals.
+     * @var int|null The amount that has already been cancelled in cents, always having 2 decimals.
      */
     #[SerializedName('cancelledAmount')]
-    protected int $cancelledAmount;
+    protected ?int $cancelledAmount;
 
     /**
-     * @var int The amount that has been collected but was refunded to the customer in cents, always having 2 decimals.
+     * @var int|null The amount that has been collected but was refunded to the customer in cents, always having 2 decimals.
      */
     #[SerializedName('refundedAmount')]
-    protected int $refundedAmount;
+    protected ?int $refundedAmount;
 
     /**
-     * @var int The amount that has been collected but was charged back by the customer in cents, always having 2 decimals.
+     * @var int|null The amount that has been collected but was charged back by the customer in cents, always having 2 decimals.
      */
     #[SerializedName('chargebackAmount')]
-    protected int $chargebackAmount;
+    protected ?int $chargebackAmount;
 
     public function __construct(
-        string $paymentStatus,
-        bool $isModifiable,
-        int $openAmount,
-        int $collectedAmount,
-        int $cancelledAmount,
-        int $refundedAmount,
-        int $chargebackAmount
+        ?string $paymentStatus = null,
+        ?bool $isModifiable = null,
+        ?int $openAmount = null,
+        ?int $collectedAmount = null,
+        ?int $cancelledAmount = null,
+        ?int $refundedAmount = null,
+        ?int $chargebackAmount = null
     ) {
         $this->paymentStatus = $paymentStatus;
         $this->isModifiable = $isModifiable;
@@ -70,78 +70,78 @@ class StatusOutput
     }
 
     // Getters and Setters
-    public function getPaymentStatus(): string
+    public function getPaymentStatus(): ?string
     {
         return $this->paymentStatus;
     }
 
-    public function setPaymentStatus(string $paymentStatus): self
+    public function setPaymentStatus(?string $paymentStatus): self
     {
         $this->paymentStatus = $paymentStatus;
         return $this;
     }
 
-    public function getIsModifiable(): bool
+    public function getIsModifiable(): ?bool
     {
         return $this->isModifiable;
     }
 
-    public function setIsModifiable(bool $isModifiable): self
+    public function setIsModifiable(?bool $isModifiable): self
     {
         $this->isModifiable = $isModifiable;
         return $this;
     }
 
-    public function getOpenAmount(): int
+    public function getOpenAmount(): ?int
     {
         return $this->openAmount;
     }
 
-    public function setOpenAmount(int $openAmount): self
+    public function setOpenAmount(?int $openAmount): self
     {
         $this->openAmount = $openAmount;
         return $this;
     }
 
-    public function getCollectedAmount(): int
+    public function getCollectedAmount(): ?int
     {
         return $this->collectedAmount;
     }
 
-    public function setCollectedAmount(int $collectedAmount): self
+    public function setCollectedAmount(?int $collectedAmount): self
     {
         $this->collectedAmount = $collectedAmount;
         return $this;
     }
 
-    public function getCancelledAmount(): int
+    public function getCancelledAmount(): ?int
     {
         return $this->cancelledAmount;
     }
 
-    public function setCancelledAmount(int $cancelledAmount): self
+    public function setCancelledAmount(?int $cancelledAmount): self
     {
         $this->cancelledAmount = $cancelledAmount;
         return $this;
     }
 
-    public function getRefundedAmount(): int
+    public function getRefundedAmount(): ?int
     {
         return $this->refundedAmount;
     }
 
-    public function setRefundedAmount(int $refundedAmount): self
+    public function setRefundedAmount(?int $refundedAmount): self
     {
         $this->refundedAmount = $refundedAmount;
         return $this;
     }
 
-    public function getChargebackAmount(): int
+    public function getChargebackAmount(): ?int
     {
         return $this->chargebackAmount;
     }
 
-    public function setChargebackAmount(int $chargebackAmount): self
+    public function setChargebackAmount(?int $chargebackAmount): self
     {
         $this->chargebackAmount = $chargebackAmount;
         return $this;

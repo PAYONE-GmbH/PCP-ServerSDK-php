@@ -8,19 +8,19 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class BankPayoutMethodSpecificInput
 {
     /**
-     * @var int
+     * @var int|null
      */
     #[SerializedName('paymentProductId')]
-    private $paymentProductId;
+    private ?int $paymentProductId;
 
     /**
      * @var SepaTransferPaymentProduct772SpecificInput|null
      */
     #[SerializedName('paymentProduct772SpecificInput')]
-    private $paymentProduct772SpecificInput;
+    private ?SepaTransferPaymentProduct772SpecificInput $paymentProduct772SpecificInput;
 
     public function __construct(
-        int $paymentProductId,
+        ?int $paymentProductId = null,
         ?SepaTransferPaymentProduct772SpecificInput $paymentProduct772SpecificInput = null
     ) {
         $this->paymentProductId = $paymentProductId;
@@ -29,12 +29,12 @@ class BankPayoutMethodSpecificInput
 
 
     // Getters and Setters
-    public function getPaymentProductId(): int
+    public function getPaymentProductId(): ?int
     {
         return $this->paymentProductId;
     }
 
-    public function setPaymentProductId(int $paymentProductId): self
+    public function setPaymentProductId(?int $paymentProductId): self
     {
         $this->paymentProductId = $paymentProductId;
         return $this;

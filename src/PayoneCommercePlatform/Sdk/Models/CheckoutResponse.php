@@ -19,16 +19,16 @@ use DateTime;
 class CheckoutResponse
 {
     /**
-     * @var string Reference to the Commerce Case.
+     * @var string|null Reference to the Commerce Case.
      */
     #[SerializedName('commerceCaseId')]
-    protected string $commerceCaseId;
+    protected ?string $commerceCaseId;
 
     /**
-     * @var string Reference to the Checkout.
+     * @var string|null Reference to the Checkout.
      */
     #[SerializedName('checkoutId')]
-    protected string $checkoutId;
+    protected ?string $checkoutId;
 
     /**
      * @var string|null Unique identifier for the customer.
@@ -97,8 +97,8 @@ class CheckoutResponse
     protected ?array $allowedPaymentActions;
 
     /**
-     * @param string $commerceCaseId Reference to the Commerce Case.
-     * @param string $checkoutId Reference to the Checkout.
+     * @param string|null $commerceCaseId Reference to the Commerce Case.
+     * @param string|null $checkoutId Reference to the Checkout.
      * @param string|null $merchantCustomerId Unique identifier for the customer.
      * @param AmountOfMoney|null $amountOfMoney The amount of money for the checkout.
      * @param CheckoutReferences|null $references References for the checkout.
@@ -112,8 +112,8 @@ class CheckoutResponse
      * @param AllowedPaymentActions[]|null $allowedPaymentActions List of allowed payment actions.
      */
     public function __construct(
-        string $commerceCaseId,
-        string $checkoutId,
+        ?string $commerceCaseId = null,
+        ?string $checkoutId = null,
         ?string $merchantCustomerId = null,
         ?AmountOfMoney $amountOfMoney = null,
         ?CheckoutReferences $references = null,
@@ -142,23 +142,23 @@ class CheckoutResponse
     }
 
     // Getters and Setters
-    public function getCommerceCaseId(): string
+    public function getCommerceCaseId(): ?string
     {
         return $this->commerceCaseId;
     }
 
-    public function setCommerceCaseId(string $commerceCaseId): self
+    public function setCommerceCaseId(?string $commerceCaseId): self
     {
         $this->commerceCaseId = $commerceCaseId;
         return $this;
     }
 
-    public function getCheckoutId(): string
+    public function getCheckoutId(): ?string
     {
         return $this->checkoutId;
     }
 
-    public function setCheckoutId(string $checkoutId): self
+    public function setCheckoutId(?string $checkoutId): self
     {
         $this->checkoutId = $checkoutId;
         return $this;

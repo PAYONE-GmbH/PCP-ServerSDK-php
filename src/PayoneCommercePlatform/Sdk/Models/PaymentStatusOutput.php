@@ -19,6 +19,7 @@ class PaymentStatusOutput
     /**
      * @var StatusCategoryValue|null High-level status of the payment, payout or refund.
      */
+    #[SerializedName('statusCategory')]
     protected ?StatusCategoryValue $statusCategory;
 
     /**

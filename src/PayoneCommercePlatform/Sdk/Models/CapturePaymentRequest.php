@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\CancellationReason;
 use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
 use PayoneCommercePlatform\Sdk\Models\DeliveryInformation;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 /**
  * @description If the shopping cart is specified, a Capture is made with the amount of the shopping cart for the items that are specified.
@@ -42,18 +43,26 @@ class CapturePaymentRequest
     #[SerializedName('delivery')]
     protected ?DeliveryInformation $delivery;
 
+    /**
+     * @var FundSplit|null Fund split details for this capture.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
     public function __construct(
         ?int $amount = null,
         bool $isFinal = false,
         ?CancellationReason $cancellationReason = null,
         ?PaymentReferences $references = null,
-        ?DeliveryInformation $delivery = null
+        ?DeliveryInformation $delivery = null,
+        ?FundSplit $fundSplit = null
     ) {
         $this->amount = $amount;
         $this->isFinal = $isFinal;
         $this->cancellationReason = $cancellationReason;
         $this->references = $references;
         $this->delivery = $delivery;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -109,6 +118,17 @@ class CapturePaymentRequest
     public function setDelivery(?DeliveryInformation $delivery): self
     {
         $this->delivery = $delivery;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }
