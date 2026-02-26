@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\PaymentCreationOutput;
 use PayoneCommercePlatform\Sdk\Models\MerchantAction;
 use PayoneCommercePlatform\Sdk\Models\PaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 /**
  * @description Object containing details on the created payment it has directly be executed.
@@ -36,16 +37,24 @@ class CreatePaymentResponse
     #[SerializedName('paymentExecutionId')]
     protected ?string $paymentExecutionId;
 
+    /**
+     * @var FundSplit|null Fund split details for this payment.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
     public function __construct(
         ?PaymentCreationOutput $creationOutput = null,
         ?MerchantAction $merchantAction = null,
         ?PaymentResponse $payment = null,
-        ?string $paymentExecutionId = null
+        ?string $paymentExecutionId = null,
+        ?FundSplit $fundSplit = null
     ) {
         $this->creationOutput = $creationOutput;
         $this->merchantAction = $merchantAction;
         $this->payment = $payment;
         $this->paymentExecutionId = $paymentExecutionId;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -90,6 +99,17 @@ class CreatePaymentResponse
     public function setPaymentExecutionId(?string $paymentExecutionId): self
     {
         $this->paymentExecutionId = $paymentExecutionId;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }

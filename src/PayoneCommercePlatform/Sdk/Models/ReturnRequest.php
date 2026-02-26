@@ -5,6 +5,7 @@ namespace PayoneCommercePlatform\Sdk\Models;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\ReturnType;
 use PayoneCommercePlatform\Sdk\Models\ReturnItem;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 /**
  * @description Request to mark items of the respective Checkout as returned and to automatically refund a payment for those items. A Return can be created for a full or the partial ShoppingCart of the Checkout. The platform will automatically calculate the respective amount to trigger the Refund. For a partial Return a list of items must be provided. The item details for the Refund will be automatically loaded from the Checkout. The returnReason can be provided for reporting and reconciliation purposes but is not mandatory.
@@ -30,18 +31,27 @@ class ReturnRequest
     protected ?array $returnItems;
 
     /**
+     * @var FundSplit|null Fund split details for this return.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
+    /**
      * @param ReturnType|null $returnType The return type.
      * @param string|null $returnReason Reason of the Refund (e.g. communicated by or to the consumer).
      * @param ReturnItem[]|null $returnItems List of items to return.
+     * @param FundSplit|null $fundSplit Fund split details for this return.
      */
     public function __construct(
         ?ReturnType $returnType = null,
         ?string $returnReason = null,
-        ?array $returnItems = null
+        ?array $returnItems = null,
+        ?FundSplit $fundSplit = null
     ) {
         $this->returnType = $returnType;
         $this->returnReason = $returnReason;
         $this->returnItems = $returnItems;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -82,6 +92,17 @@ class ReturnRequest
     public function setReturnItems(?array $returnItems): self
     {
         $this->returnItems = $returnItems;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }

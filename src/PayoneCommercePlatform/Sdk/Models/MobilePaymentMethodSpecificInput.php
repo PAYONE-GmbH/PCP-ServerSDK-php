@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\MobilePaymentThreeDSecure;
 use PayoneCommercePlatform\Sdk\Models\PaymentProduct302SpecificInput;
 use PayoneCommercePlatform\Sdk\Models\AuthorizationMode;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct5002SpecificInput;
 
 /**
  * @description Object containing the specific input details for mobile payments.
@@ -49,10 +50,16 @@ class MobilePaymentMethodSpecificInput
     protected ?MobilePaymentThreeDSecure $threeDSecure;
 
     /**
-     * @var PaymentProduct302SpecificInput|null Specific input details for payment product 320.
+     * @var PaymentProduct302SpecificInput|null Specific input details for payment product 302.
      */
     #[SerializedName('paymentProduct302SpecificInput')]
     protected ?PaymentProduct302SpecificInput $paymentProduct302SpecificInput;
+
+    /**
+     * @var PaymentProduct5002SpecificInput|null Specific input details for payment product 5002.
+     */
+    #[SerializedName('paymentProduct5002SpecificInput')]
+    protected ?PaymentProduct5002SpecificInput $paymentProduct5002SpecificInput;
 
     public function __construct(
         ?int $paymentProductId = null,
@@ -61,7 +68,8 @@ class MobilePaymentMethodSpecificInput
         ?string $publicKeyHash = null,
         ?string $ephemeralKey = null,
         ?MobilePaymentThreeDSecure $threeDSecure = null,
-        ?PaymentProduct302SpecificInput $paymentProduct302SpecificInput = null
+        ?PaymentProduct302SpecificInput $paymentProduct302SpecificInput = null,
+        ?PaymentProduct5002SpecificInput $paymentProduct5002SpecificInput = null
     ) {
         $this->paymentProductId = $paymentProductId;
         $this->authorizationMode = $authorizationMode;
@@ -70,6 +78,7 @@ class MobilePaymentMethodSpecificInput
         $this->ephemeralKey = $ephemeralKey;
         $this->threeDSecure = $threeDSecure;
         $this->paymentProduct302SpecificInput = $paymentProduct302SpecificInput;
+        $this->paymentProduct5002SpecificInput = $paymentProduct5002SpecificInput;
     }
 
     // Getters and Setters
@@ -147,6 +156,17 @@ class MobilePaymentMethodSpecificInput
     public function setPaymentProduct302SpecificInput(?PaymentProduct302SpecificInput $paymentProduct302SpecificInput): self
     {
         $this->paymentProduct302SpecificInput = $paymentProduct302SpecificInput;
+        return $this;
+    }
+
+    public function getPaymentProduct5002SpecificInput(): ?PaymentProduct5002SpecificInput
+    {
+        return $this->paymentProduct5002SpecificInput;
+    }
+
+    public function setPaymentProduct5002SpecificInput(?PaymentProduct5002SpecificInput $paymentProduct5002SpecificInput): self
+    {
+        $this->paymentProduct5002SpecificInput = $paymentProduct5002SpecificInput;
         return $this;
     }
 }

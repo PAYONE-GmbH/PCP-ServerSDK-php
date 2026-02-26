@@ -11,24 +11,24 @@ use PayoneCommercePlatform\Sdk\Models\AddressPersonal;
 class Shipping
 {
     /**
-     * @var AddressPersonal Shipping address details.
+     * @var AddressPersonal|null Shipping address details.
      */
     #[SerializedName('address')]
-    protected AddressPersonal $address;
+    protected ?AddressPersonal $address;
 
     public function __construct(
-        AddressPersonal $address,
+        ?AddressPersonal $address = null,
     ) {
         $this->address = $address;
     }
 
     // Getters and Setters
-    public function getAddress(): AddressPersonal
+    public function getAddress(): ?AddressPersonal
     {
         return $this->address;
     }
 
-    public function setAddress(AddressPersonal $address): self
+    public function setAddress(?AddressPersonal $address): self
     {
         $this->address = $address;
         return $this;

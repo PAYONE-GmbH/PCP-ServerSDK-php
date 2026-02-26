@@ -14,6 +14,18 @@ use PayoneCommercePlatform\Sdk\Models\PaymentType;
 class PaymentEvent
 {
     /**
+     * @var string|null Unique identifier of the payment event (UUID, read-only).
+     */
+    #[SerializedName('paymentEventId')]
+    protected ?string $paymentEventId;
+
+    /**
+     * @var string|null Date and time of creation of the payment event (date-time, read-only).
+     */
+    #[SerializedName('creationDateTime')]
+    protected ?string $creationDateTime;
+
+    /**
      * @var PaymentType|null Type of the payment event.
      */
     #[SerializedName('type')]
@@ -50,6 +62,8 @@ class PaymentEvent
     protected ?PaymentInstructions $paymentInstructions;
 
     public function __construct(
+        ?string $paymentEventId = null,
+        ?string $creationDateTime = null,
         ?PaymentType $type = null,
         ?AmountOfMoney $amountOfMoney = null,
         ?StatusValue $paymentStatus = null,
@@ -57,6 +71,8 @@ class PaymentEvent
         ?string $returnReason = null,
         ?PaymentInstructions $paymentInstructions = null
     ) {
+        $this->paymentEventId = $paymentEventId;
+        $this->creationDateTime = $creationDateTime;
         $this->type = $type;
         $this->amountOfMoney = $amountOfMoney;
         $this->paymentStatus = $paymentStatus;
@@ -66,6 +82,28 @@ class PaymentEvent
     }
 
     // Getters and Setters
+    public function getPaymentEventId(): ?string
+    {
+        return $this->paymentEventId;
+    }
+
+    public function setPaymentEventId(?string $paymentEventId): self
+    {
+        $this->paymentEventId = $paymentEventId;
+        return $this;
+    }
+
+    public function getCreationDateTime(): ?string
+    {
+        return $this->creationDateTime;
+    }
+
+    public function setCreationDateTime(?string $creationDateTime): self
+    {
+        $this->creationDateTime = $creationDateTime;
+        return $this;
+    }
+
     public function getType(): ?PaymentType
     {
         return $this->type;

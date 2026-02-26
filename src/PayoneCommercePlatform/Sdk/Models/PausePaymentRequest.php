@@ -5,43 +5,27 @@ namespace PayoneCommercePlatform\Sdk\Models;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
- * Request to refresh the payment status of a specific payment.
+ * @description Request to pause a payment for a specific payment method.
  */
 class PausePaymentRequest
 {
     /**
-     * Type of refresh action to be performed.
-     *
-     * @var \PayoneCommercePlatform\Sdk\Models\RefreshType
+     * @var RefreshType|null Type of refresh action to be performed.
      */
     #[SerializedName('refreshType')]
-    public RefreshType $refreshType;
+    protected ?RefreshType $refreshType;
 
-    /**
-     * @param RefreshType $refreshType Type of refresh action to be performed.
-     */
-    public function __construct(RefreshType $refreshType)
+    public function __construct(?RefreshType $refreshType = null)
     {
         $this->refreshType = $refreshType;
     }
 
-    /**
-     * Get the refresh type
-     *
-     * @return RefreshType
-     */
-    public function getRefreshType(): RefreshType
+    public function getRefreshType(): ?RefreshType
     {
         return $this->refreshType;
     }
 
-    /**
-     * Set the refresh type
-     *
-     * @param RefreshType $refreshType Type of refresh action to be performed.
-     * @return self
-     */
-    public function setRefreshType(RefreshType $refreshType): self
+    public function setRefreshType(?RefreshType $refreshType): self
     {
         $this->refreshType = $refreshType;
         return $this;

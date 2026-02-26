@@ -17,7 +17,7 @@ class MobilePaymentThreeDSecure
     protected ?RedirectionData $redirectionData;
 
 
-    public function __construct(?RedirectionData $redirectionData)
+    public function __construct(?RedirectionData $redirectionData = null)
     {
         $this->redirectionData = $redirectionData;
     }

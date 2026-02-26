@@ -18,10 +18,10 @@ class CompleteFinancingPaymentMethodSpecificInput
     protected ?int $paymentProductId;
 
     /**
-     * @var bool Indicates whether the payment requires approval before the funds will be captured using the Approve payment or Capture payment API.
+     * @var bool|null Indicates whether the payment requires approval before the funds will be captured using the Approve payment or Capture payment API.
      */
     #[SerializedName('requiresApproval')]
-    protected bool $requiresApproval;
+    protected ?bool $requiresApproval;
 
     /**
      * @var PaymentProduct3391SpecificInput|null Specific input information for PAYONE Secured Installment.
@@ -30,8 +30,8 @@ class CompleteFinancingPaymentMethodSpecificInput
     protected ?PaymentProduct3391SpecificInput $paymentProduct3391SpecificInput;
 
     public function __construct(
-        ?int $paymentProductId = 3391,
-        bool $requiresApproval = true,
+        ?int $paymentProductId = null,
+        ?bool $requiresApproval = null,
         ?PaymentProduct3391SpecificInput $paymentProduct3391SpecificInput = null
     ) {
         $this->paymentProductId = $paymentProductId;
@@ -51,12 +51,12 @@ class CompleteFinancingPaymentMethodSpecificInput
         return $this;
     }
 
-    public function getRequiresApproval(): bool
+    public function getRequiresApproval(): ?bool
     {
         return $this->requiresApproval;
     }
 
-    public function setRequiresApproval(bool $requiresApproval): self
+    public function setRequiresApproval(?bool $requiresApproval): self
     {
         $this->requiresApproval = $requiresApproval;
         return $this;

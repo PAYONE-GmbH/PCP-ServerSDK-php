@@ -6,6 +6,7 @@ use PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPayment;
 use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformationInput;
 use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformationInput;
 use PayoneCommercePlatform\Sdk\Models\MobilePaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\MobilePaymentNetwork;
 use PayoneCommercePlatform\Sdk\Models\PaymentProduct302SpecificInput;
 
 class ApplePayTransformer
@@ -16,7 +17,7 @@ class ApplePayTransformer
         $publicKeyHash = null;
         /** @var string|null */
         $ephemeralKey = null;
-        /** @var string|null */
+        /** @var MobilePaymentNetwork|null */
         $network = null;
         /** @var string|null */
         $version = null;
@@ -38,7 +39,8 @@ class ApplePayTransformer
             $transactionId = $payment->getToken()->getPaymentData()->getHeader()->getTransactionId();
         }
         if ($payment->getToken() !== null && $payment->getToken()->getPaymentMethod() !== null) {
-            $network = $payment->getToken()->getPaymentMethod()->getNetwork();
+            $rawNetwork = $payment->getToken()->getPaymentMethod()->getNetwork();
+            $network = $rawNetwork !== null ? MobilePaymentNetwork::tryFrom(strtoupper($rawNetwork)) : null;
         }
 
         return new MobilePaymentMethodSpecificInput(
@@ -48,10 +50,10 @@ class ApplePayTransformer
             paymentProduct302SpecificInput: new PaymentProduct302SpecificInput(
                 network: $network,
                 token: new ApplePaymentDataTokenInformationInput(
-                    version: $version,
-                    signature: $signature,
+                    version: $version ?? '',
+                    signature: $signature ?? '',
                     header: new ApplePaymentDataTokenHeaderInformationInput(
-                        transactionId: $transactionId,
+                        transactionId: $transactionId ?? '',
                         applicationData: $applicationData
                     ),
                 )

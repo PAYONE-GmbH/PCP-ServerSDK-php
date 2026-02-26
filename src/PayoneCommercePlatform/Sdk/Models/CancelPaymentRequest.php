@@ -8,24 +8,24 @@ use PayoneCommercePlatform\Sdk\Models\CancellationReason;
 class CancelPaymentRequest
 {
     /**
-     * @var CancellationReason Reason why an order was cancelled.
+     * @var CancellationReason|null Reason why an order was cancelled.
      */
     #[SerializedName('cancellationReason')]
-    protected CancellationReason $cancellationReason;
+    protected ?CancellationReason $cancellationReason;
 
     public function __construct(
-        CancellationReason $cancellationReason,
+        ?CancellationReason $cancellationReason = null,
     ) {
         $this->cancellationReason = $cancellationReason;
     }
 
     // Getters and Setters
-    public function getCancellationReason(): CancellationReason
+    public function getCancellationReason(): ?CancellationReason
     {
         return $this->cancellationReason;
     }
 
-    public function setCancellationReason(CancellationReason $cancellationReason): self
+    public function setCancellationReason(?CancellationReason $cancellationReason): self
     {
         $this->cancellationReason = $cancellationReason;
         return $this;
