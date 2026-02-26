@@ -1,3 +1,9 @@
+# [1.7.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.5.0...v1.7.0) (2026-02-26)
+### Bug Fixes
+* fix: update merchantReference type and constructor to ensure it is always provided ([85d002b5d5063fa391252a1db658f2d1064a8f68](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/85d002b5d5063fa391252a1db658f2d1064a8f68))
+### Features
+* feat: add paypal properties ([c0a7b69b27f39c4f88ac4c94ce626d13dab5033a](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/c0a7b69b27f39c4f88ac4c94ce626d13dab5033a))
+* feat: implement api version 1.48.0 ([bd9cf189b9a963baf7bd1652b1ca65a9a909fc9e](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/bd9cf189b9a963baf7bd1652b1ca65a9a909fc9e))
 # [1.5.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.3.1...v1.5.0) (2025-12-11)
 ### Features
 * feat: add changes for api version 1.40.0 ([50cbcd007d799c4388bb9d4d968db9185c4a2c04](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/50cbcd007d799c4388bb9d4d968db9185c4a2c04))
