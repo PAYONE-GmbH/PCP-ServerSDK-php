@@ -5,8 +5,6 @@ namespace PayoneCommercePlatform\Sdk\ApiClient;
 use GuzzleHttp\Psr7\Request;
 use PayoneCommercePlatform\Sdk\Models\CancelRequest;
 use PayoneCommercePlatform\Sdk\Models\CancelResponse;
-use PayoneCommercePlatform\Sdk\Models\CompleteOrderRequest;
-use PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\DeliverRequest;
 use PayoneCommercePlatform\Sdk\Models\DeliverResponse;
 use PayoneCommercePlatform\Sdk\Models\OrderRequest;
@@ -295,75 +293,6 @@ class OrderManagementCheckoutActionsApiClient extends BaseApiClient
         if ($returnRequest !== null) {
             $httpBody = self::serializeJson($returnRequest);
         }
-
-        $operationHost = $this->config->getHost();
-        return new Request(
-            'POST',
-            $operationHost . $resourcePath,
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation completeOrder
-     *
-     * Complete a previously created Order
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CompleteOrderRequest $completeOrderRequest completeOrderRequest (required)
-     *
-     * @throws ApiErrorResponseException|ApiResponseRetrievalException
-     * @return \PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse
-     */
-    public function completeOrder(string $merchantId, string $commerceCaseId, string $checkoutId, CompleteOrderRequest $completeOrderRequest): CompletePaymentResponse
-    {
-        $request = $this->completeOrderRequest($merchantId, $commerceCaseId, $checkoutId, $completeOrderRequest);
-        return $this->makeApiCall($request, CompletePaymentResponse::class)[0];
-    }
-
-    /**
-     * Create request for operation 'completeOrder'
-     *
-     * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
-     * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  string $checkoutId Unique identifier of a Checkout (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\CompleteOrderRequest $completeOrderRequest completeOrderRequest (required)
-     *
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    protected function completeOrderRequest(
-        string $merchantId,
-        string $commerceCaseId,
-        string $checkoutId,
-        CompleteOrderRequest $completeOrderRequest
-    ): Request {
-        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/complete-order';
-        $httpBody = '';
-
-        // path params
-        $resourcePath = str_replace(
-            '{' . 'merchantId' . '}',
-            rawurlencode($merchantId),
-            $resourcePath
-        );
-        $resourcePath = str_replace(
-            '{' . 'commerceCaseId' . '}',
-            rawurlencode($commerceCaseId),
-            $resourcePath
-        );
-        $resourcePath = str_replace(
-            '{' . 'checkoutId' . '}',
-            rawurlencode($checkoutId),
-            $resourcePath
-        );
-
-        /** @var array<string, string> */
-        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
-
-        $httpBody = self::serializeJson($completeOrderRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(

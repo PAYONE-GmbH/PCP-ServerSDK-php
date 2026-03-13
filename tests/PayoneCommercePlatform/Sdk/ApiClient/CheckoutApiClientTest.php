@@ -15,7 +15,15 @@ use PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\PatchCheckoutRequest;
+use PayoneCommercePlatform\Sdk\Models\PaymentCreationOutput;
+use PayoneCommercePlatform\Sdk\Models\CompleteOrderRequest;
+use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct3391SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840Action;
 use PayoneCommercePlatform\Sdk\Models\Shipping;
 use PayoneCommercePlatform\Sdk\Queries\GetCheckoutsQuery;
 
@@ -208,5 +216,72 @@ class CheckoutApiClientTest extends TestCase
 
         $payload = new PatchCheckoutRequest();
         $this->checkoutClient->updateCheckout('1', '2', '3', $payload);
+    }
+
+    public function testCompleteCheckout(): void
+    {
+        $completePaymentResponse = new CompletePaymentResponse(
+            creationOutput: new PaymentCreationOutput(
+                externalReference: 'test-external-reference'
+            )
+        );
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: CheckoutApiClient::serializeJson($completePaymentResponse)));
+        $completeOrderRequest = new CompleteOrderRequest(
+            completePaymentMethodSpecificInput: new CompletePaymentMethodSpecificInput(
+                paymentProduct3391SpecificInput: new PaymentProduct3391SpecificInput(
+                    installmentOptionId: 'test-installment-option-id',
+                    bankAccountInformation: new BankAccountInformation(
+                        iban: 'DE89370400440532013000',
+                        bic: 'COBADEFFXXX',
+                        accountHolder: 'Max Mustermann'
+                    )
+                ),
+                paymentProduct840SpecificInput: new CompletePaymentProduct840SpecificInput(
+                    javaScriptSdkFlow: true,
+                    action: CompletePaymentProduct840Action::CONFIRM_ORDER_STATUS
+                )
+            )
+        );
+
+        $response = $this->checkoutClient->completeCheckout('1', '2', '3', $completeOrderRequest);
+
+        $this->assertEquals($completePaymentResponse, $response);
+    }
+
+    public function testCompleteCheckoutUnsuccessful400(): void
+    {
+        // arrange
+        $errorResponse = $this->makeErrorResponse();
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: CheckoutApiClient::serializeJson($errorResponse)));
+        $this->expectException(ApiErrorResponseException::class);
+        $this->expectExceptionCode(400);
+
+        // act
+        $completeOrderRequest = new CompleteOrderRequest(
+            completePaymentMethodSpecificInput: new CompletePaymentMethodSpecificInput(
+                paymentProduct3391SpecificInput: new PaymentProduct3391SpecificInput(
+                    installmentOptionId: 'test-installment-option-id-unsuccessful-400',
+                    bankAccountInformation: new BankAccountInformation(
+                        iban: 'DE89370400440532013000',
+                        bic: 'COBADEFFXXX',
+                        accountHolder: 'Max Mustermann'
+                    )
+                )
+            )
+        );
+
+        $this->checkoutClient->completeCheckout('1', '2', '3', $completeOrderRequest);
+    }
+
+    public function testCompleteCheckoutUnsuccessful500(): void
+    {
+        // arrange
+        $this->httpClient->method('send')->willReturn(new Response(status: 500, body: 'invalid'));
+        $this->expectException(ApiResponseRetrievalException::class);
+        $this->expectExceptionCode(500);
+
+        // act
+        $completeOrderRequest = new CompleteOrderRequest(null);
+        $this->checkoutClient->completeCheckout('1', '2', '3', $completeOrderRequest);
     }
 }
