@@ -253,6 +253,17 @@ class ApplePayPaymentContact
         return $this;
     }
 
+    public function getSubAdministrativeArea(): ?string
+    {
+        return $this->subAdministrativeArea;
+    }
+
+    public function setSubAdministrativeArea(?string $subAdministrativeArea): self
+    {
+        $this->subAdministrativeArea = $subAdministrativeArea;
+        return $this;
+    }
+
     public function getCountry(): ?string
     {
         return $this->country;

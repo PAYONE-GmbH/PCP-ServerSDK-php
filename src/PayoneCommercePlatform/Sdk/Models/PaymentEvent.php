@@ -7,6 +7,7 @@ use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
 use PayoneCommercePlatform\Sdk\Models\StatusValue;
 use PayoneCommercePlatform\Sdk\Models\CancellationReason;
 use PayoneCommercePlatform\Sdk\Models\PaymentType;
+use DateTime;
 
 /**
  * @description Detailed information regarding an occurred payment event.
@@ -20,10 +21,10 @@ class PaymentEvent
     protected ?string $paymentEventId;
 
     /**
-     * @var string|null Date and time of creation of the payment event (date-time, read-only).
+     * @var DateTime|null Date and time of creation of the payment event (date-time, read-only).
      */
     #[SerializedName('creationDateTime')]
-    protected ?string $creationDateTime;
+    protected ?DateTime $creationDateTime;
 
     /**
      * @var PaymentType|null Type of the payment event.
@@ -61,15 +62,22 @@ class PaymentEvent
     #[SerializedName('paymentInstructions')]
     protected ?PaymentInstructions $paymentInstructions;
 
+    /**
+     * @var string|null Unique reference from the merchant that was used when the event was created (e.g. from the capture request).
+     */
+    #[SerializedName('merchantReference')]
+    protected ?string $merchantReference;
+
     public function __construct(
         ?string $paymentEventId = null,
-        ?string $creationDateTime = null,
+        ?DateTime $creationDateTime = null,
         ?PaymentType $type = null,
         ?AmountOfMoney $amountOfMoney = null,
         ?StatusValue $paymentStatus = null,
         ?CancellationReason $cancellationReason = null,
         ?string $returnReason = null,
-        ?PaymentInstructions $paymentInstructions = null
+        ?PaymentInstructions $paymentInstructions = null,
+        ?string $merchantReference = null
     ) {
         $this->paymentEventId = $paymentEventId;
         $this->creationDateTime = $creationDateTime;
@@ -79,6 +87,7 @@ class PaymentEvent
         $this->cancellationReason = $cancellationReason;
         $this->returnReason = $returnReason;
         $this->paymentInstructions = $paymentInstructions;
+        $this->merchantReference = $merchantReference;
     }
 
     // Getters and Setters
@@ -93,12 +102,12 @@ class PaymentEvent
         return $this;
     }
 
-    public function getCreationDateTime(): ?string
+    public function getCreationDateTime(): ?DateTime
     {
         return $this->creationDateTime;
     }
 
-    public function setCreationDateTime(?string $creationDateTime): self
+    public function setCreationDateTime(?DateTime $creationDateTime): self
     {
         $this->creationDateTime = $creationDateTime;
         return $this;
@@ -167,6 +176,17 @@ class PaymentEvent
     public function setPaymentInstructions(?PaymentInstructions $paymentInstructions): self
     {
         $this->paymentInstructions = $paymentInstructions;
+        return $this;
+    }
+
+    public function getMerchantReference(): ?string
+    {
+        return $this->merchantReference;
+    }
+
+    public function setMerchantReference(?string $merchantReference): self
+    {
+        $this->merchantReference = $merchantReference;
         return $this;
     }
 }

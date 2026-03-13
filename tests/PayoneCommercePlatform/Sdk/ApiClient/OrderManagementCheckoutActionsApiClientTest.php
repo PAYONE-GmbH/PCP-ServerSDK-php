@@ -31,6 +31,14 @@ use PayoneCommercePlatform\Sdk\Models\ReturnType;
 use PayoneCommercePlatform\Sdk\Models\ShoppingCartResult;
 use PayoneCommercePlatform\Sdk\Models\StatusValue;
 use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
+use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
+use PayoneCommercePlatform\Sdk\Models\CompleteOrderRequest;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentMethodSpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840Action;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\PaymentCreationOutput;
+use PayoneCommercePlatform\Sdk\Models\PaymentProduct3391SpecificInput;
 
 class OrderManagementCheckoutActionsApiClientTest extends TestCase
 {
@@ -192,5 +200,72 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
 
         $payload = new ReturnRequest(returnType: ReturnType::PARTIAL, returnReason: 'didnt like it');
         $this->orderManagementCheckoutActionsApiClient->returnOrder('1', '2', '3', $payload);
+    }
+
+    public function testCompleteOrderSuccessful(): void
+    {
+        $completePaymentResponse = new CompletePaymentResponse(
+            creationOutput: new PaymentCreationOutput(
+                externalReference: 'test-external-reference'
+            )
+        );
+        $this->httpClient->method('send')->willReturn(new Response(status: 200, body: OrderManagementCheckoutActionsApiClient::serializeJson($completePaymentResponse)));
+        $completeOrderRequest = new CompleteOrderRequest(
+            completePaymentMethodSpecificInput: new CompletePaymentMethodSpecificInput(
+                paymentProduct3391SpecificInput: new PaymentProduct3391SpecificInput(
+                    installmentOptionId: 'test-installment-option-id',
+                    bankAccountInformation: new BankAccountInformation(
+                        iban: 'DE89370400440532013000',
+                        bic: 'COBADEFFXXX',
+                        accountHolder: 'Max Mustermann'
+                    )
+                ),
+                paymentProduct840SpecificInput: new CompletePaymentProduct840SpecificInput(
+                    javaScriptSdkFlow: true,
+                    action: CompletePaymentProduct840Action::CONFIRM_ORDER_STATUS
+                )
+            )
+        );
+
+        $response = $this->orderManagementCheckoutActionsApiClient->completeOrder('1', '2', '3', $completeOrderRequest);
+
+        $this->assertEquals($completePaymentResponse, $response);
+    }
+
+    public function testCompleteOrderUnsuccessful400(): void
+    {
+        // arrange
+        $errorResponse = $this->makeErrorResponse();
+        $this->httpClient->method('send')->willReturn(new Response(status: 400, body: OrderManagementCheckoutActionsApiClient::serializeJson($errorResponse)));
+        $this->expectException(ApiErrorResponseException::class);
+        $this->expectExceptionCode(400);
+
+        // act
+        $completeOrderRequest = new CompleteOrderRequest(
+            completePaymentMethodSpecificInput: new CompletePaymentMethodSpecificInput(
+                paymentProduct3391SpecificInput: new PaymentProduct3391SpecificInput(
+                    installmentOptionId: 'test-installment-option-id-unsuccessful-400',
+                    bankAccountInformation: new BankAccountInformation(
+                        iban: 'DE89370400440532013000',
+                        bic: 'COBADEFFXXX',
+                        accountHolder: 'Max Mustermann'
+                    )
+                )
+            )
+        );
+
+        $this->orderManagementCheckoutActionsApiClient->completeOrder('1', '2', '3', $completeOrderRequest);
+    }
+
+    public function testCompleteOrderUnsuccessful500(): void
+    {
+        // arrange
+        $this->httpClient->method('send')->willReturn(new Response(status: 500, body: 'invalid'));
+        $this->expectException(ApiResponseRetrievalException::class);
+        $this->expectExceptionCode(500);
+
+        // act
+        $completeOrderRequest = new CompleteOrderRequest(null);
+        $this->orderManagementCheckoutActionsApiClient->completeOrder('1', '2', '3', $completeOrderRequest);
     }
 }

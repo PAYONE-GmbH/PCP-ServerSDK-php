@@ -10,19 +10,19 @@ class Payee
      * @var string
      */
     #[SerializedName('iban')]
-    private string $iban;
+    protected string $iban;
 
     /**
      * @var string|null
      */
     #[SerializedName('bic')]
-    private ?string $bic;
+    protected ?string $bic;
 
     /**
      * @var string
      */
     #[SerializedName('name')]
-    private string $name;
+    protected string $name;
 
     public function __construct(
         string $name,

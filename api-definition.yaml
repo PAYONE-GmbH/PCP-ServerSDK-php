@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.48.0
+  version: 1.49.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -3552,16 +3552,17 @@ components:
       additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/OrderLineDetailsInput'
-      properties:
-        id:
-          description: Unique identifier of a cart item
-          type: string
-          format: UUID
-          example: 7a3444d3-f6ce-4b6e-b6c4-2486a160cf19
-        status:
-          type: array
-          items:
-            $ref: '#/components/schemas/CartItemOrderStatus'
+        - type: object
+          properties:
+            id:
+              description: Unique identifier of a cart item
+              type: string
+              format: UUID
+              example: 7a3444d3-f6ce-4b6e-b6c4-2486a160cf19
+            status:
+              type: array
+              items:
+                $ref: '#/components/schemas/CartItemOrderStatus'
     OrderLineDetailsResult:
       type: object
       description: |
@@ -3629,7 +3630,6 @@ components:
       enum:
         - FULL
         - PARTIAL
-      readOnly: true
     PatchCheckoutRequest:
       type: object
       description: |
@@ -3743,6 +3743,12 @@ components:
             * YYYY-MM-DD'T'HH:mm:ss+XX:XX
             * YYYY-MM-DD'T'HH:mm:ss-XX:XX
           example: 2022-01-01T00:00:00Z
+        merchantReference:
+          type: string
+          description: |-
+            Unique reference from the merchant that was used when the event was created (e.g. from the capture request).
+          maxLength: 20
+          example: your-order-6372
     PaymentExecution:
       type: object
       description: |-
@@ -4191,6 +4197,19 @@ components:
             Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
           maxLength: 20
           example: your-order-6372
+    PaymentReferencesForRefund:
+      type: object
+      description: Object that holds all reference properties that are linked to this transaction.
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/PaymentReferences'
+        - type: object
+          properties:
+            captureReference:
+              description: |-
+                Reference of the capture that should be used for the refund.
+              example: your-order-6372
+              type: string
     PaymentResponse:
       type: object
       description: Object that holds the payment related properties.
@@ -4649,7 +4668,7 @@ components:
         amountOfMoney:
           $ref: '#/components/schemas/PositiveAmountOfMoney'
         references:
-          $ref: '#/components/schemas/PaymentReferences'
+          $ref: '#/components/schemas/PaymentReferencesForRefund'
         return:
           $ref: '#/components/schemas/ReturnInformation'
         fundSplit:
@@ -4982,4 +5001,3 @@ components:
         - first
         - subsequent
       x-enum-to-string: false
-      

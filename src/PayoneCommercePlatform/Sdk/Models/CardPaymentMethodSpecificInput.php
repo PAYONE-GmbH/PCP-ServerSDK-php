@@ -9,6 +9,7 @@ use PayoneCommercePlatform\Sdk\Models\TransactionChannel;
 use PayoneCommercePlatform\Sdk\Models\UnscheduledCardOnFileRequestor;
 use PayoneCommercePlatform\Sdk\Models\UnscheduledCardOnFileSequenceIndicator;
 use PayoneCommercePlatform\Sdk\Models\CardInfo;
+use PayoneCommercePlatform\Sdk\Models\CardOnFileRecurringFrequency;
 
 /**
  * @description Object containing the specific input details for card payments.
@@ -76,10 +77,10 @@ class CardPaymentMethodSpecificInput
     protected ?string $returnUrl;
 
     /**
-     * @var string|null Period of payment occurrence for recurring and installment payments.
+     * @var CardOnFileRecurringFrequency|null Period of payment occurrence for recurring and installment payments.
      */
     #[SerializedName('cardOnFileRecurringFrequency')]
-    protected ?string $cardOnFileRecurringFrequency;
+    protected ?CardOnFileRecurringFrequency $cardOnFileRecurringFrequency;
 
     /**
      * @var string|null The end date of the last scheduled payment in a series of transactions. Format YYYYMMDD.
@@ -98,7 +99,7 @@ class CardPaymentMethodSpecificInput
         ?int $paymentProductId = null,
         ?CardInfo $card = null,
         ?string $returnUrl = null,
-        ?string $cardOnFileRecurringFrequency = null,
+        ?CardOnFileRecurringFrequency $cardOnFileRecurringFrequency = null,
         ?string $cardOnFileRecurringExpiration = null
     ) {
         $this->authorizationMode = $authorizationMode;
@@ -226,12 +227,12 @@ class CardPaymentMethodSpecificInput
         return $this;
     }
 
-    public function getCardOnFileRecurringFrequency(): ?string
+    public function getCardOnFileRecurringFrequency(): ?CardOnFileRecurringFrequency
     {
         return $this->cardOnFileRecurringFrequency;
     }
 
-    public function setCardOnFileRecurringFrequency(?string $cardOnFileRecurringFrequency): self
+    public function setCardOnFileRecurringFrequency(?CardOnFileRecurringFrequency $cardOnFileRecurringFrequency): self
     {
         $this->cardOnFileRecurringFrequency = $cardOnFileRecurringFrequency;
         return $this;

@@ -11,13 +11,13 @@ class BankPayoutMethodSpecificInput
      * @var int|null
      */
     #[SerializedName('paymentProductId')]
-    private ?int $paymentProductId;
+    protected ?int $paymentProductId;
 
     /**
      * @var SepaTransferPaymentProduct772SpecificInput|null
      */
     #[SerializedName('paymentProduct772SpecificInput')]
-    private ?SepaTransferPaymentProduct772SpecificInput $paymentProduct772SpecificInput;
+    protected ?SepaTransferPaymentProduct772SpecificInput $paymentProduct772SpecificInput;
 
     public function __construct(
         ?int $paymentProductId = null,
