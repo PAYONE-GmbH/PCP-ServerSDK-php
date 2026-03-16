@@ -52,4 +52,71 @@ class CommunicatorConfigurationTest extends TestCase
         $config->setHttpClient(null);
         $this->assertNull($config->getHttpClient());
     }
+
+    public function testOnRequestBodyDefaultsToNull(): void
+    {
+        $config = new CommunicatorConfiguration(apiKey: 'test', apiSecret: 'secret');
+
+        $this->assertNull($config->getOnRequestBody());
+    }
+
+    public function testOnResponseBodyDefaultsToNull(): void
+    {
+        $config = new CommunicatorConfiguration(apiKey: 'test', apiSecret: 'secret');
+
+        $this->assertNull($config->getOnResponseBody());
+    }
+
+    public function testOnRequestBodyCanBeSetViaConstructor(): void
+    {
+        $cb = static function (string $body): void {};
+        $config = new CommunicatorConfiguration(apiKey: 'test', apiSecret: 'secret', onRequestBody: $cb);
+
+        $this->assertSame($cb, $config->getOnRequestBody());
+    }
+
+    public function testOnResponseBodyCanBeSetViaConstructor(): void
+    {
+        $cb = static function (string $body): void {};
+        $config = new CommunicatorConfiguration(apiKey: 'test', apiSecret: 'secret', onResponseBody: $cb);
+
+        $this->assertSame($cb, $config->getOnResponseBody());
+    }
+
+    public function testOnRequestBodyCanBeSetViaSetter(): void
+    {
+        $config = new CommunicatorConfiguration(apiKey: 'test', apiSecret: 'secret');
+        $cb = static function (string $body): void {};
+
+        $config->setOnRequestBody($cb);
+
+        $this->assertSame($cb, $config->getOnRequestBody());
+    }
+
+    public function testOnResponseBodyCanBeSetViaSetter(): void
+    {
+        $config = new CommunicatorConfiguration(apiKey: 'test', apiSecret: 'secret');
+        $cb = static function (string $body): void {};
+
+        $config->setOnResponseBody($cb);
+
+        $this->assertSame($cb, $config->getOnResponseBody());
+    }
+
+    public function testCallbacksCanBeCleared(): void
+    {
+        $cb = static function (string $body): void {};
+        $config = new CommunicatorConfiguration(
+            apiKey: 'test',
+            apiSecret: 'secret',
+            onRequestBody: $cb,
+            onResponseBody: $cb,
+        );
+
+        $config->setOnRequestBody(null);
+        $config->setOnResponseBody(null);
+
+        $this->assertNull($config->getOnRequestBody());
+        $this->assertNull($config->getOnResponseBody());
+    }
 }

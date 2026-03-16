@@ -61,15 +61,33 @@ class CommunicatorConfiguration
     protected ?ClientInterface $httpClient;
 
     /**
+     * Called with the raw request body JSON string before every API call.
+     * Signature: function(string $body): void
+     *
+     * @var (callable(string): void)|null
+     */
+    protected $onRequestBody = null;
+
+    /**
+     * Called with the raw response body JSON string after every API call.
+     * Signature: function(string $body): void
+     *
+     * @var (callable(string): void)|null
+     */
+    protected $onResponseBody = null;
+
+    /**
      * Constructor
      *
-     * @param string                  $apiKey
-     * @param string                  $apiSecret
-     * @param string                  $host
-     * @param string|null             $integrator
-     * @param array<string, string>   $serverMetaInfo
-     * @param array<string, string>   $clientMetaInfo
-     * @param ClientInterface|null    $httpClient
+     * @param string                        $apiKey
+     * @param string                        $apiSecret
+     * @param string|null                   $host
+     * @param string|null                   $integrator
+     * @param array<string, string>         $serverMetaInfo
+     * @param array<string, string>         $clientMetaInfo
+     * @param ClientInterface|null          $httpClient
+     * @param (callable(string): void)|null $onRequestBody
+     * @param (callable(string): void)|null $onResponseBody
      */
     public function __construct(
         string              $apiKey,
@@ -79,6 +97,8 @@ class CommunicatorConfiguration
         ?array              $serverMetaInfo = null,
         ?array              $clientMetaInfo = null,
         ?ClientInterface    $httpClient = null,
+        ?callable           $onRequestBody = null,
+        ?callable           $onResponseBody = null,
     ) {
 
         $this->apiKey = $apiKey;
@@ -96,6 +116,8 @@ class CommunicatorConfiguration
         ];
         $this->clientMetaInfo = $clientMetaInfo !== null ? $clientMetaInfo : [];
         $this->httpClient = $httpClient;
+        $this->onRequestBody = $onRequestBody;
+        $this->onResponseBody = $onResponseBody;
     }
 
     /**
@@ -280,6 +302,50 @@ class CommunicatorConfiguration
     public function setHttpClient(?ClientInterface $httpClient): self
     {
         $this->httpClient = $httpClient;
+        return $this;
+    }
+
+    /**
+     * Returns the request body callback, or null if not set.
+     *
+     * @return (callable(string): void)|null
+     */
+    public function getOnRequestBody(): ?callable
+    {
+        return $this->onRequestBody;
+    }
+
+    /**
+     * Sets a callback that receives the raw JSON request body string before every API call.
+     *
+     * @param (callable(string): void)|null $onRequestBody
+     * @return $this
+     */
+    public function setOnRequestBody(?callable $onRequestBody): self
+    {
+        $this->onRequestBody = $onRequestBody;
+        return $this;
+    }
+
+    /**
+     * Returns the response body callback, or null if not set.
+     *
+     * @return (callable(string): void)|null
+     */
+    public function getOnResponseBody(): ?callable
+    {
+        return $this->onResponseBody;
+    }
+
+    /**
+     * Sets a callback that receives the raw JSON response body string after every API call.
+     *
+     * @param (callable(string): void)|null $onResponseBody
+     * @return $this
+     */
+    public function setOnResponseBody(?callable $onResponseBody): self
+    {
+        $this->onResponseBody = $onResponseBody;
         return $this;
     }
 
