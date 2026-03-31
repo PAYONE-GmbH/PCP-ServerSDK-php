@@ -12,6 +12,7 @@ use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
 use PayoneCommercePlatform\Sdk\Models\References;
 use PayoneCommercePlatform\Sdk\Models\PaymentEvent;
 use PayoneCommercePlatform\Sdk\Models\FundSplit;
+use DateTime;
 
 /**
  * @description Object contains information of the payment with a specific payment method.
@@ -85,16 +86,16 @@ class PaymentExecution
     protected ?string $previousPayment;
 
     /**
-     * @var string|null The date and time when the payment was created.
+     * @var DateTime|null The date and time when the payment was created.
      */
     #[SerializedName('creationDateTime')]
-    protected ?string $creationDateTime;
+    protected ?DateTime $creationDateTime;
 
     /**
-     * @var string|null The date and time when the payment was last updated.
+     * @var DateTime|null The date and time when the payment was last updated.
      */
     #[SerializedName('lastUpdated')]
-    protected ?string $lastUpdated;
+    protected ?DateTime $lastUpdated;
 
     /**
      * @var PaymentEvent[]|null List of payment events.
@@ -120,8 +121,8 @@ class PaymentExecution
      * @param PaymentChannel|null $paymentChannel Payment channel.
      * @param References|null $references Reference details linked to this transaction.
      * @param string|null $previousPayment The previous payment ID, if applicable.
-     * @param string|null $creationDateTime The date and time when the payment was created.
-     * @param string|null $lastUpdated The date and time when the payment was last updated.
+     * @param DateTime|null $creationDateTime The date and time when the payment was created.
+     * @param DateTime|null $lastUpdated The date and time when the payment was last updated.
      * @param PaymentEvent[]|null $events List of payment events.
      * @param FundSplit[]|null $fundSplits List of fund splits associated with this payment execution.
      */
@@ -137,8 +138,8 @@ class PaymentExecution
         ?PaymentChannel $paymentChannel = null,
         ?References $references = null,
         ?string $previousPayment = null,
-        ?string $creationDateTime = null,
-        ?string $lastUpdated = null,
+        ?DateTime $creationDateTime = null,
+        ?DateTime $lastUpdated = null,
         ?array $events = null,
         ?array $fundSplits = null
     ) {
@@ -281,23 +282,23 @@ class PaymentExecution
         return $this;
     }
 
-    public function getCreationDateTime(): ?string
+    public function getCreationDateTime(): ?DateTime
     {
         return $this->creationDateTime;
     }
 
-    public function setCreationDateTime(?string $creationDateTime): self
+    public function setCreationDateTime(?DateTime $creationDateTime): self
     {
         $this->creationDateTime = $creationDateTime;
         return $this;
     }
 
-    public function getLastUpdated(): ?string
+    public function getLastUpdated(): ?DateTime
     {
         return $this->lastUpdated;
     }
 
-    public function setLastUpdated(?string $lastUpdated): self
+    public function setLastUpdated(?DateTime $lastUpdated): self
     {
         $this->lastUpdated = $lastUpdated;
         return $this;

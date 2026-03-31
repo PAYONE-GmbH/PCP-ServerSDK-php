@@ -83,16 +83,18 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->paymentExecutionClient->cancelPaymentExecution('1', '2', '3', '4', $payload);
     }
 
-    public function capturePaymentExecutionSuccessful(): void
+    public function testCapturePaymentExecutionSuccessful(): void
     {
         $capturePaymentResponse = new CapturePaymentResponse(statusOutput: new PaymentStatusOutput());
         $this->httpClient->method('send')->willReturn(new Response(status: 200, body: PaymentExecutionApiClient::serializeJson($capturePaymentResponse)));
 
         $payload = new CapturePaymentRequest(amount: 20000, isFinal: true);
         $response = $this->paymentExecutionClient->capturePaymentExecution('1', '2', '3', '4', $payload);
+
+        $this->assertEquals($capturePaymentResponse, $response);
     }
 
-    public function capturePaymentExecutionUnsuccessful400(): void
+    public function testCapturePaymentExecutionUnsuccessful400(): void
     {
         $errorReponse = $this->makeErrorResponse();
         $this->httpClient->method('send')->willReturn(new Response(status: 400, body: PaymentExecutionApiClient::serializeJson($errorReponse)));
@@ -103,7 +105,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->paymentExecutionClient->capturePaymentExecution('1', '2', '3', '4', $payload);
     }
 
-    public function capturePaymentExecutionUnsuccessful500(): void
+    public function testCapturePaymentExecutionUnsuccessful500(): void
     {
         $this->httpClient->method('send')->willReturn(new Response(status: 500, body: null));
         $this->expectException(ApiResponseRetrievalException::class);
@@ -230,7 +232,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $pausePaymentResponse = new PausePaymentResponse(status: StatusValue::CREATED);
         $this->httpClient->method('send')->willReturn(new Response(status: 204, body: PaymentExecutionApiClient::serializeJson($pausePaymentResponse)));
 
-        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_EVENTS);
+        $payload = new PausePaymentRequest();
         $response = $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
 
         $this->assertEquals($pausePaymentResponse, $response);
@@ -243,7 +245,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
-        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
+        $payload = new PausePaymentRequest();
         $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
     }
 
@@ -254,7 +256,7 @@ class PaymentExecutionApiClientTest extends TestCase
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
 
-        $payload = new PausePaymentRequest(refreshType: RefreshType::PAYMENT_PROVIDER_DETAILS);
+        $payload = new PausePaymentRequest();
         $this->paymentExecutionClient->pausePayment('1', '2', '3', '4', $payload);
     }
 

@@ -83,8 +83,8 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
             createPaymentResponse: new CreatePaymentResponse(),
             shoppingCart: new ShoppingCartResult(
                 items: [
-                  new CartItemResult(invoiceData: new CartItemInvoiceData('desc')),
-                  new CartItemResult(orderLineDetails: new OrderLineDetailsResult(productPrice: 1340, quantity: 1))
+                    new CartItemResult(invoiceData: new CartItemInvoiceData('desc')),
+                    new CartItemResult(orderLineDetails: new OrderLineDetailsResult(productPrice: 1340, quantity: 1))
                 ]
             )
         );

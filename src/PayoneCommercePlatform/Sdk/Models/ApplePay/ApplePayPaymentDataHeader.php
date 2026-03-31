@@ -15,7 +15,7 @@ class ApplePayPaymentDataHeader
      * @var string|null SHA-256 hash, hex encoded as a string
      */
     #[SerializedName('applicationData')]
-    private ?string $applicationData = null;
+    protected ?string $applicationData = null;
 
     /**
      * Ephemeral public key bytes.
@@ -23,7 +23,7 @@ class ApplePayPaymentDataHeader
      * @var string|null X.509 encoded key bytes, Base64 encoded as a string
      */
     #[SerializedName('ephemeralPublicKey')]
-    private ?string $ephemeralPublicKey;
+    protected ?string $ephemeralPublicKey;
 
     /**
      * The symmetric key wrapped using your RSA public key.
@@ -31,7 +31,7 @@ class ApplePayPaymentDataHeader
      * @var string|null A Base64-encoded string
      */
     #[SerializedName('wrappedKey')]
-    private ?string $wrappedKey;
+    protected ?string $wrappedKey;
 
     /**
      * Hash of the X.509 encoded public key bytes of the merchant's certificate.
@@ -39,7 +39,7 @@ class ApplePayPaymentDataHeader
      * @var string|null SHA-256 hash, Base64 encoded as a string
      */
     #[SerializedName('publicKeyHash')]
-    private ?string $publicKeyHash;
+    protected ?string $publicKeyHash;
 
     /**
      * Transaction identifier, generated on the device.
@@ -47,7 +47,7 @@ class ApplePayPaymentDataHeader
      * @var string|null A hexadecimal identifier, as a string
      */
     #[SerializedName('transactionId')]
-    private ?string $transactionId;
+    protected ?string $transactionId;
 
     public function __construct(
         ?string $applicationData = null,
@@ -70,9 +70,10 @@ class ApplePayPaymentDataHeader
         return $this->applicationData;
     }
 
-    public function setApplicationData(?string $applicationData): void
+    public function setApplicationData(?string $applicationData): self
     {
         $this->applicationData = $applicationData;
+        return $this;
     }
 
     public function getEphemeralPublicKey(): ?string
@@ -80,9 +81,10 @@ class ApplePayPaymentDataHeader
         return $this->ephemeralPublicKey;
     }
 
-    public function setEphemeralPublicKey(?string $ephemeralPublicKey): void
+    public function setEphemeralPublicKey(?string $ephemeralPublicKey): self
     {
         $this->ephemeralPublicKey = $ephemeralPublicKey;
+        return $this;
     }
 
     public function getWrappedKey(): ?string
@@ -90,9 +92,10 @@ class ApplePayPaymentDataHeader
         return $this->wrappedKey;
     }
 
-    public function setWrappedKey(?string $wrappedKey): void
+    public function setWrappedKey(?string $wrappedKey): self
     {
         $this->wrappedKey = $wrappedKey;
+        return $this;
     }
 
     public function getPublicKeyHash(): ?string
@@ -100,9 +103,10 @@ class ApplePayPaymentDataHeader
         return $this->publicKeyHash;
     }
 
-    public function setPublicKeyHash(?string $publicKeyHash): void
+    public function setPublicKeyHash(?string $publicKeyHash): self
     {
         $this->publicKeyHash = $publicKeyHash;
+        return $this;
     }
 
     public function getTransactionId(): ?string
@@ -110,8 +114,9 @@ class ApplePayPaymentDataHeader
         return $this->transactionId;
     }
 
-    public function setTransactionId(?string $transactionId): void
+    public function setTransactionId(?string $transactionId): self
     {
         $this->transactionId = $transactionId;
+        return $this;
     }
 }

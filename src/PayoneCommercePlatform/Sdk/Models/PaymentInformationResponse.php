@@ -2,6 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
+use DateTime;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\CardPaymentDetails;
 use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
@@ -67,16 +68,16 @@ class PaymentInformationResponse
     protected ?string $merchantReference;
 
     /**
-     * @var string|null The date and time when the payment was created.
+     * @var DateTime|null The date and time when the payment was created.
      */
     #[SerializedName('creationDateTime')]
-    protected ?string $creationDateTime;
+    protected ?DateTime $creationDateTime;
 
     /**
-     * @var string|null The date and time when the payment was last updated.
+     * @var DateTime|null The date and time when the payment was last updated.
      */
     #[SerializedName('lastUpdated')]
-    protected ?string $lastUpdated;
+    protected ?DateTime $lastUpdated;
 
     /**
      * @var CardPaymentDetails|null Card payment details.
@@ -100,8 +101,8 @@ class PaymentInformationResponse
      * @param string|null $merchantReference Unique reference of the PaymentInformation. In case of card present transactions, the reference from the ECR or terminal will be used. It is always the reference for external transactions. (e.g. card present payments, cash payments or payments processed by other payment providers).
      * @param string|null $terminalId Unique identifier of the POS terminal of the payment transaction.
      * @param string|null $merchantCustomerId Unique identifier of the customer.
-     * @param string|null $creationDateTime The date and time when the payment was created.
-     * @param string|null $lastUpdated The date and time when the payment was last updated.
+     * @param DateTime|null $creationDateTime The date and time when the payment was created.
+     * @param DateTime|null $lastUpdated The date and time when the payment was last updated.
      * @param CardPaymentDetails|null $cardPaymentDetails Card payment details.
      * @param PaymentEvent[]|null $events List of payment events.
      */
@@ -114,8 +115,8 @@ class PaymentInformationResponse
         ?string $merchantReference = null,
         ?string $terminalId = null,
         ?string $merchantCustomerId = null,
-        ?string $creationDateTime = null,
-        ?string $lastUpdated = null,
+        ?DateTime $creationDateTime = null,
+        ?DateTime $lastUpdated = null,
         ?PaymentChannel $paymentChannel = null,
         ?CardPaymentDetails $cardPaymentDetails = null,
         ?array $events = null
@@ -218,7 +219,7 @@ class PaymentInformationResponse
         return $this->cardAcceptorId;
     }
 
-    public function setCardAcceptorId(string $cardAcceptorId): self
+    public function setCardAcceptorId(?string $cardAcceptorId): self
     {
         $this->cardAcceptorId = $cardAcceptorId;
         return $this;
@@ -229,29 +230,29 @@ class PaymentInformationResponse
         return $this->merchantReference;
     }
 
-    public function setMerchantReference(string $merchantReference): self
+    public function setMerchantReference(?string $merchantReference): self
     {
         $this->merchantReference = $merchantReference;
         return $this;
     }
 
-    public function getCreationDateTime(): ?string
+    public function getCreationDateTime(): ?DateTime
     {
         return $this->creationDateTime;
     }
 
-    public function setCreationDateTime(?string $creationDateTime): self
+    public function setCreationDateTime(?DateTime $creationDateTime): self
     {
         $this->creationDateTime = $creationDateTime;
         return $this;
     }
 
-    public function getLastUpdated(): ?string
+    public function getLastUpdated(): ?DateTime
     {
         return $this->lastUpdated;
     }
 
-    public function setLastUpdated(?string $lastUpdated): self
+    public function setLastUpdated(?DateTime $lastUpdated): self
     {
         $this->lastUpdated = $lastUpdated;
         return $this;

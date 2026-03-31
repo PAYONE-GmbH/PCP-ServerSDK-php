@@ -23,6 +23,7 @@ use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class BaseApiClient
@@ -251,6 +252,7 @@ class BaseApiClient
               new ArrayDenormalizer(), new DateTimeNormalizer(),
               new GetSetMethodNormalizer(propertyTypeExtractor: $propertyTypeExtractor, defaultContext: ['skip_null_values' => true]),
               new BackedEnumNormalizer(),
+              new ObjectNormalizer(),
             ],
             encoders: [new JsonEncoder()],
         );

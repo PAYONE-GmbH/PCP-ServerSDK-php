@@ -10,25 +10,25 @@ class PaymentInstructions
      * @var Payee
      */
     #[SerializedName('payee')]
-    private Payee $payee;
+    protected Payee $payee;
 
     /**
      * @var string
      */
     #[SerializedName('dueDate')]
-    private string $dueDate;
+    protected string $dueDate;
 
     /**
      * @var string
      */
     #[SerializedName('referenceNumber')]
-    private string $referenceNumber;
+    protected string $referenceNumber;
 
     /**
      * @var string|null
      */
     #[SerializedName('status')]
-    private ?string $status;
+    protected ?string $status;
 
     public function __construct(
         Payee $payee,

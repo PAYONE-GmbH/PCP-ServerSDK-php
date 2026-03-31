@@ -45,7 +45,6 @@ class PaymentProduct840SpecificOutput
         $this->billingAddress = $billingAddress;
         $this->customerAccount = $customerAccount;
         $this->shippingAddress = $shippingAddress;
-        $this->payPalTransactionId = $payPalTransactionId;
     }
 
     // Getters and Setters

@@ -3,6 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use PayoneCommercePlatform\Sdk\Models\Gender;
 use PayoneCommercePlatform\Sdk\Models\PersonalName;
 
 /**
@@ -17,10 +18,10 @@ class PersonalInformation
     protected ?string $dateOfBirth;
 
     /**
-     * @var string|null The gender of the customer.
+     * @var Gender|null The gender of the customer.
      */
     #[SerializedName('gender')]
-    protected ?string $gender;
+    protected ?Gender $gender;
 
     /**
      * @var PersonalName|null The name of the customer.
@@ -30,7 +31,7 @@ class PersonalInformation
 
     public function __construct(
         ?string $dateOfBirth = null,
-        ?string $gender = null,
+        ?Gender $gender = null,
         ?PersonalName $name = null
     ) {
         $this->dateOfBirth = $dateOfBirth;
@@ -50,12 +51,12 @@ class PersonalInformation
         return $this;
     }
 
-    public function getGender(): ?string
+    public function getGender(): ?Gender
     {
         return $this->gender;
     }
 
-    public function setGender(?string $gender): self
+    public function setGender(?Gender $gender): self
     {
         $this->gender = $gender;
         return $this;
