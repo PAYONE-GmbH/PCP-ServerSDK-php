@@ -10,19 +10,19 @@ class PaymentInformationRefundRequest
      * @var PositiveAmountOfMoney
      */
     #[SerializedName('amountOfMoney')]
-    private $amountOfMoney;
+    protected PositiveAmountOfMoney $amountOfMoney;
 
     /**
      * @var PaymentReferences|null
      */
     #[SerializedName('references')]
-    private $references;
+    protected ?PaymentReferences $references;
 
     /**
      * @var string|null
      */
     #[SerializedName('accountHolder')]
-    private $accountHolder;
+    protected ?string $accountHolder;
 
     public function __construct(
         PositiveAmountOfMoney $amountOfMoney,
@@ -42,6 +42,12 @@ class PaymentInformationRefundRequest
         return $this->amountOfMoney;
     }
 
+    public function setAmountOfMoney(PositiveAmountOfMoney $amountOfMoney): self
+    {
+        $this->amountOfMoney = $amountOfMoney;
+        return $this;
+    }
+
     /**
      * @return PaymentReferences|null
      */
@@ -50,11 +56,23 @@ class PaymentInformationRefundRequest
         return $this->references;
     }
 
+    public function setReferences(?PaymentReferences $references): self
+    {
+        $this->references = $references;
+        return $this;
+    }
+
     /**
      * @return string|null
      */
     public function getAccountHolder(): ?string
     {
         return $this->accountHolder;
+    }
+
+    public function setAccountHolder(?string $accountHolder): self
+    {
+        $this->accountHolder = $accountHolder;
+        return $this;
     }
 }

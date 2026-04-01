@@ -2,6 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
+use DateTime;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
@@ -10,32 +11,24 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class CustomerAccount
 {
     /**
-     * @var string|null Creation date and time of the customer account in ISO 8601 format (UTC).
-     * Accepted formats are:
-     *
-     * * YYYY-MM-DD'T'HH:mm:ss'Z'
-     * * YYYY-MM-DD'T'HH:mm:ss+XX:XX
-     * * YYYY-MM-DD'T'HH:mm:ss-XX:XX
-     * * YYYY-MM-DD'T'HH:mm'Z'
-     * * YYYY-MM-DD'T'HH:mm+XX:XX
-     * * YYYY-MM-DD'T'HH:mm-XX:XX
+     * @var DateTime|null Creation date and time of the customer account in ISO 8601 format (UTC).
      */
     #[SerializedName('createDate')]
-    protected ?string $createDate;
+    protected ?DateTime $createDate;
 
     public function __construct(
-        ?string $createDate = null
+        ?DateTime $createDate = null
     ) {
         $this->createDate = $createDate;
     }
 
     // Getters and Setters
-    public function getCreateDate(): ?string
+    public function getCreateDate(): ?DateTime
     {
         return $this->createDate;
     }
 
-    public function setCreateDate(?string $createDate): self
+    public function setCreateDate(?DateTime $createDate): self
     {
         $this->createDate = $createDate;
         return $this;

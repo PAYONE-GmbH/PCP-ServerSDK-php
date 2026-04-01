@@ -10,13 +10,13 @@ class PaymentInformationRefundResponse
      * @var PayoutResponse|null
      */
     #[SerializedName('payment')]
-    private ?PayoutResponse $payment;
+    protected ?PayoutResponse $payment;
 
     /**
      * @var string|null
      */
     #[SerializedName('paymentExecutionId')]
-    private ?string $paymentExecutionId;
+    protected ?string $paymentExecutionId;
 
     public function __construct(
         ?PayoutResponse $payment = null,

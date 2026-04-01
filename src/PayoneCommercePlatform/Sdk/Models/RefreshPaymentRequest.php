@@ -10,7 +10,7 @@ class RefreshPaymentRequest
      * @var RefreshType
      */
     #[SerializedName('refreshType')]
-    private RefreshType $refreshType;
+    protected RefreshType $refreshType;
 
     public function __construct(RefreshType $refreshType)
     {

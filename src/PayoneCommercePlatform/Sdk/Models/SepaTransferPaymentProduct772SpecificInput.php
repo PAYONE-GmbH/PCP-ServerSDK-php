@@ -10,7 +10,7 @@ class SepaTransferPaymentProduct772SpecificInput
      * @var BankAccountInformation|null
      */
     #[SerializedName('bankAccountInformation')]
-    private ?BankAccountInformation $bankAccountInformation;
+    protected ?BankAccountInformation $bankAccountInformation;
 
     public function __construct(?BankAccountInformation $bankAccountInformation = null)
     {

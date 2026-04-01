@@ -4,7 +4,7 @@ namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\PositiveAmountOfMoney;
-use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
+use PayoneCommercePlatform\Sdk\Models\PaymentReferencesForRefund;
 use PayoneCommercePlatform\Sdk\Models\ReturnInformation;
 use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
@@ -20,10 +20,10 @@ class RefundRequest
     protected ?PositiveAmountOfMoney $amountOfMoney;
 
     /**
-     * @var PaymentReferences|null The payment references.
+     * @var PaymentReferencesForRefund|null The payment references, optionally including a specific capture reference.
      */
     #[SerializedName('references')]
-    protected ?PaymentReferences $references;
+    protected ?PaymentReferencesForRefund $references;
 
     /**
      * @var ReturnInformation|null The return information.
@@ -39,7 +39,7 @@ class RefundRequest
 
     public function __construct(
         ?PositiveAmountOfMoney $amountOfMoney = null,
-        ?PaymentReferences $references = null,
+        ?PaymentReferencesForRefund $references = null,
         ?ReturnInformation $return = null,
         ?FundSplit $fundSplit = null
     ) {
@@ -61,12 +61,12 @@ class RefundRequest
         return $this;
     }
 
-    public function getReferences(): ?PaymentReferences
+    public function getReferences(): ?PaymentReferencesForRefund
     {
         return $this->references;
     }
 
-    public function setReferences(?PaymentReferences $references): self
+    public function setReferences(?PaymentReferencesForRefund $references): self
     {
         $this->references = $references;
         return $this;
