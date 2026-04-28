@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.49.0
+  version: 1.50.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -2510,7 +2510,9 @@ components:
       properties:
         supplierId:
           type: string
-          description: Unique identifier for the supplier.
+          description: |
+            Unique identifier for the supplier. Used for reporting to identify to which supplier the item belongs.
+            Only allowed for marketplace merchants or if feature to ignore Marketplace fields is enabled in configuration.
           maxLength: 64
           example: "5678"
         orderReference:
@@ -2519,6 +2521,8 @@ components:
             Reference of the order for the supplier.
           maxLength: 64
           example: "Order-5678"
+      required:
+        - supplierId
     CheckoutResponse:
       type: object
       xml:
@@ -3219,7 +3223,9 @@ components:
         - type
     FundSplit:
       type: object
-      description: Instructions for distributing funds to multiple sellers or partners in a marketplace context.
+      description: |
+        Instructions for distributing funds to multiple suppliers or partners in a marketplace context.
+        Only allowed for marketplace merchants or if feature to ignore Marketplace fields is enabled in configuration.
       additionalProperties: false
       properties:
         id:
@@ -4194,7 +4200,9 @@ components:
         merchantReference:
           type: string
           description: |-
-            Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+            Unique reference of payment transactions, also returned for reporting and reconciliation purposes.
+            For capture requests, providing this value is recommended to support an end-to-end refund flow.
+            If provided for captures or refunds, it must be unique per Checkout.
           maxLength: 20
           example: your-order-6372
     PaymentReferencesForRefund:
