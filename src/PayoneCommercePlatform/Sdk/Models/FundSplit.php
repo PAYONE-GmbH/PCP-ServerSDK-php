@@ -6,7 +6,8 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\FundDistribution;
 
 /**
- * @description Object containing the fund split details for a payment event.
+ * @description Instructions for distributing funds to multiple suppliers or partners in a marketplace context.
+ * Only allowed for marketplace merchants or if feature to ignore Marketplace fields is enabled in configuration.
  */
 class FundSplit
 {
