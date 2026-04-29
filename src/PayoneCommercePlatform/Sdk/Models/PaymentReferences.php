@@ -10,7 +10,9 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class PaymentReferences
 {
     /**
-     * @var string Unique reference of the Commerce Case that is also returned for reporting and reconciliation purposes.
+     * @var string Unique reference of payment transactions, also returned for reporting and reconciliation purposes.
+     * For capture requests, providing this value is recommended to support an end-to-end refund flow.
+     * If provided for captures or refunds, it must be unique per Checkout.
      */
     #[SerializedName('merchantReference')]
     protected string $merchantReference;
