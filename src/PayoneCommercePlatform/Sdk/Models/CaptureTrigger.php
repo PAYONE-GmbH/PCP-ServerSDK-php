@@ -3,7 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 /**
- * Indicates the event upon which the payment should be captured. 
+ * Indicates the event upon which the payment should be captured.
  * This value is shown to customers in the Wero portal to clarify
  * when the capture will occur.
  * Has the following possible values:
