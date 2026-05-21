@@ -34,7 +34,7 @@ class GetCheckoutsQueryTest extends TestCase
         $query->setCheckoutId("123456");
         $query->setMerchantReference("7890");
         $query->setMerchantCustomerId("1234");
-        $query->setIncludePaymentProductId(["12", "456"]);
+        $query->setIncludePaymentProductId([12, 456]);
         $query->setIncludeCheckoutStatus([StatusCheckout::BILLED, StatusCheckout::CHARGEBACKED]);
         $query->setIncludeExtendedCheckoutStatus(
             [ExtendedCheckoutStatus::OPEN, ExtendedCheckoutStatus::DELETED]
@@ -74,10 +74,10 @@ class GetCheckoutsQueryTest extends TestCase
         $this->assertEquals("123456", $queryMap["checkoutId"]);
         $this->assertEquals("7890", $queryMap["merchantReference"]);
         $this->assertEquals("1234", $queryMap["merchantCustomerId"]);
-        $this->assertEquals("12,456", $queryMap["includePaymentProductId"]);
-        $this->assertEquals("BILLED,CHARGEBACKED", $queryMap["includeCheckoutStatus"]);
-        $this->assertEquals("OPEN,DELETED", $queryMap["includeExtendedCheckoutStatus"]);
-        $this->assertEquals("ECOMMERCE,POS", $queryMap["includePaymentChannel"]);
+        $this->assertEquals([12, 456], $queryMap["includePaymentProductId"]);
+        $this->assertEquals(["BILLED", "CHARGEBACKED"], $queryMap["includeCheckoutStatus"]);
+        $this->assertEquals(["OPEN", "DELETED"], $queryMap["includeExtendedCheckoutStatus"]);
+        $this->assertEquals(["ECOMMERCE", "POS"], $queryMap["includePaymentChannel"]);
         $this->assertEquals("1234", $queryMap["paymentReference"]);
         $this->assertEquals("5678", $queryMap["paymentId"]);
         $this->assertEquals("John", $queryMap["firstName"]);

@@ -28,7 +28,7 @@ class GetCheckoutsQuery
     private ?string $checkoutId = null;
     private ?string $merchantReference = null;
     private ?string $merchantCustomerId = null;
-    /** @var array<string>|null */
+    /** @var array<int>|null */
     private ?array $includePaymentProductId = null;
     /** @var array<StatusCheckout>|null */
     private ?array $includeCheckoutStatus = null;
@@ -162,7 +162,7 @@ class GetCheckoutsQuery
     }
 
     /**
-     * @param array<string> $includePaymentProductId
+     * @param array<int> $includePaymentProductId
      * @return self
      */
     public function setIncludePaymentProductId(?array $includePaymentProductId): self
@@ -356,7 +356,7 @@ class GetCheckoutsQuery
         return $this->merchantCustomerId;
     }
 
-    /** @return array<string>|null */
+    /** @return array<int>|null */
     public function getIncludePaymentProductId(): ?array
     {
         return $this->includePaymentProductId;
@@ -430,10 +430,10 @@ class GetCheckoutsQuery
         return $this->reportingToken;
     }
 
-    /** @return array<string, int|string> */
+    /** @return array<string, int|string|array<int|string>> */
     public function toQueryMap(): array
     {
-        /** @var array<string, int|string> */
+        /** @var array<string, int|string|array<int|string>> */
         $query = [];
 
         if ($this->offset !== null) {
@@ -494,16 +494,16 @@ class GetCheckoutsQuery
             $query['merchantCustomerId'] = $this->merchantCustomerId;
         }
         if ($this->includePaymentProductId !== null) {
-            $query['includePaymentProductId'] = implode(',', $this->includePaymentProductId);
+            $query['includePaymentProductId'] = $this->includePaymentProductId;
         }
         if ($this->includeCheckoutStatus !== null) {
-            $query['includeCheckoutStatus'] = implode(',', array_map(fn ($status) => $status->value, $this->includeCheckoutStatus));
+            $query['includeCheckoutStatus'] = array_map(fn ($status) => $status->value, $this->includeCheckoutStatus);
         }
         if ($this->includeExtendedCheckoutStatus !== null) {
-            $query['includeExtendedCheckoutStatus'] = implode(',', array_map(fn ($status) => $status->value, $this->includeExtendedCheckoutStatus));
+            $query['includeExtendedCheckoutStatus'] = array_map(fn ($status) => $status->value, $this->includeExtendedCheckoutStatus);
         }
         if ($this->includePaymentChannel !== null) {
-            $query['includePaymentChannel'] = implode(',', array_map(fn ($channel) => $channel->value, $this->includePaymentChannel));
+            $query['includePaymentChannel'] = array_map(fn ($channel) => $channel->value, $this->includePaymentChannel);
         }
         if ($this->paymentReference !== null) {
             $query['paymentReference'] = $this->paymentReference;
