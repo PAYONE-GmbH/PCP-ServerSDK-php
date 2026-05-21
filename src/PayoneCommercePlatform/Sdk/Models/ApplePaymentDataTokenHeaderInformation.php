@@ -4,7 +4,7 @@ namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-class ApplePaymentDataTokenHeaderInformationInput
+class ApplePaymentDataTokenHeaderInformation
 {
     /**
      * @var string A hexadecimal Transaction identifier identifier as a string.
@@ -13,7 +13,7 @@ class ApplePaymentDataTokenHeaderInformationInput
     protected string $transactionId;
 
     /**
-     * @var string|null SHA–256 hash, hex encoded as a string. Hash of the applicationData property of the original PKPaymentRequest object.
+     * @var string|null SHA-256 hash, hex encoded as a string. Hash of the applicationData property of the original PKPaymentRequest object.
      */
     #[SerializedName('applicationData')]
     protected ?string $applicationData;
@@ -26,7 +26,6 @@ class ApplePaymentDataTokenHeaderInformationInput
         $this->applicationData = $applicationData;
     }
 
-    // Getters and Setters
     public function getTransactionId(): string
     {
         return $this->transactionId;

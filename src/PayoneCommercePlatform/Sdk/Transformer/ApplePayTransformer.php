@@ -3,8 +3,8 @@
 namespace PayoneCommercePlatform\Sdk\Transformer;
 
 use PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPayment;
-use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformationInput;
-use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformationInput;
+use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformation;
+use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformation;
 use PayoneCommercePlatform\Sdk\Models\MobilePaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\MobilePaymentNetwork;
 use PayoneCommercePlatform\Sdk\Models\PaymentProduct302SpecificInput;
@@ -49,10 +49,10 @@ class ApplePayTransformer
             ephemeralKey: $ephemeralKey,
             paymentProduct302SpecificInput: new PaymentProduct302SpecificInput(
                 network: $network,
-                token: new ApplePaymentDataTokenInformationInput(
+                token: new ApplePaymentDataTokenInformation(
                     version: $version ?? '',
                     signature: $signature ?? '',
-                    header: new ApplePaymentDataTokenHeaderInformationInput(
+                    header: new ApplePaymentDataTokenHeaderInformation(
                         transactionId: $transactionId ?? '',
                         applicationData: $applicationData
                     ),
