@@ -1,15 +1,15 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.50.0
+  version: 1.55.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
 
 servers:
-  - url: "https://commerce-api.payone.com"
+  - url: "https://api.commerce.payone.com"
     description: Production URL
-  - url: "https://preprod.commerce-api.payone.com"
+  - url: "https://api.preprod.commerce.payone.com"
     description: Pre-Production URL
 
 tags:
@@ -1245,6 +1245,100 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/events/{eventId}/fund-splits':
+    post:
+      summary: Create a Fund Split for a Chargeback Event
+      description: |-
+        This endpoint allows merchants to instruct fund split distributions for a specific chargeback event
+        within a marketplace transaction. When a chargeback event is received and allocated to a Payment Execution
+        that belongs to a marketplace transaction, the merchant can use this endpoint to specify how the chargeback
+        amount should be distributed among the different sellers (fund recipients) involved in the original order.
+
+        The fund split instruction contains one or more fund distributions, each specifying a target account,
+        the amount to be allocated, and the type of distribution (e.g. seller revenue, platform commission, etc.).
+
+        This endpoint is only applicable for Payment Executions that belong to a marketplace transaction.
+        If the Payment Execution is not part of a marketplace transaction, a 400 error will be returned.
+      tags:
+        - PaymentExecution
+      operationId: createFundSplit
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+        - $ref: '#/components/parameters/paymentExecutionId'
+        - $ref: '#/components/parameters/eventIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FundSplitRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The fund split instruction was successfully created and will be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundSplitResponse'
+        '400':
+          x-nullable: true
+          description: |-
+            The request was malformed, was missing required data, or the Payment Execution does not belong to a
+            marketplace transaction. The error message will indicate the specific issue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          x-nullable: true
+          description: You are not allowed to access the service or account or your API authentication failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: The Commerce Case, Checkout, Payment Execution, or Event was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          x-nullable: true
+          description: |-
+            A fund split instruction has already been submitted for this event, or the event is in a state
+            that does not allow fund split creation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          x-nullable: true
+          description: Internal server exception.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          x-nullable: true
+          description: |-
+            Any 5XX response points to something that went wrong on our end. This could also be that the system was
+            unable to route the transaction to an appropriate acquirer/3rd party. Another reason for such a response
+            is when the 3rd party's response could not be understood.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          x-nullable: true
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-information':
     post:
       summary: Create a Payment Information
@@ -1401,6 +1495,16 @@ components:
       in: path
       name: commerceCaseId
       description: Unique identifier of a Commerce Case.
+      required: true
+      schema:
+        type: string
+        format: UUID
+    eventIdPath:
+      in: path
+      name: eventId
+      description: |-
+        Unique identifier of a payment event (e.g. a chargeback event) that is associated with a Payment Execution.
+        This ID is used to link the fund split instruction to the specific event that triggered the chargeback allocation.
       required: true
       schema:
         type: string
@@ -2110,6 +2214,15 @@ components:
       properties:
         cancellationReason:
           $ref: '#/components/schemas/CancellationReason'
+        amount:
+          type: integer
+          format: int64
+          maximum: 999999999999
+          minimum: 1
+          description: |-
+            Here you can specify the amount that you want to cancel (specified in cents, where single digit currencies
+            are presumed to have 2 digits). The amount can be lower than the amount that was authorized, but not higher. 
+             If left empty, the remaining open amount will be cancelled.
     CancelPaymentResponse:
       type: object
       additionalProperties: false
@@ -2595,6 +2708,7 @@ components:
             * false = the payment does not require approval, and the funds will be captured automatically
             
             If the parameter is not provided in the request, the default value will be true
+          default: true
         paymentProduct3391SpecificInput:
           $ref: '#/components/schemas/PaymentProduct3391SpecificInput'
     CompleteOrderRequest:
@@ -2977,7 +3091,7 @@ components:
       properties:
         acceptHeader:
           type: string
-          description: | 
+          description: |
             The accept-header of the customer client from the HTTP Headers. 
             This field can be mandatory depending on the selected payment method and routing option.
           maxLength: 2048
@@ -3147,6 +3261,7 @@ components:
             * false = the payment does not require approval, and the funds will be captured automatically
             
             If the parameter is not provided in the request, the default value will be true
+          default: true
         paymentProduct3392SpecificInput:
           $ref: '#/components/schemas/PaymentProduct3392SpecificInput'
     FinancingPaymentMethodSpecificOutput:
@@ -3240,6 +3355,46 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FundDistribution'
+    FundSplitRequest:
+      type: object
+      description: |-
+        Request object for creating a fund split instruction for a chargeback event in a marketplace transaction.
+        Contains the fund split details specifying how the chargeback amount should be distributed among the
+        different sellers and/or the platform involved in the original marketplace order.
+      additionalProperties: false
+      required:
+        - fundSplit
+      properties:
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
+    FundSplitResponse:
+      type: object
+      description: |-
+        Response object returned after successfully creating a fund split instruction. Contains the unique
+        identifier of the created fund split and the processing status.
+      additionalProperties: false
+      properties:
+        fundSplitId:
+          type: string
+          format: UUID
+          description: |-
+            Unique identifier assigned to the created fund split instruction. This ID can be used for tracking
+            and referencing the fund split in subsequent operations or inquiries.
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        paymentExecutionId:
+          type: string
+          format: UUID
+          description: |-
+            Unique identifier of the Payment Execution that this fund split is associated with.
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        eventId:
+          type: string
+          format: UUID
+          description: |-
+            Unique identifier of the chargeback event that this fund split instruction was created for.
+          example: "c56a4180-65aa-42ec-a945-5fd21dec0538"
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     InstallmentOption:
       type: object
       properties:
@@ -3509,7 +3664,7 @@ components:
           example: 0
         taxAmountPerUnit:
           type: boolean
-          description: |- 
+          description: |-
             This field indicates if the `taxAmount` is to be interpreted as the tax amount per unit rather than for the entire line item. 
             This field is included in the response only when `taxAmount` is set; otherwise, it will return as `null`.
           format: int64
@@ -4207,7 +4362,10 @@ components:
           example: your-order-6372
     PaymentReferencesForRefund:
       type: object
-      description: Object that holds all reference properties that are linked to this transaction.
+      description: |-
+        Object that holds all reference properties that are linked to this refund transaction.
+        Extends the standard PaymentReferences with an additional captureReference field to support
+        scenarios where a Checkout may contain multiple partial captures from different sellers.
       additionalProperties: false
       allOf:
         - $ref: '#/components/schemas/PaymentReferences'
@@ -4215,9 +4373,16 @@ components:
           properties:
             captureReference:
               description: |-
-                Reference of the capture that should be used for the refund.
+                Merchant-provided reference of the capture that this refund should be applied to.
+                A single Checkout can contain multiple partial captures.
+                By supplying the captureReference the merchant ensures the refund is allocated to the correct
+                capture.
+
+                This value must match the merchantReference that was provided in the PaymentReferences of the
+                original capture request.
               example: your-order-6372
               type: string
+              maxLength: 20
     PaymentResponse:
       type: object
       description: Object that holds the payment related properties.
@@ -4454,6 +4619,7 @@ components:
             * false = the payment does not require approval, and the funds will be captured automatically
             
             If the parameter is not provided in the request, the default value will be true
+          default: true
         paymentProcessingToken:
           type: string
           description: ID of the token to use to create the payment.
@@ -4477,6 +4643,8 @@ components:
           $ref: '#/components/schemas/PaymentProductId'
         paymentProduct840SpecificInput:
           $ref: '#/components/schemas/RedirectPaymentProduct840SpecificInput'
+        paymentProduct900SpecificInput:
+          $ref: '#/components/schemas/RedirectPaymentProduct900SpecificInput'
         redirectionData:
           $ref: '#/components/schemas/RedirectionData'
     RedirectPaymentMethodSpecificOutput:
@@ -4529,6 +4697,27 @@ components:
             Default value is false.
           default: false
           example: true
+    RedirectPaymentProduct900SpecificInput:
+      type: object
+      properties:
+        captureTrigger:
+          type: string
+          description: |-
+            Indicates the event upon which the payment should be captured. 
+            This value is shown to customers in the Wero portal to clarify
+            when the capture will occur.
+            Has the following possible values:
+            - shipping: Upon shipping the order.
+            - delivery: Upon delivering the order.
+            - availability: As soon as the order is available.
+            - serviceFulfillment: Upon fulfilling the service.
+            - other: For any other use case.
+          enum:
+            - shipping
+            - delivery
+            - availability
+            - serviceFulfillment
+            - other
     References:
       type: object
       description: Object that holds all reference properties that are linked to this transaction.
