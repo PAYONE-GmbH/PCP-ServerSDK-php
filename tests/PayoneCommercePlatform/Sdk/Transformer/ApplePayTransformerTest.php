@@ -10,8 +10,8 @@ use PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPaymentMethodType;
 use PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPaymentMethod;
 use PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPaymentDataHeader;
 use PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPaymentToken;
-use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformationInput;
-use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformationInput;
+use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenHeaderInformation;
+use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformation;
 use PayoneCommercePlatform\Sdk\Models\MobilePaymentMethodSpecificInput;
 use PayoneCommercePlatform\Sdk\Models\MobilePaymentNetwork;
 use PayoneCommercePlatform\Sdk\Models\PaymentProduct302SpecificInput;
@@ -61,10 +61,10 @@ class ApplePayTransformerTest extends TestCase
             ephemeralKey: null,
             paymentProduct302SpecificInput: new PaymentProduct302SpecificInput(
                 network: MobilePaymentNetwork::MASTERCARD,
-                token: new ApplePaymentDataTokenInformationInput(
+                token: new ApplePaymentDataTokenInformation(
                     version: '',
                     signature: '',
-                    header: new ApplePaymentDataTokenHeaderInformationInput(
+                    header: new ApplePaymentDataTokenHeaderInformation(
                         transactionId: 'transaction-101',
                         applicationData: null
                     ),

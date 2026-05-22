@@ -12,6 +12,7 @@ use PayoneCommercePlatform\Sdk\Models\ContactDetails;
 use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest;
 use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseResponse;
 use PayoneCommercePlatform\Sdk\Models\Customer;
+use PayoneCommercePlatform\Sdk\Models\PatchCommerceCaseRequest;
 use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
 use PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery;
 use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
@@ -172,7 +173,7 @@ class CommerceCaseApiClientTest extends TestCase
         $this->expectNotToPerformAssertions();
         $this->httpClient->method('send')->willReturn(new Response(status: 204, body: null));
 
-        $payload = new Customer(contactDetails: new ContactDetails('mail@mail.com', '+49123456789'));
+        $payload = new PatchCommerceCaseRequest(new Customer(contactDetails: new ContactDetails('mail@mail.com', '+49123456789')));
         $this->commerceCaseClient->updateCommerceCase('1', '2', $payload);
     }
 
@@ -183,7 +184,7 @@ class CommerceCaseApiClientTest extends TestCase
         $this->expectException(ApiErrorResponseException::class);
         $this->expectExceptionCode(400);
 
-        $payload = new Customer(contactDetails: new ContactDetails('mail@mail.com', '+49123456789'));
+        $payload = new PatchCommerceCaseRequest(new Customer(contactDetails: new ContactDetails('mail@mail.com', '+49123456789')));
         $this->commerceCaseClient->updateCommerceCase('1', '2', $payload);
     }
 
@@ -193,7 +194,7 @@ class CommerceCaseApiClientTest extends TestCase
         $this->expectException(ApiResponseRetrievalException::class);
         $this->expectExceptionCode(500);
 
-        $payload = new Customer(contactDetails: new ContactDetails('mail@mail.com', '+49123456789'));
+        $payload = new PatchCommerceCaseRequest(new Customer(contactDetails: new ContactDetails('mail@mail.com', '+49123456789')));
         $this->commerceCaseClient->updateCommerceCase('1', '2', $payload);
     }
 }

@@ -4,6 +4,7 @@ namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\RedirectPaymentProduct840SpecificInput;
+use PayoneCommercePlatform\Sdk\Models\RedirectPaymentProduct900SpecificInput;
 use PayoneCommercePlatform\Sdk\Models\RedirectionData;
 
 /**
@@ -48,6 +49,12 @@ class RedirectPaymentMethodSpecificInput
     protected ?RedirectPaymentProduct840SpecificInput $paymentProduct840SpecificInput;
 
     /**
+     * @var RedirectPaymentProduct900SpecificInput|null Specific input required for Wero payments (Payment product ID 900).
+     */
+    #[SerializedName('paymentProduct900SpecificInput')]
+    protected ?RedirectPaymentProduct900SpecificInput $paymentProduct900SpecificInput;
+
+    /**
      * @var RedirectionData|null Redirection data details.
      */
     #[SerializedName('redirectionData')]
@@ -60,6 +67,7 @@ class RedirectPaymentMethodSpecificInput
         ?bool $tokenize = null,
         ?int $paymentProductId = null,
         ?RedirectPaymentProduct840SpecificInput $paymentProduct840SpecificInput = null,
+        ?RedirectPaymentProduct900SpecificInput $paymentProduct900SpecificInput = null,
         ?RedirectionData $redirectionData = null
     ) {
         $this->requiresApproval = $requiresApproval;
@@ -68,6 +76,7 @@ class RedirectPaymentMethodSpecificInput
         $this->tokenize = $tokenize;
         $this->paymentProductId = $paymentProductId;
         $this->paymentProduct840SpecificInput = $paymentProduct840SpecificInput;
+        $this->paymentProduct900SpecificInput = $paymentProduct900SpecificInput;
         $this->redirectionData = $redirectionData;
     }
 
@@ -135,6 +144,17 @@ class RedirectPaymentMethodSpecificInput
     public function setPaymentProduct840SpecificInput(?RedirectPaymentProduct840SpecificInput $paymentProduct840SpecificInput): self
     {
         $this->paymentProduct840SpecificInput = $paymentProduct840SpecificInput;
+        return $this;
+    }
+
+    public function getPaymentProduct900SpecificInput(): ?RedirectPaymentProduct900SpecificInput
+    {
+        return $this->paymentProduct900SpecificInput;
+    }
+
+    public function setPaymentProduct900SpecificInput(?RedirectPaymentProduct900SpecificInput $paymentProduct900SpecificInput): self
+    {
+        $this->paymentProduct900SpecificInput = $paymentProduct900SpecificInput;
         return $this;
     }
 

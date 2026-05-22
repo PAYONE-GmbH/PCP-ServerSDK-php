@@ -10,6 +10,8 @@ use PayoneCommercePlatform\Sdk\Models\CapturePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentRequest;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
+use PayoneCommercePlatform\Sdk\Models\FundSplitRequest;
+use PayoneCommercePlatform\Sdk\Models\FundSplitResponse;
 use PayoneCommercePlatform\Sdk\Models\PaymentExecutionRequest;
 use PayoneCommercePlatform\Sdk\Models\RefundPaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\RefundRequest;
@@ -273,6 +275,56 @@ class PaymentExecutionApiClient extends BaseApiClient
     {
         $request = $this->createPaymentRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionRequest);
         return $this->makeApiCall($request, CreatePaymentResponse::class)[0];
+    }
+
+    /**
+     * Operation createFundSplit
+     *
+     * Create a Fund Split for a Chargeback Event
+     *
+     * @throws ApiErrorResponseException|ApiResponseRetrievalException
+     */
+    public function createFundSplit(
+        string $merchantId,
+        string $commerceCaseId,
+        string $checkoutId,
+        string $paymentExecutionId,
+        string $eventId,
+        FundSplitRequest $fundSplitRequest
+    ): FundSplitResponse {
+        $request = $this->createFundSplitRequest($merchantId, $commerceCaseId, $checkoutId, $paymentExecutionId, $eventId, $fundSplitRequest);
+        return $this->makeApiCall($request, FundSplitResponse::class)[0];
+    }
+
+    protected function createFundSplitRequest(
+        string $merchantId,
+        string $commerceCaseId,
+        string $checkoutId,
+        string $paymentExecutionId,
+        string $eventId,
+        FundSplitRequest $fundSplitRequest
+    ): Request {
+        $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/payment-executions/{paymentExecutionId}/events/{eventId}/fund-splits';
+        $httpBody = '';
+
+        $resourcePath = str_replace('{' . 'merchantId' . '}', rawurlencode($merchantId), $resourcePath);
+        $resourcePath = str_replace('{' . 'commerceCaseId' . '}', rawurlencode($commerceCaseId), $resourcePath);
+        $resourcePath = str_replace('{' . 'checkoutId' . '}', rawurlencode($checkoutId), $resourcePath);
+        $resourcePath = str_replace('{' . 'paymentExecutionId' . '}', rawurlencode($paymentExecutionId), $resourcePath);
+        $resourcePath = str_replace('{' . 'eventId' . '}', rawurlencode($eventId), $resourcePath);
+
+        /** @var array<string, string> */
+        $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
+
+        $httpBody = self::serializeJson($fundSplitRequest);
+
+        $operationHost = $this->config->getHost();
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath,
+            $headers,
+            $httpBody
+        );
     }
 
     /**
