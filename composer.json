@@ -63,5 +63,5 @@
     "coverage": "XDEBUG_MODE=coverage phpunit --coverage-clover=coverage.xml tests",
     "coverage-report": "XDEBUG_MODE=coverage phpunit --coverage-html=coverage tests"
   },
-  "version": "1.9.0"
+  "version": "1.10.0"
 }
