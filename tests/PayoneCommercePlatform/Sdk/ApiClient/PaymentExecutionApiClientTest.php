@@ -19,6 +19,11 @@ use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840SpecificInput;
 use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840Action;
 use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\CustomerDevice;
+use PayoneCommercePlatform\Sdk\Models\FundDistribution;
+use PayoneCommercePlatform\Sdk\Models\FundDistributionType;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
+use PayoneCommercePlatform\Sdk\Models\FundSplitRequest;
+use PayoneCommercePlatform\Sdk\Models\FundSplitResponse;
 use PayoneCommercePlatform\Sdk\Models\MerchantAction;
 use PayoneCommercePlatform\Sdk\Models\PaymentCreationOutput;
 use PayoneCommercePlatform\Sdk\Models\PaymentExecution;
@@ -190,6 +195,24 @@ class PaymentExecutionApiClientTest extends TestCase
 
         $payload = new PaymentExecutionRequest(new PaymentMethodSpecificInput());
         $this->paymentExecutionClient->createPayment('1', '2', '3', $payload);
+    }
+
+    public function testCreateFundSplitSuccessful(): void
+    {
+        $fundSplit = new FundSplit(fundDistributions: [
+            new FundDistribution(accountId: 'seller-1', amount: 100, type: FundDistributionType::SELLER_REVENUE)
+        ]);
+        $fundSplitResponse = new FundSplitResponse(
+            fundSplitId: 'fund-split-1',
+            paymentExecutionId: '4',
+            eventId: '5',
+            fundSplit: $fundSplit
+        );
+        $this->httpClient->method('send')->willReturn(new Response(status: 201, body: PaymentExecutionApiClient::serializeJson($fundSplitResponse)));
+
+        $response = $this->paymentExecutionClient->createFundSplit('1', '2', '3', '4', '5', new FundSplitRequest($fundSplit));
+
+        $this->assertEquals($fundSplitResponse, $response);
     }
 
     public function testRefundPaymentSuccessful(): void

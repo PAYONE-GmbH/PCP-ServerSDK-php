@@ -129,10 +129,10 @@ class GetCommerceCasesQuery
         return $this->includePaymentChannel;
     }
 
-    /** @return array<string, int|string> */
+    /** @return array<string, int|string|array<string>> */
     public function toQueryMap(): array
     {
-        /** @var array<string, int|string> */
+        /** @var array<string, int|string|array<string>> */
         $query = [];
 
         if ($this->offset !== null) {
@@ -157,10 +157,10 @@ class GetCommerceCasesQuery
             $query['merchantCustomerId'] = $this->merchantCustomerId;
         }
         if ($this->includeCheckoutStatus !== null) {
-            $query['includeCheckoutStatus'] = implode(',', array_map(fn ($status) => $status->value, $this->includeCheckoutStatus));
+            $query['includeCheckoutStatus'] = array_map(fn ($status) => $status->value, $this->includeCheckoutStatus);
         }
         if ($this->includePaymentChannel !== null) {
-            $query['includePaymentChannel'] = implode(',', array_map(fn ($channel) => $channel->value, $this->includePaymentChannel));
+            $query['includePaymentChannel'] = array_map(fn ($channel) => $channel->value, $this->includePaymentChannel);
         }
 
         return $query;

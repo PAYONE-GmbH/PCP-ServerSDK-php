@@ -7,7 +7,7 @@ use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
 use PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse;
 use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest;
 use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseResponse;
-use PayoneCommercePlatform\Sdk\Models\Customer;
+use PayoneCommercePlatform\Sdk\Models\PatchCommerceCaseRequest;
 use PayoneCommercePlatform\Sdk\Queries\GetCommerceCasesQuery;
 use PayoneCommercePlatform\Sdk\Errors\ApiErrorResponseException;
 use PayoneCommercePlatform\Sdk\Errors\ApiResponseRetrievalException;
@@ -181,14 +181,14 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer customer (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PatchCommerceCaseRequest $patchCommerceCaseRequest patchCommerceCaseRequest (required)
      *
      * @throws ApiErrorResponseException|ApiResponseRetrievalException
      * @return void
      */
-    public function updateCommerceCase($merchantId, $commerceCaseId, $customer): void
+    public function updateCommerceCase(string $merchantId, string $commerceCaseId, PatchCommerceCaseRequest $patchCommerceCaseRequest): void
     {
-        $request = $this->updateCommerceCaseRequest($merchantId, $commerceCaseId, $customer);
+        $request = $this->updateCommerceCaseRequest($merchantId, $commerceCaseId, $patchCommerceCaseRequest);
         $this->makeApiCall($request, null);
     }
 
@@ -197,11 +197,11 @@ class CommerceCaseApiClient extends BaseApiClient
      *
      * @param  string $merchantId The merchantId identifies uniquely the merchant. A Checkout has exactly one merchant. (required)
      * @param  string $commerceCaseId Unique identifier of a Commerce Case. (required)
-     * @param  \PayoneCommercePlatform\Sdk\Models\Customer $customer (required)
+     * @param  \PayoneCommercePlatform\Sdk\Models\PatchCommerceCaseRequest $patchCommerceCaseRequest (required)
      *
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function updateCommerceCaseRequest(string $merchantId, string $commerceCaseId, Customer $customer): Request
+    protected function updateCommerceCaseRequest(string $merchantId, string $commerceCaseId, PatchCommerceCaseRequest $patchCommerceCaseRequest): Request
     {
         $resourcePath = '/v1/{merchantId}/commerce-cases/{commerceCaseId}';
         $httpBody = '';
@@ -221,11 +221,7 @@ class CommerceCaseApiClient extends BaseApiClient
         /** @var array<string, string> */
         $headers = ['Content-Type' => self::MEDIA_TYPE_JSON];
 
-        // there was a mismatch between the OpenAPI specification file and the actual api
-        //  the customer has to be wrapped in an object containing the customer as the `customer` property
-        // to avoid creating another Model to just wrap the customer we inline that stuff
-        // see: https://docs.payone.com/pcp/commerce-platform-api?fullwidth=1#tag/CommerceCase/operation/updateCommerceCase
-        $httpBody = self::serializeJson(["customer" => $customer]);
+        $httpBody = self::serializeJson($patchCommerceCaseRequest);
 
         $operationHost = $this->config->getHost();
         return new Request(

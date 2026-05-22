@@ -13,10 +13,18 @@ class CancelPaymentRequest
     #[SerializedName('cancellationReason')]
     protected ?CancellationReason $cancellationReason;
 
+    /**
+     * @var int|null The amount to cancel in cents.
+     */
+    #[SerializedName('amount')]
+    protected ?int $amount;
+
     public function __construct(
         ?CancellationReason $cancellationReason = null,
+        ?int $amount = null,
     ) {
         $this->cancellationReason = $cancellationReason;
+        $this->amount = $amount;
     }
 
     // Getters and Setters
@@ -28,6 +36,17 @@ class CancelPaymentRequest
     public function setCancellationReason(?CancellationReason $cancellationReason): self
     {
         $this->cancellationReason = $cancellationReason;
+        return $this;
+    }
+
+    public function getAmount(): ?int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(?int $amount): self
+    {
+        $this->amount = $amount;
         return $this;
     }
 }

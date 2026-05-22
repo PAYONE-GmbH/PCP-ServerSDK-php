@@ -3,7 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformationInput;
+use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformation;
 use PayoneCommercePlatform\Sdk\Models\MobilePaymentNetwork;
 
 /**
@@ -26,10 +26,10 @@ class PaymentProduct302SpecificInput
     protected ?MobilePaymentNetwork $network;
 
     /**
-     * @var ApplePaymentDataTokenInformationInput|null Additional information about the Apple payment data token.
+     * @var ApplePaymentDataTokenInformation|null Additional information about the Apple payment data token.
      */
     #[SerializedName('token')]
-    protected ?ApplePaymentDataTokenInformationInput $token;
+    protected ?ApplePaymentDataTokenInformation $token;
 
     /**
      * @var string|null The Domain of your Webshop. Needed for initialization the Apple Pay payment session
@@ -48,7 +48,7 @@ class PaymentProduct302SpecificInput
     public function __construct(
         ?string $integrationType = null,
         ?MobilePaymentNetwork $network = null,
-        ?ApplePaymentDataTokenInformationInput $token = null,
+        ?ApplePaymentDataTokenInformation $token = null,
         ?string $domainName = null,
         ?string $displayName = null
     ) {
@@ -82,12 +82,12 @@ class PaymentProduct302SpecificInput
         return $this;
     }
 
-    public function getToken(): ?ApplePaymentDataTokenInformationInput
+    public function getToken(): ?ApplePaymentDataTokenInformation
     {
         return $this->token;
     }
 
-    public function setToken(?ApplePaymentDataTokenInformationInput $token): self
+    public function setToken(?ApplePaymentDataTokenInformation $token): self
     {
         $this->token = $token;
         return $this;

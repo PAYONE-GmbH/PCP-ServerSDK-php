@@ -31,8 +31,8 @@ class GetCommerceCasesQueryTest extends TestCase
         $this->assertEquals("123456", $queryMap["commerceCaseId"]);
         $this->assertEquals("7890", $queryMap["merchantReference"]);
         $this->assertEquals("1234", $queryMap["merchantCustomerId"]);
-        $this->assertEquals("BILLED,CHARGEBACKED", $queryMap["includeCheckoutStatus"]);
-        $this->assertEquals("ECOMMERCE,POS", $queryMap["includePaymentChannel"]);
+        $this->assertEquals(["BILLED", "CHARGEBACKED"], $queryMap["includeCheckoutStatus"]);
+        $this->assertEquals(["ECOMMERCE", "POS"], $queryMap["includePaymentChannel"]);
     }
 
     public function testGetters(): void
