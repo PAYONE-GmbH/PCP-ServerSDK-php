@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.55.0
+  version: 1.56.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -2579,7 +2579,7 @@ components:
           type: string
           description: |
             Shopping cart item description.
-            The description will also be displayed in the portal as the product name.
+            The description will also be displayed in the portal as the product name if orderLineDetails.productName is not set.
           example: Smartwatch
           x-trim-at: 116
     CartItemPatch:
@@ -3703,6 +3703,12 @@ components:
             Click & Collect or Click & Reserve).
           x-trim-at: 50
           example: Store-12345
+        productName:
+          type: string
+          description: |-
+            The name of the product, will be displayed in Portal if set.
+          maxLength: 116
+          example: Smartwatch-123
       required:
         - productPrice
         - quantity

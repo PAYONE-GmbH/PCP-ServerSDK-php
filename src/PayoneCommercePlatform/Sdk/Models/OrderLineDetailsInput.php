@@ -71,6 +71,13 @@ class OrderLineDetailsInput
     #[SerializedName('merchantShopDeliveryReference')]
     protected ?string $merchantShopDeliveryReference;
 
+
+    /**
+     * @var string|null The name of the product, will be displayed in Portal if set.
+     */
+    #[SerializedName('productName')]
+    protected ?string $productName;
+
     public function __construct(
         int $productPrice,
         int $quantity,
@@ -81,7 +88,8 @@ class OrderLineDetailsInput
         ?string $productUrl = null,
         ?string $productImageUrl = null,
         ?string $productCategoryPath = null,
-        ?string $merchantShopDeliveryReference = null
+        ?string $merchantShopDeliveryReference = null,
+        ?string $productName = null
     ) {
         $this->productCode = $productCode;
         $this->productPrice = $productPrice;
@@ -93,6 +101,7 @@ class OrderLineDetailsInput
         $this->productImageUrl = $productImageUrl;
         $this->productCategoryPath = $productCategoryPath;
         $this->merchantShopDeliveryReference = $merchantShopDeliveryReference;
+        $this->productName = $productName;
     }
 
     // Getters and Setters
@@ -203,6 +212,17 @@ class OrderLineDetailsInput
     public function setMerchantShopDeliveryReference(?string $merchantShopDeliveryReference): self
     {
         $this->merchantShopDeliveryReference = $merchantShopDeliveryReference;
+        return $this;
+    }
+
+    public function getProductName(): ?string
+    {
+        return $this->productName;
+    }
+
+    public function setProductName(?string $productName): self
+    {
+        $this->productName = $productName;
         return $this;
     }
 }
