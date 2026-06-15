@@ -10,7 +10,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 class CartItemInvoiceData
 {
     /**
-     * @var string|null Shopping cart item description. The description will also be displayed in the portal as the product name.
+     * @var string|null Shopping cart item description. The description will also be displayed in the portal as the product name if orderLineDetails.productName is not set.
      */
     #[SerializedName('description')]
     protected ?string $description;
