@@ -4,6 +4,7 @@ namespace PayoneCommercePlatform\Sdk\ApiClient;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Response;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PHPUnit\Framework\TestCase;
 use PayoneCommercePlatform\Sdk\Models\AddressPersonal;
@@ -18,6 +19,7 @@ use PayoneCommercePlatform\Sdk\Models\ApplePay\ApplePayPaymentToken;
 use PayoneCommercePlatform\Sdk\Models\CartItemInput;
 use PayoneCommercePlatform\Sdk\Models\CartItemInvoiceData;
 use PayoneCommercePlatform\Sdk\Models\CreateCheckoutRequest;
+use PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse;
 use PayoneCommercePlatform\Sdk\Models\OrderRequest;
 use PayoneCommercePlatform\Sdk\Models\ProductType;
 use PayoneCommercePlatform\Sdk\Models\OrderLineDetailsInput;
@@ -150,5 +152,123 @@ class BaseApiClientTest extends TestCase
         // Test 5: Setting null client-specific HTTP client (should fall back to global)
         $clientWithSpecific->setHttpClient(null);
         $this->assertInstanceOf(CommerceCaseApiClient::class, $clientWithSpecific);
+    }
+
+    public function testOnRequestBodyCallbackIsInvoked(): void
+    {
+        $captured = [];
+        $config = new CommunicatorConfiguration(
+            apiKey: 'KEY',
+            apiSecret: 'SECRET',
+            host: 'awesome-api.com',
+            serverMetaInfo: [],
+            clientMetaInfo: [],
+            onRequestBody: static function (string $body) use (&$captured): void {
+                $captured[] = $body;
+            },
+        );
+
+        $responseBody = BaseApiClient::serializeJson(
+            new CreateCheckoutResponse(amountOfMoney: new AmountOfMoney(amount: 100, currencyCode: 'EUR'))
+        );
+        $httpClient = $this->createStub(ClientInterface::class);
+        $httpClient->method('send')->willReturn(new Response(status: 201, body: $responseBody));
+
+        $checkoutClient = new CheckoutApiClient($config, client: $httpClient);
+        $checkoutClient->createCheckout('merchant1', 'commerce1', new CreateCheckoutRequest());
+
+        $this->assertCount(1, $captured);
+        $this->assertIsString($captured[0]);
+    }
+
+    public function testOnResponseBodyCallbackIsInvoked(): void
+    {
+        $captured = [];
+        $responseBody = BaseApiClient::serializeJson(
+            new CreateCheckoutResponse(amountOfMoney: new AmountOfMoney(amount: 100, currencyCode: 'EUR'))
+        );
+        $config = new CommunicatorConfiguration(
+            apiKey: 'KEY',
+            apiSecret: 'SECRET',
+            host: 'awesome-api.com',
+            serverMetaInfo: [],
+            clientMetaInfo: [],
+            onResponseBody: static function (string $body) use (&$captured): void {
+                $captured[] = $body;
+            },
+        );
+
+        $httpClient = $this->createStub(ClientInterface::class);
+        $httpClient->method('send')->willReturn(new Response(status: 201, body: $responseBody));
+
+        $checkoutClient = new CheckoutApiClient($config, client: $httpClient);
+        $checkoutClient->createCheckout('merchant1', 'commerce1', new CreateCheckoutRequest());
+
+        $this->assertCount(1, $captured);
+        $this->assertStringContainsString('100', $captured[0]);
+    }
+
+    public function testCallbacksReceiveCorrectPayloads(): void
+    {
+        $capturedRequest  = null;
+        $capturedResponse = null;
+
+        $responseBody = BaseApiClient::serializeJson(
+            new CreateCheckoutResponse(amountOfMoney: new AmountOfMoney(amount: 500, currencyCode: 'EUR'))
+        );
+        $config = new CommunicatorConfiguration(
+            apiKey: 'KEY',
+            apiSecret: 'SECRET',
+            host: 'awesome-api.com',
+            serverMetaInfo: [],
+            clientMetaInfo: [],
+            onRequestBody: static function (string $body) use (&$capturedRequest): void {
+                $capturedRequest = $body;
+            },
+            onResponseBody: static function (string $body) use (&$capturedResponse): void {
+                $capturedResponse = $body;
+            },
+        );
+
+        $httpClient = $this->createStub(ClientInterface::class);
+        $httpClient->method('send')->willReturn(new Response(status: 201, body: $responseBody));
+
+        $request = new CreateCheckoutRequest(
+            amountOfMoney: new AmountOfMoney(amount: 42, currencyCode: 'USD')
+        );
+        $checkoutClient = new CheckoutApiClient($config, client: $httpClient);
+        $checkoutClient->createCheckout('merchant1', 'commerce1', $request);
+
+        $this->assertNotNull($capturedRequest);
+        $this->assertIsString($capturedRequest);
+        /** @var string $capturedRequest */
+        $this->assertStringContainsString('42', $capturedRequest);
+
+        $this->assertNotNull($capturedResponse);
+        $this->assertIsString($capturedResponse);
+        /** @var string $capturedResponse */
+        $this->assertStringContainsString('500', $capturedResponse);
+    }
+
+    public function testNoCallbacksDoesNotError(): void
+    {
+        $config = new CommunicatorConfiguration(
+            apiKey: 'KEY',
+            apiSecret: 'SECRET',
+            host: 'awesome-api.com',
+            serverMetaInfo: [],
+            clientMetaInfo: [],
+        );
+
+        $responseBody = BaseApiClient::serializeJson(
+            new CreateCheckoutResponse(amountOfMoney: new AmountOfMoney(amount: 100, currencyCode: 'EUR'))
+        );
+        $httpClient = $this->createStub(ClientInterface::class);
+        $httpClient->method('send')->willReturn(new Response(status: 201, body: $responseBody));
+
+        $checkoutClient = new CheckoutApiClient($config, client: $httpClient);
+        $result = $checkoutClient->createCheckout('merchant1', 'commerce1', new CreateCheckoutRequest());
+
+        $this->assertInstanceOf(CreateCheckoutResponse::class, $result);
     }
 }

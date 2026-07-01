@@ -122,6 +122,14 @@ class BaseApiClient
     protected function makeApiCall(Request $request, ?string $type = null): array
     {
         $request = $this->requestHeaderGenerator->generateAdditionalRequestHeaders($request);
+
+        $onRequestBody  = $this->config->getOnRequestBody();
+        $onResponseBody = $this->config->getOnResponseBody();
+
+        if ($onRequestBody !== null) {
+            $onRequestBody((string) $request->getBody());
+        }
+
         try {
             $response = $this->client->send($request, ['http_errors' => false]);
         } catch (RequestException $e) {
@@ -142,6 +150,11 @@ class BaseApiClient
                 message: "[{$e->getCode()}] {$e->getMessage()}",
                 previous: $e,
             );
+        }
+
+        if ($onResponseBody !== null) {
+            $onResponseBody((string) $response->getBody());
+            $response->getBody()->rewind();
         }
 
         $this->handleError($request, $response);
