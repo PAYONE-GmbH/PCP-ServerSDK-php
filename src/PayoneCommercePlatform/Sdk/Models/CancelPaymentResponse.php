@@ -14,12 +14,20 @@ class CancelPaymentResponse
     protected ?PaymentResponse $payment;
 
     /**
+     * @var FundSplit|null Fund split details for this cancellation.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
+    /**
      * @param PaymentResponse $payment Payment related properties.
      */
     public function __construct(
         ?PaymentResponse $payment = null,
+        ?FundSplit $fundSplit = null,
     ) {
         $this->payment = $payment;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -31,6 +39,17 @@ class CancelPaymentResponse
     public function setPayment(?PaymentResponse $payment = null): self
     {
         $this->payment = $payment;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit = null): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }
