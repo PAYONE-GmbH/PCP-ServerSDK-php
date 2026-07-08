@@ -57,10 +57,13 @@ class PaymentExecutionApiClientTest extends TestCase
 
     public function testCancelPaymentExecutionSuccessful(): void
     {
-        $cancelPaymentResponse = new CancelPaymentResponse(new PaymentResponse());
+        $fundSplit = new FundSplit(fundDistributions: [
+            new FundDistribution(accountId: 'seller-1', amount: 100, type: FundDistributionType::SELLER_REVENUE)
+        ]);
+        $cancelPaymentResponse = new CancelPaymentResponse(new PaymentResponse(), $fundSplit);
         $this->httpClient->method('send')->willReturn(new Response(status: 204, body: PaymentExecutionApiClient::serializeJson($cancelPaymentResponse)));
 
-        $payload = new CancelPaymentRequest(CancellationReason::UNDELIVERABLE);
+        $payload = new CancelPaymentRequest(CancellationReason::UNDELIVERABLE, 100, $fundSplit);
         $response = $this->paymentExecutionClient->cancelPaymentExecution('1', '2', '3', '4', $payload);
 
         $this->assertEquals($cancelPaymentResponse, $response);

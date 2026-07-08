@@ -19,12 +19,20 @@ class CancelPaymentRequest
     #[SerializedName('amount')]
     protected ?int $amount;
 
+    /**
+     * @var FundSplit|null Fund split details for this cancellation.
+     */
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
     public function __construct(
         ?CancellationReason $cancellationReason = null,
         ?int $amount = null,
+        ?FundSplit $fundSplit = null,
     ) {
         $this->cancellationReason = $cancellationReason;
         $this->amount = $amount;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -47,6 +55,17 @@ class CancelPaymentRequest
     public function setAmount(?int $amount): self
     {
         $this->amount = $amount;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }
