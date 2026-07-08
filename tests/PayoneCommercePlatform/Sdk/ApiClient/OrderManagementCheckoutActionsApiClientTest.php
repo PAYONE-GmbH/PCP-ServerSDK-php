@@ -15,6 +15,9 @@ use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
 use PayoneCommercePlatform\Sdk\Models\DeliverRequest;
 use PayoneCommercePlatform\Sdk\Models\DeliverResponse;
 use PayoneCommercePlatform\Sdk\Models\DeliverType;
+use PayoneCommercePlatform\Sdk\Models\FundDistribution;
+use PayoneCommercePlatform\Sdk\Models\FundDistributionType;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 use PayoneCommercePlatform\Sdk\Models\OrderLineDetailsResult;
 use PayoneCommercePlatform\Sdk\Models\OrderRequest;
 use PayoneCommercePlatform\Sdk\Models\OrderResponse;
@@ -46,9 +49,13 @@ class OrderManagementCheckoutActionsApiClientTest extends TestCase
 
     public function testCancelOrderSuccessful(): void
     {
+        $fundSplit = new FundSplit(fundDistributions: [
+            new FundDistribution(accountId: 'seller-1', amount: 100, type: FundDistributionType::SELLER_REVENUE)
+        ]);
         $cancelResponse = new CancelResponse(
             cancelPaymentResponse: new CancelPaymentResponse(
-                payment: new PaymentResponse(paymentOutput: new PaymentOutput(), status: StatusValue::CREATED)
+                payment: new PaymentResponse(paymentOutput: new PaymentOutput(), status: StatusValue::CREATED),
+                fundSplit: $fundSplit
             ),
         );
         $this->httpClient->method('send')->willReturn(new Response(status: 200, body: OrderManagementCheckoutActionsApiClient::serializeJson($cancelResponse)));

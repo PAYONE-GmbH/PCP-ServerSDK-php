@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.56.0
+  version: 1.57.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -2223,12 +2223,16 @@ components:
             Here you can specify the amount that you want to cancel (specified in cents, where single digit currencies
             are presumed to have 2 digits). The amount can be lower than the amount that was authorized, but not higher. 
              If left empty, the remaining open amount will be cancelled.
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     CancelPaymentResponse:
       type: object
       additionalProperties: false
       properties:
         payment:
           $ref: '#/components/schemas/PaymentResponse'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     CancelRequest:
       type: object
       description: |
