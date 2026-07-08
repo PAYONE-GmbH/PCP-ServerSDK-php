@@ -1,3 +1,6 @@
+# [1.12.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.11.0...v1.12.0) (2026-07-08)
+### Features
+* feat: update API version to 1.57.0 ([b21fa4a92346d66f8c608c3e9aaedab0faa261bf](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/b21fa4a92346d66f8c608c3e9aaedab0faa261bf))
 # [1.11.0](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/compare/v1.10.0...v1.11.0) (2026-06-15)
 ### Features
 * feat: update API version to 1.56.0 ([f313c38dbadb380c8b42786675a66b9adf076126](https://github.com/PAYONE-GmbH/PCP-ServerSDK-php/commit/f313c38dbadb380c8b42786675a66b9adf076126))
