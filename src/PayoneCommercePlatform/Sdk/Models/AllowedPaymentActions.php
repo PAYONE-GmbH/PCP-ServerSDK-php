@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-
 /**
  * Indicates which payment endpoints can be used for the respective Checkout.
  * The systems offers two alternatives to trigger a payment and consecutive events:

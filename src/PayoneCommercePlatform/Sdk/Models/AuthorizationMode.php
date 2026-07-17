@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-
 /**
  * Determines the type of the authorization that will be used. Allowed values:
  * PRE_AUTHORIZATION - The payment creation results in a pre-authorization that is ready for Capture. Pre-
