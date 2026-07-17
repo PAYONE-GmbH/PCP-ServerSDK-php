@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
 
 /**
  * Determines the type of the authorization that will be used. Allowed values:

@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\ApplePaymentDataTokenInformation;
-use PayoneCommercePlatform\Sdk\Models\MobilePaymentNetwork;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing additional information needed for Apple Pay payment transactions.

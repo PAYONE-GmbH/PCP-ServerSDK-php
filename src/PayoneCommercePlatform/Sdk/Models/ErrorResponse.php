@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\APIError;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object representing an error response.

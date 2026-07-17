@@ -2,11 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CancelItem;
-use PayoneCommercePlatform\Sdk\Models\CancelType;
-use PayoneCommercePlatform\Sdk\Models\CancellationReason;
-use PayoneCommercePlatform\Sdk\Models\FundSplit;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Request to mark items as of the respective Checkout as cancelled and to automatically reverse the associated payment.

@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CartItemSupplierReferences;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description This object contains information of all items in the cart. If a cart item is provided, the productPrice and quantity is required.

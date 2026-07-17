@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\FundDistributionType;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the details of a fund distribution.

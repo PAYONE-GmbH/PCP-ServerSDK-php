@@ -2,14 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CardPaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\MobilePaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\RedirectPaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\SepaDirectDebitPaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\FinancingPaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\CustomerDevice;
-use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Input for the payment for a respective payment method. In case the paymentMethodSpecificInput has already been provided when creating the Commerce Case or Checkout, it will automatically be used for the Payment Execution. If a new input will be provided, the existing input will be updated.

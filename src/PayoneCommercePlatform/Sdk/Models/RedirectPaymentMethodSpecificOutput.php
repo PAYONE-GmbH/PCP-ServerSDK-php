@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\PaymentProduct840SpecificOutput;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the redirect payment product details.

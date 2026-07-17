@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CapturePaymentResponse;
-use PayoneCommercePlatform\Sdk\Models\ShoppingCartResult;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Response object for the delivery request, containing the capture payment response and the shopping cart result.

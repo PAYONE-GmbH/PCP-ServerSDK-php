@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\MobilePaymentNetwork;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Specific input details for payment product 5002 (Google Pay).

@@ -2,11 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\MobilePaymentThreeDSecure;
-use PayoneCommercePlatform\Sdk\Models\PaymentProduct302SpecificInput;
-use PayoneCommercePlatform\Sdk\Models\AuthorizationMode;
-use PayoneCommercePlatform\Sdk\Models\PaymentProduct5002SpecificInput;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the specific input details for mobile payments.

@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\PaymentProduct3391SpecificInput;
-use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840SpecificInput;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description To complete the Order the completePaymentMethodSpecificInput has to be provided, containing the selected installmentOptionId as well as the bankAccountInformation of the customer.

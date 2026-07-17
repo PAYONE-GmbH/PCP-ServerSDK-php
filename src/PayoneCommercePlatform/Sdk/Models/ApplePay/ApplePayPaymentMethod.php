@@ -2,7 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models\ApplePay;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * Information about the card used in the transaction.

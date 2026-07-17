@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CompletePaymentProduct840Action;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the specific input details for PayPal payments completed by the merchant.

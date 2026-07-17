@@ -2,14 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\AuthorizationMode;
-use PayoneCommercePlatform\Sdk\Models\CardRecurrenceDetails;
-use PayoneCommercePlatform\Sdk\Models\TransactionChannel;
-use PayoneCommercePlatform\Sdk\Models\UnscheduledCardOnFileRequestor;
-use PayoneCommercePlatform\Sdk\Models\UnscheduledCardOnFileSequenceIndicator;
-use PayoneCommercePlatform\Sdk\Models\CardInfo;
-use PayoneCommercePlatform\Sdk\Models\CardOnFileRecurringFrequency;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the specific input details for card payments.
