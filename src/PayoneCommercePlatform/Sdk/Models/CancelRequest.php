@@ -6,6 +6,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 use PayoneCommercePlatform\Sdk\Models\CancelItem;
 use PayoneCommercePlatform\Sdk\Models\CancelType;
 use PayoneCommercePlatform\Sdk\Models\CancellationReason;
+use PayoneCommercePlatform\Sdk\Models\FundSplit;
 
 /**
  * @description Request to mark items as of the respective Checkout as cancelled and to automatically reverse the associated payment.
@@ -35,6 +36,9 @@ class CancelRequest
     #[SerializedName('cancelItems')]
     protected ?array $cancelItems;
 
+    #[SerializedName('fundSplit')]
+    protected ?FundSplit $fundSplit;
+
     /**
      * @param CancelType|null $cancelType The type of cancellation.
      * @param CancellationReason|null $cancellationReason The reason for cancellation.
@@ -43,11 +47,13 @@ class CancelRequest
     public function __construct(
         ?CancelType $cancelType = null,
         ?CancellationReason $cancellationReason = null,
-        ?array $cancelItems = null
+        ?array $cancelItems = null,
+        ?FundSplit $fundSplit = null
     ) {
         $this->cancelType = $cancelType;
         $this->cancellationReason = $cancellationReason;
         $this->cancelItems = $cancelItems;
+        $this->fundSplit = $fundSplit;
     }
 
     // Getters and Setters
@@ -88,6 +94,17 @@ class CancelRequest
     public function setCancelItems(?array $cancelItems): self
     {
         $this->cancelItems = $cancelItems;
+        return $this;
+    }
+
+    public function getFundSplit(): ?FundSplit
+    {
+        return $this->fundSplit;
+    }
+
+    public function setFundSplit(?FundSplit $fundSplit): self
+    {
+        $this->fundSplit = $fundSplit;
         return $this;
     }
 }
