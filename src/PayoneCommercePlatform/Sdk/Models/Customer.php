@@ -2,12 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CompanyInformation;
-use PayoneCommercePlatform\Sdk\Models\Address;
-use PayoneCommercePlatform\Sdk\Models\ContactDetails;
-use PayoneCommercePlatform\Sdk\Models\PersonalInformation;
-use PayoneCommercePlatform\Sdk\Models\CustomerAccount;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the details of a customer.

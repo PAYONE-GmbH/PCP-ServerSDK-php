@@ -2,7 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\Errors;
 
-use PayoneCommercePlatform\Sdk\Errors\ApiException;
 use PayoneCommercePlatform\Sdk\Models\APIError;
 use Throwable;
 

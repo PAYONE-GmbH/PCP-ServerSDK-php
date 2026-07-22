@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\InstallmentOption;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Output specific to payment product 3391.

@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use PayoneCommercePlatform\Sdk\Models\SepaTransferPaymentProduct772SpecificInput;
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class BankPayoutMethodSpecificInput
 {

@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\ProcessingMandateInformation;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing information specific to SEPA Direct Debit

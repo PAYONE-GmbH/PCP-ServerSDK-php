@@ -2,7 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models\ApplePay;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * An object that contains the user's payment credentials.

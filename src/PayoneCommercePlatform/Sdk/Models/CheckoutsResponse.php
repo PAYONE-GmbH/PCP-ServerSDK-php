@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CheckoutResponse;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object that holds the number of found Checkouts and the requested page of Checkouts.

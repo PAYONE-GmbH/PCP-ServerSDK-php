@@ -3,7 +3,7 @@
 namespace PayoneCommercePlatform\Sdk\Models;
 
 use DateTime;
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing data related to the account the customer has with you.

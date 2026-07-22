@@ -3,7 +3,6 @@
 namespace PayoneCommercePlatform\Sdk;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use PHPUnit\Framework\TestCase;
 
 class CommunicatorConfigurationTest extends TestCase

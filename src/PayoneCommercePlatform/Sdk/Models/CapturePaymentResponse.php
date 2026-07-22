@@ -2,11 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CaptureOutput;
-use PayoneCommercePlatform\Sdk\Models\StatusValue;
-use PayoneCommercePlatform\Sdk\Models\PaymentStatusOutput;
-use PayoneCommercePlatform\Sdk\Models\FundSplit;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class CapturePaymentResponse
 {

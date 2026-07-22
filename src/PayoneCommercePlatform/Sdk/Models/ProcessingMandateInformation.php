@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
-use PayoneCommercePlatform\Sdk\Models\MandateRecurrenceType;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the relevant information of a SEPA Direct Debit mandate for processing (mandatory fields in pain.008). Renamed from CreateMandateWithReturnUrl to ProcessingMandateInformation.

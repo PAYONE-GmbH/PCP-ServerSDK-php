@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
-use PayoneCommercePlatform\Sdk\Models\PaymentReferences;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing Refund details.

@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CardFraudResults;
-use PayoneCommercePlatform\Sdk\Models\ThreeDSecureResults;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the mobile payment method details.

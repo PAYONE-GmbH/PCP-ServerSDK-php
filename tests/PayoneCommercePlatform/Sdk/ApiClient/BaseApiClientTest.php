@@ -3,7 +3,6 @@
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 use PayoneCommercePlatform\Sdk\CommunicatorConfiguration;
 use PHPUnit\Framework\TestCase;
 use PayoneCommercePlatform\Sdk\Models\AddressPersonal;

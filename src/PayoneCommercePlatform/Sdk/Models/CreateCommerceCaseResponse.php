@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\Customer;
-use PayoneCommercePlatform\Sdk\Models\CreateCheckoutResponse;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use DateTime;
 
 /**
