@@ -39,4 +39,15 @@ class PaymentIntentModelTest extends TestCase
             BaseApiClient::serializeJson($model),
         );
     }
+
+    public function testRedirectPaymentProduct840SpecificInputSerializesPaymentId(): void
+    {
+        $model = new RedirectPaymentProduct840SpecificInput(paymentId: '3066019730_1');
+
+        self::assertSame(
+            '{"paymentId":"3066019730_1"}',
+            BaseApiClient::serializeJson($model),
+        );
+        self::assertSame('3066019730_1', $model->getPaymentId());
+    }
 }

@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.59.0
+  version: 1.60.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -1482,7 +1482,7 @@ paths:
         This endpoint can be used to create a payment intent for PayPal payment method.
       tags:
         - PaymentIntent
-      operationId: createPaymentIntent
+      operationId: createPaymentIntemt
       parameters:
         - $ref: '#/components/parameters/merchantIdPath'
       requestBody:
@@ -4947,6 +4947,11 @@ components:
       properties:
         fraudNetId:
           $ref: '#/components/schemas/FraudNetId'
+        paymentId:
+          type: string
+          description: Unique payment transaction identifier of the payment gateway. Required for PayPal Express to associate the request with the original payment intent.
+          example: '3066019730_1'
+          writeOnly: true
     RedirectPaymentProduct840SpecificInputData:
       title: paymentProduct840SpecificInput
       type: object
