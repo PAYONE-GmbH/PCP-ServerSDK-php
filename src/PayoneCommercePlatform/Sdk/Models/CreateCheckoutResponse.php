@@ -2,17 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
-use PayoneCommercePlatform\Sdk\Models\CheckoutReferences;
-use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
-use PayoneCommercePlatform\Sdk\Models\ErrorResponse;
-use PayoneCommercePlatform\Sdk\Models\PaymentExecution;
-use PayoneCommercePlatform\Sdk\Models\Shipping;
-use PayoneCommercePlatform\Sdk\Models\ShoppingCartResult;
-use PayoneCommercePlatform\Sdk\Models\StatusCheckout;
-use PayoneCommercePlatform\Sdk\Models\StatusOutput;
-use PayoneCommercePlatform\Sdk\Models\AllowedPaymentActions;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use DateTime;
 
 /**

@@ -2,7 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models\ApplePay;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * The result of authorizing a payment request that contains payment information.

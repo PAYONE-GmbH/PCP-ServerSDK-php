@@ -2,12 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
-use PayoneCommercePlatform\Sdk\Models\Customer;
-use PayoneCommercePlatform\Sdk\Models\References;
-use PayoneCommercePlatform\Sdk\Models\Shipping;
-use PayoneCommercePlatform\Sdk\Models\ShoppingCartInput;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Order object containing order related data. Please note that this object is required to be able to submit the amount.

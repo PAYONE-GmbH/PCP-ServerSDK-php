@@ -2,10 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\PayoutOutput;
-use PayoneCommercePlatform\Sdk\Models\StatusValue;
-use PayoneCommercePlatform\Sdk\Models\StatusCategoryValue;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object that holds the payment related properties for the refund of a Payment Information.

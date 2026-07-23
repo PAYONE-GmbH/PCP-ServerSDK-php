@@ -3,7 +3,6 @@
 namespace PayoneCommercePlatform\Sdk\ApiClient;
 
 use GuzzleHttp\Psr7\Request;
-use PayoneCommercePlatform\Sdk\ApiClient\BaseApiClient;
 use PayoneCommercePlatform\Sdk\Models\CommerceCaseResponse;
 use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseRequest;
 use PayoneCommercePlatform\Sdk\Models\CreateCommerceCaseResponse;

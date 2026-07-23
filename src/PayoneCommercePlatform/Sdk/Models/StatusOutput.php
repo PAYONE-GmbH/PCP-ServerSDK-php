@@ -2,7 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Contains information about whether the payment of the Checkout has already been completed and how much of the total sum has been collected already.

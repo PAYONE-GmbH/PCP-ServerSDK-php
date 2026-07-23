@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\PaymentProduct3392SpecificInput;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing the specific input details for financing payment methods (Buy Now Pay Later)

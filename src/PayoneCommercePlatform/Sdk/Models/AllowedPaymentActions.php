@@ -2,8 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-
 /**
  * Indicates which payment endpoints can be used for the respective Checkout.
  * The systems offers two alternatives to trigger a payment and consecutive events:

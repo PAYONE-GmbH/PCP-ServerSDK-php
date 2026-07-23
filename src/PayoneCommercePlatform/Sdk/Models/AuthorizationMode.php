@@ -2,8 +2,6 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-
 /**
  * Determines the type of the authorization that will be used. Allowed values:
  * PRE_AUTHORIZATION - The payment creation results in a pre-authorization that is ready for Capture. Pre-

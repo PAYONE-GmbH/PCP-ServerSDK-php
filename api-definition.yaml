@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.57.0
+  version: 1.61.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -23,6 +23,8 @@ tags:
     description: Resource for operations on Payment Executions. Requires PAYMENT_EXECUTION as allowedPaymentActions.
   - name: PaymentInformation
     description: Resource for operations on Payment Information.
+  - name: PaymentIntent
+    description: Resource for operations on Payment Intent.
 
 paths:
   '/v1/{merchantId}/commerce-cases':
@@ -1473,6 +1475,85 @@ paths:
               schema:
                 $ref: '#/components/schemas/RefundErrorResponse'
 
+  '/v1/{merchantId}/payment-intents':
+    post:
+      summary: Create a Payment Intent
+      description: |-
+        This endpoint can be used to create a payment intent for PayPal payment method.
+      tags:
+        - PaymentIntent
+      operationId: createPaymentIntemt
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentIntentRequest'
+      responses:
+        '201':
+          x-nullable: true
+          description: The response contains the reference of the created Payment Intent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePaymentIntentResponse'
+        '400':
+          x-nullable: true
+          description: Incorrect input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          x-nullable: true
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          x-nullable: true
+          description: Creation of Payment Information is not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          x-nullable: true
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/payment-intents/{paymentIntentId}':
+    get:
+      summary: Get a Payment Intent
+      description: |-
+        This endpoint can be used to get a paymentIntent.
+      tags:
+        - PaymentIntent
+      operationId: getPaymentIntent
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/paymentIntentId'
+      responses:
+        '200':
+          x-nullable: true
+          description: The response contains the reference of the created Payment Intent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentResponse'
+        '404':
+          x-nullable: true
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   parameters:
     checkoutIdPath:
@@ -1749,6 +1830,14 @@ components:
       schema:
         type: string
         format: UUID
+    paymentIntentId:
+      in: path
+      name: paymentIntentId
+      description: Unique identifier of a paymentIntent
+      required: true
+      schema:
+        type: string
+        format: UUID
     paymentReference:
       in: query
       name: paymentReference
@@ -1986,6 +2075,15 @@ components:
           maxLength: 10
         name:
           $ref: '#/components/schemas/PersonalName'
+    AddressSelectionAtPayPal:
+      type: boolean
+      description: |-
+        Indicates whether to use PayPal Express Checkout Shortcut.
+         * true = When shortcut is enabled, the consumer can select a shipping address during PayPal checkout.
+         * false = When shortcut is disabled, the consumer cannot change the shipping address.
+        Default value is false.
+        Please note that this field is ignored when order.additionalInput.typeInformation.purchaseType is set to
+        "digital"
     AllowedPaymentActions:
       type: string
       enum:
@@ -2254,6 +2352,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CancelItem'
+        fundSplit:
+          $ref: '#/components/schemas/FundSplit'
     CancelResponse:
       type: object
       properties:
@@ -2563,7 +2663,7 @@ components:
           enum:
             - first
             - recurring
-    CartItemInput:
+    CartItemData:
       type: object
       description: This object contains information of all items in the cart.
         If a cart item is provided, the productPrice and quantity is required.
@@ -2573,6 +2673,14 @@ components:
           $ref: '#/components/schemas/CartItemInvoiceData'
         orderLineDetails:
           $ref: '#/components/schemas/OrderLineDetailsInput'
+    CartItemInput:
+      type: object
+      description: This object contains information of all items in the cart.
+        If a cart item is provided, the productPrice and quantity is required.
+      allOf:
+        - $ref: '#/components/schemas/CartItemData'
+      additionalProperties: false
+      properties:
         supplierReferences:
           $ref: '#/components/schemas/CartItemSupplierReferences'
     CartItemInvoiceData:
@@ -2998,6 +3106,39 @@ components:
           type: string
           format: UUID
           example: "4f0c512e-f12c-11ec-8ea0-0242ac120002"
+    CreatePaymentIntent:
+      type: object
+      description: |
+        Object containing payment intent details.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartData'
+    CreatePaymentIntentRequest:
+      title: PaymentIntentRequest
+      type: object
+      description: |
+        Object containing details for creating a payment intent.
+      allOf:
+        - $ref: '#/components/schemas/CreatePaymentIntent'
+      additionalProperties: false
+      properties:
+        paymentMethodSpecificInput:
+          $ref: '#/components/schemas/PaymentMethodSpecificInputForIntent'
+    CreatePaymentIntentResponse:
+      title: PaymentIntentResponse
+      type: object
+      description: Object containing details on the created payment intent.
+      additionalProperties: false
+      properties:
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartData'
+        paymentIntentOutput:
+          $ref: '#/components/schemas/PaymentIntentOutput'
     CreationDateTime:
       type: string
       format: date-time
@@ -3288,6 +3429,14 @@ components:
           $ref: '#/components/schemas/PaymentProduct3391SpecificOutput'
         paymentInstructions:
           $ref: '#/components/schemas/PaymentInstructions'
+    FraudNetId:
+      type: string
+      format: UUID
+      description: |-
+        A unique ID determined by the merchant, to link a Paypal transaction to a FraudNet PayPal risk session. Only applicable to 
+        customer-initiated transactions, when the FraudNet SDK is used, and to be passed in the API request the same tracking ID value 
+        (FraudNet Session Identifier).
+      example: 686e5823-1ffd-42f7-9ba3-42b41b57d8dd
     FundDistribution:
       type: object
       description: Instructions for distributing funds to multiple sellers or partners in a marketplace context.
@@ -3459,6 +3608,15 @@ components:
         - nominalInterestRate
         - numberOfPayments
         - totalAmount
+    JavaScriptSdkFlow:
+      type: boolean
+      description: |-
+        Indicates whether the PayPal JavaScript SDK flow is used.
+        * true = The PayPal JavaScript SDK flow is used.
+        * false = The PayPal JavaScript SDK flow is not used.
+        Default value is false.
+      default: false
+      example: true
     LinkInformation:
       type: object
       description: URL and content type information for an web resource.
@@ -4017,6 +4175,10 @@ components:
           $ref: '#/components/schemas/FundSplit'
       required:
         - paymentReferences
+    PaymentId:
+      description: reference to the paymentProcess.
+      type: string
+      example: "PP2000A6CC1A9R00"
     PaymentInformationRefundRequest:
       type: object
       description: |
@@ -4175,6 +4337,42 @@ components:
           type: string
           description: Status, usually describing the status of the invoice if paid, overdue, open...
       description: Object containing information on payment instructions details (e.g. on the invoice payments)
+    PaymentIntentId:
+      description: reference to the paymentIntent.
+      type: string
+      format: UUID
+      example: "a54749ff-df7c-4686-bf33-fe76d3cf4502"
+    PaymentIntentOutput:
+      type: object
+      description: Object containing details on the created payment intent.
+      allOf:
+        - $ref: '#/components/schemas/PaymentIntentResponseData'
+      additionalProperties: false
+      properties:
+        redirectPaymentMethodSpecificOutput:
+          $ref: '#/components/schemas/RedirectPaymentMethodSpecificOutputForCreateIntent'
+    PaymentIntentResponse:
+      type: object
+      description: Object containing details for payment intent.
+      allOf:
+        - $ref: '#/components/schemas/PaymentIntentResponseData'
+      additionalProperties: false
+      properties:
+        redirectPaymentMethodSpecificOutput:
+          $ref: '#/components/schemas/RedirectPaymentMethodSpecificOutputForIntent'
+    PaymentIntentResponseData:
+      type: object
+      description: Object containing details for payment intent.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        references:
+          $ref: '#/components/schemas/PaymentReferences'
+        paymentIntentId:
+          $ref: '#/components/schemas/PaymentIntentId'
+        paymentId:
+          $ref: '#/components/schemas/PaymentId'
     PaymentMethodSpecificInput:
       type: object
       description: |
@@ -4197,6 +4395,15 @@ components:
           $ref: '#/components/schemas/CustomerDevice'
         paymentChannel:
           $ref: '#/components/schemas/PaymentChannel'
+    PaymentMethodSpecificInputForIntent:
+      title: paymentMethodSpecificInput
+      type: object
+      description: |
+        Input for the payment for a payment intent method.
+      additionalProperties: false
+      properties:
+        redirectPaymentMethodSpecificInput:
+          $ref: '#/components/schemas/RedirectPaymentMethodSpecificInputForIntent'
     PaymentOutput:
       type: object
       description: |
@@ -4334,21 +4541,34 @@ components:
       type: object
       description: |
         PayPal (payment product 840) specific details.
+      allOf:
+        - $ref: '#/components/schemas/PaymentProduct840SpecificOutputData'
+      additionalProperties: false
+      properties:
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
+    PaymentProduct840SpecificOutputData:
+      type: object
+      description: |
+        PayPal (payment product 840) specific details.
       additionalProperties: false
       properties:
         billingAddress:
           $ref: '#/components/schemas/Address'
         customerAccount:
           $ref: '#/components/schemas/PaymentProduct840CustomerAccount'
-        shippingAddress:
-          $ref: '#/components/schemas/Address'
         payPalTransactionId:
-          type: string
-          maxLength: 20
-          description: |-
-            A 17-character unique identifier of the PayPal transaction. This identifier is used to identify the transaction in the
-            PayPal system and needed for the PayPal Javascript SDK flow.
-          example: 9A1234567890123
+          $ref: '#/components/schemas/PayPalTransactionId'
+    PaymentProduct840SpecificOutputForIntent:
+      type: object
+      description: |
+        PayPal (payment product 840) specific details.
+      allOf:
+        - $ref: '#/components/schemas/PaymentProduct840SpecificOutputData'
+      additionalProperties: false
+      properties:
+        shippingAddress:
+          $ref: '#/components/schemas/ShippingAddress'
     PaymentProductId:
       type: integer
       format: int32
@@ -4468,6 +4688,13 @@ components:
           type: string
           description: Unique payment transaction identifier of the payment gateway.
           example: PP1AA7KKLSFB9MBG
+    PayPalTransactionId:
+      type: string
+      maxLength: 20
+      description: |-
+        A 17-character unique identifier of the PayPal transaction. This identifier is used to identify the transaction in the
+        PayPal system and needed for the PayPal Javascript SDK flow.
+      example: 9A1234567890123
     PersonalInformation:
       type: object
       description: Object containing personal information like name, date of birth and gender.
@@ -4622,14 +4849,7 @@ components:
       additionalProperties: false
       properties:
         requiresApproval:
-          type: boolean
-          description: |-
-            * true = the payment requires approval before the funds will be captured using the Approve payment or
-            Capture payment API
-            * false = the payment does not require approval, and the funds will be captured automatically
-            
-            If the parameter is not provided in the request, the default value will be true
-          default: true
+          $ref: '#/components/schemas/RequiresApproval'
         paymentProcessingToken:
           type: string
           description: ID of the token to use to create the payment.
@@ -4657,6 +4877,21 @@ components:
           $ref: '#/components/schemas/RedirectPaymentProduct900SpecificInput'
         redirectionData:
           $ref: '#/components/schemas/RedirectionData'
+    RedirectPaymentMethodSpecificInputForIntent:
+      title: redirectPaymentMethodSpecificInput
+      type: object
+      description: |-
+        Object containing the specific input details for payment intents that involve redirects to PayPay to complete
+      additionalProperties: false
+      properties:
+        requiresApproval:
+          $ref: '#/components/schemas/RequiresApproval'
+        paymentProductId:
+          $ref: '#/components/schemas/PaymentProductId'
+        paymentProduct840SpecificInput:
+          $ref: '#/components/schemas/RedirectPaymentProduct840SpecificInputData'
+        redirectionData:
+          $ref: '#/components/schemas/RedirectionData'
     RedirectPaymentMethodSpecificOutput:
       type: object
       description: |
@@ -4677,36 +4912,54 @@ components:
           description: Token to identify the card in the reporting.
           example: 12a037cc-833d-8b45-8f6f-11c34171f4e1
           maxLength: 40
+    RedirectPaymentMethodSpecificOutputForCreateIntent:
+      title: redirectPaymentMethodSpecificOutput
+      type: object
+      description: |
+        Object containing the redirect payment product details for a created payment intent.
+      additionalProperties: false
+      properties:
+        requiresApproval:
+          $ref: '#/components/schemas/RequiresApproval'
+        paymentProductId:
+          $ref: '#/components/schemas/PaymentProductId'
+        paymentProduct840SpecificOutput:
+          $ref: '#/components/schemas/RedirectPaymentProduct840SpecificInputData'
+        redirectionData:
+          $ref: '#/components/schemas/RedirectionData'
+    RedirectPaymentMethodSpecificOutputForIntent:
+      title: redirectPaymentMethodSpecificOutput
+      type: object
+      description: |
+        Object containing the redirect payment product details for payment intent.
+      additionalProperties: false
+      properties:
+        paymentProductId:
+          $ref: '#/components/schemas/PaymentProductId'
+        paymentProduct840SpecificOutput:
+          $ref: '#/components/schemas/PaymentProduct840SpecificOutputForIntent'
     RedirectPaymentProduct840SpecificInput:
+      type: object
+      description: Object containing specific input required for PayPal payments (Payment product ID 840)
+      allOf:
+        - $ref: '#/components/schemas/RedirectPaymentProduct840SpecificInputData'
+      properties:
+        fraudNetId:
+          $ref: '#/components/schemas/FraudNetId'
+        paymentId:
+          type: string
+          description: Unique payment transaction identifier of the payment gateway. Required for PayPal Express to associate the request with the original payment intent.
+          example: '3066019730_1'
+          writeOnly: true
+    RedirectPaymentProduct840SpecificInputData:
+      title: paymentProduct840SpecificInput
       type: object
       description: Object containing specific input required for PayPal payments (Payment product ID 840)
       properties:
         addressSelectionAtPayPal:
-          type: boolean
-          description: |-
-            Indicates whether to use PayPal Express Checkout Shortcut.
-             * true = When shortcut is enabled, the consumer can select a shipping address during PayPal checkout.
-             * false = When shortcut is disabled, the consumer cannot change the shipping address.
-            Default value is false.
-            Please note that this field is ignored when order.additionalInput.typeInformation.purchaseType is set to
-            "digital"
-        fraudNetId:
-          type: string
-          format: UUID
-          description: |-
-            A unique ID determined by the merchant, to link a Paypal transaction to a FraudNet PayPal risk session. Only applicable to 
-            customer-initiated transactions, when the FraudNet SDK is used, and to be passed in the API request the same tracking ID value 
-            (FraudNet Session Identifier).
-          example: 686e5823-1ffd-42f7-9ba3-42b41b57d8dd
+          $ref: '#/components/schemas/AddressSelectionAtPayPal'
         javaScriptSdkFlow:
-          type: boolean
-          description: |-
-            Indicates whether the PayPal JavaScript SDK flow is used.
-            * true = The PayPal JavaScript SDK flow is used.
-            * false = The PayPal JavaScript SDK flow is not used.
-            Default value is false.
-          default: false
-          example: true
+          $ref: '#/components/schemas/JavaScriptSdkFlow'
     RedirectPaymentProduct900SpecificInput:
       type: object
       properties:
@@ -4880,6 +5133,14 @@ components:
           $ref: '#/components/schemas/ReturnInformation'
         fundSplit:
           $ref: '#/components/schemas/FundSplit'
+    RequiresApproval:
+      type: boolean
+      description: |-
+        * true = the payment requires approval before the funds will be captured using the Approve payment or Capture payment API
+        * false = the payment does not require approval, and the funds will be captured automatically
+
+        If the parameter is not provided in the request, the default value will be true
+      default: true
     ReturnInformation:
       type: object
       description: |-
@@ -5008,6 +5269,27 @@ components:
       properties:
         address:
           $ref: '#/components/schemas/AddressPersonal'
+    ShippingAddress:
+      type: object
+      description: |
+        Object containing information regarding shipping / delivery
+      allOf:
+        - $ref: '#/components/schemas/AddressPersonal'
+      additionalProperties: false
+      properties:
+        companyName:
+          type: string
+          description: |
+            Company name if needed
+    ShoppingCartData:
+      type: object
+      description: |
+        Shopping cart data, including items and specific amounts.
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemData'
     ShoppingCartInput:
       type: object
       description: |

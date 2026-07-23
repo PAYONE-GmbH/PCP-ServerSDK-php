@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\OrderLineDetailsInput;
-use PayoneCommercePlatform\Sdk\Models\CartItemOrderStatus;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing additional information that when supplied can have a beneficial effect on the discountrates.

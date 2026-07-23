@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\BankAccountInformation;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing specific information for PAYONE Secured Direct Debit.

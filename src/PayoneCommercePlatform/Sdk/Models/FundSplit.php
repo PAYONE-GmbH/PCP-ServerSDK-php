@@ -2,8 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\FundDistribution;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Instructions for distributing funds to multiple suppliers or partners in a marketplace context.

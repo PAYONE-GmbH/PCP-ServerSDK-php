@@ -2,9 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CreatePaymentResponse;
-use PayoneCommercePlatform\Sdk\Models\ShoppingCartResult;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object that contains details on the created payment in case one has been created.

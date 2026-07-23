@@ -2,11 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\PaymentCreationOutput;
-use PayoneCommercePlatform\Sdk\Models\MerchantAction;
-use PayoneCommercePlatform\Sdk\Models\PaymentResponse;
-use PayoneCommercePlatform\Sdk\Models\FundSplit;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @description Object containing details on the created payment it has directly be executed.

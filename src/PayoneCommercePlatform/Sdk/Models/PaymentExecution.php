@@ -2,16 +2,7 @@
 
 namespace PayoneCommercePlatform\Sdk\Models;
 
-use Symfony\Component\Serializer\Annotation\SerializedName;
-use PayoneCommercePlatform\Sdk\Models\CardPaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\MobilePaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\RedirectPaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\SepaDirectDebitPaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\FinancingPaymentMethodSpecificInput;
-use PayoneCommercePlatform\Sdk\Models\PaymentChannel;
-use PayoneCommercePlatform\Sdk\Models\References;
-use PayoneCommercePlatform\Sdk\Models\PaymentEvent;
-use PayoneCommercePlatform\Sdk\Models\FundSplit;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use DateTime;
 
 /**
