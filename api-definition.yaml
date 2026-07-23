@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.60.0
+  version: 1.61.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -4178,8 +4178,7 @@ components:
     PaymentId:
       description: reference to the paymentProcess.
       type: string
-      format: UUID
-      example: "PPe14bbe-c4f3-4762-91cf-399387e07567"
+      example: "PP2000A6CC1A9R00"
     PaymentInformationRefundRequest:
       type: object
       description: |
