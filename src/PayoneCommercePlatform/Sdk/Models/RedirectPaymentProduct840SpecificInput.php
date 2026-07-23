@@ -17,13 +17,21 @@ class RedirectPaymentProduct840SpecificInput extends RedirectPaymentProduct840Sp
     #[SerializedName('fraudNetId')]
     protected ?string $fraudNetId;
 
+    /**
+     * @var string|null Unique payment transaction identifier of the payment gateway. Required for PayPal Express to associate the request with the original payment intent.
+     */
+    #[SerializedName('paymentId')]
+    protected ?string $paymentId;
+
     public function __construct(
         ?bool $addressSelectionAtPayPal = null,
         ?string $fraudNetId = null,
-        ?bool $javaScriptSdkFlow = null
+        ?bool $javaScriptSdkFlow = null,
+        ?string $paymentId = null
     ) {
         parent::__construct($addressSelectionAtPayPal, $javaScriptSdkFlow);
         $this->fraudNetId = $fraudNetId;
+        $this->paymentId = $paymentId;
     }
 
     // Getters and Setters
@@ -35,6 +43,17 @@ class RedirectPaymentProduct840SpecificInput extends RedirectPaymentProduct840Sp
     public function setFraudNetId(?string $fraudNetId): self
     {
         $this->fraudNetId = $fraudNetId;
+        return $this;
+    }
+
+    public function getPaymentId(): ?string
+    {
+        return $this->paymentId;
+    }
+
+    public function setPaymentId(?string $paymentId): self
+    {
+        $this->paymentId = $paymentId;
         return $this;
     }
 }
