@@ -11,6 +11,7 @@ use PayoneCommercePlatform\Sdk\Models\AmountOfMoney;
 use PayoneCommercePlatform\Sdk\Models\CreatePaymentIntentRequest;
 use PayoneCommercePlatform\Sdk\Models\CreatePaymentIntentResponse;
 use PayoneCommercePlatform\Sdk\Models\PaymentIntentResponse;
+use PayoneCommercePlatform\Sdk\Models\PaymentReferencesForPaymentIntent;
 use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
 
 class PaymentIntentApiClientTest extends TestCase
@@ -33,13 +34,19 @@ class PaymentIntentApiClientTest extends TestCase
             self::callback(function (RequestInterface $request): bool {
                 self::assertSame('POST', $request->getMethod());
                 self::assertSame('awesome-api.com/v1/merchant%20id/payment-intents', $request->getUri()->getPath());
-                self::assertSame('{"amountOfMoney":{"amount":1337,"currencyCode":"EUR"}}', (string) $request->getBody());
+                self::assertSame('{"amountOfMoney":{"amount":1337,"currencyCode":"EUR"},"references":{"merchantReference":"intent-reference"}}', (string) $request->getBody());
                 return true;
             }),
             ['http_errors' => false],
         )->willReturn(new Response(201, body: '{}'));
 
-        $response = $this->paymentIntentClient->createPaymentIntent('merchant id', new CreatePaymentIntentRequest(new AmountOfMoney(1337, 'EUR')));
+        $response = $this->paymentIntentClient->createPaymentIntent(
+            'merchant id',
+            new CreatePaymentIntentRequest(
+                new PaymentReferencesForPaymentIntent('intent-reference'),
+                new AmountOfMoney(1337, 'EUR'),
+            ),
+        );
 
         self::assertEquals(new CreatePaymentIntentResponse(), $response);
     }

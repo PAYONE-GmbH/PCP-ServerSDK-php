@@ -64,6 +64,11 @@ class PaymentInformationResponse
     #[SerializedName('merchantReference')]
     protected ?string $merchantReference;
 
+    #[SerializedName('traceNumber')]
+    protected ?string $traceNumber;
+    #[SerializedName('receiptNumber')]
+    protected ?string $receiptNumber;
+
     /**
      * @var DateTime|null The date and time when the payment was created.
      */
@@ -112,6 +117,8 @@ class PaymentInformationResponse
         ?string $merchantReference = null,
         ?string $terminalId = null,
         ?string $merchantCustomerId = null,
+        ?string $traceNumber = null,
+        ?string $receiptNumber = null,
         ?DateTime $creationDateTime = null,
         ?DateTime $lastUpdated = null,
         ?PaymentChannel $paymentChannel = null,
@@ -127,6 +134,8 @@ class PaymentInformationResponse
         $this->terminalId = $terminalId;
         $this->cardAcceptorId = $cardAcceptorId;
         $this->merchantReference = $merchantReference;
+        $this->traceNumber = $traceNumber;
+        $this->receiptNumber = $receiptNumber;
         $this->creationDateTime = $creationDateTime;
         $this->lastUpdated = $lastUpdated;
         $this->cardPaymentDetails = $cardPaymentDetails;
@@ -230,6 +239,25 @@ class PaymentInformationResponse
     public function setMerchantReference(?string $merchantReference): self
     {
         $this->merchantReference = $merchantReference;
+        return $this;
+    }
+
+    public function getTraceNumber(): ?string
+    {
+        return $this->traceNumber;
+    }
+    public function setTraceNumber(?string $traceNumber): self
+    {
+        $this->traceNumber = $traceNumber;
+        return $this;
+    }
+    public function getReceiptNumber(): ?string
+    {
+        return $this->receiptNumber;
+    }
+    public function setReceiptNumber(?string $receiptNumber): self
+    {
+        $this->receiptNumber = $receiptNumber;
         return $this;
     }
 
