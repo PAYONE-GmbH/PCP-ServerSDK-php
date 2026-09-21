@@ -10,11 +10,9 @@ class PaymentIntentModelTest extends TestCase
     public function testAllOfSchemasUseTheirDeclaredParentModels(): void
     {
         self::assertInstanceOf(CartItemData::class, new CartItemInput());
-        self::assertInstanceOf(CreatePaymentIntent::class, new CreatePaymentIntentRequest());
+        self::assertInstanceOf(CreatePaymentIntent::class, new CreatePaymentIntentRequest(new PaymentReferencesForPaymentIntent('reference')));
         self::assertInstanceOf(PaymentIntentResponseData::class, new PaymentIntentOutput());
         self::assertInstanceOf(PaymentIntentResponseData::class, new PaymentIntentResponse());
-        self::assertInstanceOf(PaymentProduct840SpecificOutputData::class, new PaymentProduct840SpecificOutput());
-        self::assertInstanceOf(PaymentProduct840SpecificOutputData::class, new PaymentProduct840SpecificOutputForIntent());
         self::assertInstanceOf(RedirectPaymentProduct840SpecificInputData::class, new RedirectPaymentProduct840SpecificInput());
         self::assertInstanceOf(AddressPersonal::class, new ShippingAddress());
         self::assertInstanceOf(OrderLineDetailsInput::class, new OrderLineDetailsPatch(100, 1));
@@ -25,6 +23,7 @@ class PaymentIntentModelTest extends TestCase
     public function testInheritedPropertiesSerializeWithChildProperties(): void
     {
         $model = new CreatePaymentIntentRequest(
+            references: new PaymentReferencesForPaymentIntent('intent-reference'),
             amountOfMoney: new AmountOfMoney(1337, 'EUR'),
             paymentMethodSpecificInput: new PaymentMethodSpecificInputForIntent(
                 new RedirectPaymentMethodSpecificInputForIntent(
@@ -35,7 +34,7 @@ class PaymentIntentModelTest extends TestCase
         );
 
         self::assertSame(
-            '{"paymentMethodSpecificInput":{"redirectPaymentMethodSpecificInput":{"paymentProductId":840,"paymentProduct840SpecificInput":{"javaScriptSdkFlow":true}}},"amountOfMoney":{"amount":1337,"currencyCode":"EUR"}}',
+            '{"paymentMethodSpecificInput":{"redirectPaymentMethodSpecificInput":{"paymentProductId":840,"paymentProduct840SpecificInput":{"javaScriptSdkFlow":true}}},"amountOfMoney":{"amount":1337,"currencyCode":"EUR"},"references":{"merchantReference":"intent-reference"}}',
             BaseApiClient::serializeJson($model),
         );
     }
@@ -49,5 +48,21 @@ class PaymentIntentModelTest extends TestCase
             BaseApiClient::serializeJson($model),
         );
         self::assertSame('3066019730_1', $model->getPaymentId());
+    }
+
+    public function testPaymentIntentUsesRequiredReferenceType(): void
+    {
+        $model = new CreatePaymentIntentRequest(references: new PaymentReferencesForPaymentIntent('intent-reference'));
+
+        self::assertSame('{"references":{"merchantReference":"intent-reference"}}', BaseApiClient::serializeJson($model));
+    }
+
+    public function testPayPalOutputModelsMatchTheirDistinctSchemas(): void
+    {
+        $paymentOutput = new PaymentProduct840SpecificOutput(customerAccount: new PaymentProduct840CustomerAccount(payerId: 'payer'));
+        $intentOutput = new PaymentProduct840SpecificOutputForIntent(customerAccount: new PaymentProduct840CustomerAccountForIntent(emailAddress: 'buyer@example.com'));
+
+        self::assertSame('{"customerAccount":{"payerId":"payer"}}', BaseApiClient::serializeJson($paymentOutput));
+        self::assertSame('{"customerAccount":{"emailAddress":"buyer@example.com"}}', BaseApiClient::serializeJson($intentOutput));
     }
 }

@@ -9,9 +9,9 @@ class CreatePaymentIntentRequest extends CreatePaymentIntent
     #[SerializedName('paymentMethodSpecificInput')]
     protected ?PaymentMethodSpecificInputForIntent $paymentMethodSpecificInput;
 
-    public function __construct(?AmountOfMoney $amountOfMoney = null, ?PaymentReferences $references = null, ?ShoppingCartData $shoppingCart = null, ?PaymentMethodSpecificInputForIntent $paymentMethodSpecificInput = null)
+    public function __construct(PaymentReferencesForPaymentIntent $references, ?AmountOfMoney $amountOfMoney = null, ?ShoppingCartData $shoppingCart = null, ?PaymentMethodSpecificInputForIntent $paymentMethodSpecificInput = null)
     {
-        parent::__construct($amountOfMoney, $references, $shoppingCart);
+        parent::__construct($references, $amountOfMoney, $shoppingCart);
         $this->paymentMethodSpecificInput = $paymentMethodSpecificInput;
     }
 

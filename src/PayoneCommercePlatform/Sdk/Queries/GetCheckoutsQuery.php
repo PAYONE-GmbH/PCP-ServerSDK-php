@@ -46,6 +46,9 @@ class GetCheckoutsQuery
     private ?string $companyInformation = null;
     private ?string $terminalId = null;
     private ?string $reportingToken = null;
+    private ?string $cardAuthorizationId = null;
+    private ?string $receiptNumber = null;
+    private ?string $traceNumber = null;
 
     public function setOffset(?int $offset): self
     {
@@ -261,6 +264,22 @@ class GetCheckoutsQuery
         return $this;
     }
 
+    public function setCardAuthorizationId(?string $cardAuthorizationId): self
+    {
+        $this->cardAuthorizationId = $cardAuthorizationId;
+        return $this;
+    }
+    public function setReceiptNumber(?string $receiptNumber): self
+    {
+        $this->receiptNumber = $receiptNumber;
+        return $this;
+    }
+    public function setTraceNumber(?string $traceNumber): self
+    {
+        $this->traceNumber = $traceNumber;
+        return $this;
+    }
+
     public function getOffset(): ?int
     {
         return $this->offset;
@@ -429,6 +448,18 @@ class GetCheckoutsQuery
     {
         return $this->reportingToken;
     }
+    public function getCardAuthorizationId(): ?string
+    {
+        return $this->cardAuthorizationId;
+    }
+    public function getReceiptNumber(): ?string
+    {
+        return $this->receiptNumber;
+    }
+    public function getTraceNumber(): ?string
+    {
+        return $this->traceNumber;
+    }
 
     /** @return array<string, int|string|array<int|string>> */
     public function toQueryMap(): array
@@ -534,6 +565,15 @@ class GetCheckoutsQuery
         }
         if ($this->reportingToken !== null) {
             $query['reportingToken'] = $this->reportingToken;
+        }
+        if ($this->cardAuthorizationId !== null) {
+            $query['cardAuthorizationId'] = $this->cardAuthorizationId;
+        }
+        if ($this->receiptNumber !== null) {
+            $query['receiptNumber'] = $this->receiptNumber;
+        }
+        if ($this->traceNumber !== null) {
+            $query['traceNumber'] = $this->traceNumber;
         }
 
         return $query;

@@ -7,11 +7,14 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 /**
  * @description PayPal (payment product 840) specific details.
  */
-class PaymentProduct840SpecificOutput extends PaymentProduct840SpecificOutputData
+class PaymentProduct840SpecificOutput
 {
-    /**
-     * @var Address|null Shipping address associated with the PayPal account.
-     */
+    #[SerializedName('billingAddress')]
+    protected ?Address $billingAddress;
+    #[SerializedName('customerAccount')]
+    protected ?PaymentProduct840CustomerAccount $customerAccount;
+    #[SerializedName('payPalTransactionId')]
+    protected ?string $payPalTransactionId;
     #[SerializedName('shippingAddress')]
     protected ?Address $shippingAddress;
 
@@ -21,11 +24,39 @@ class PaymentProduct840SpecificOutput extends PaymentProduct840SpecificOutputDat
         ?Address $shippingAddress = null,
         ?string $payPalTransactionId = null
     ) {
-        parent::__construct($billingAddress, $customerAccount, $payPalTransactionId);
+        $this->billingAddress = $billingAddress;
+        $this->customerAccount = $customerAccount;
+        $this->payPalTransactionId = $payPalTransactionId;
         $this->shippingAddress = $shippingAddress;
     }
 
-    // Getters and Setters
+    public function getBillingAddress(): ?Address
+    {
+        return $this->billingAddress;
+    }
+    public function setBillingAddress(?Address $billingAddress): self
+    {
+        $this->billingAddress = $billingAddress;
+        return $this;
+    }
+    public function getCustomerAccount(): ?PaymentProduct840CustomerAccount
+    {
+        return $this->customerAccount;
+    }
+    public function setCustomerAccount(?PaymentProduct840CustomerAccount $customerAccount): self
+    {
+        $this->customerAccount = $customerAccount;
+        return $this;
+    }
+    public function getPayPalTransactionId(): ?string
+    {
+        return $this->payPalTransactionId;
+    }
+    public function setPayPalTransactionId(?string $payPalTransactionId): self
+    {
+        $this->payPalTransactionId = $payPalTransactionId;
+        return $this;
+    }
     public function getShippingAddress(): ?Address
     {
         return $this->shippingAddress;

@@ -50,6 +50,9 @@ class GetCheckoutsQueryTest extends TestCase
         $query->setCompanyInformation("Company Inc.");
         $query->setTerminalId('1234');
         $query->setReportingToken('5678');
+        $query->setCardAuthorizationId('260042');
+        $query->setReceiptNumber('0321');
+        $query->setTraceNumber('012345');
 
         // act
         $queryMap = $query->toQueryMap();
@@ -88,6 +91,9 @@ class GetCheckoutsQueryTest extends TestCase
         $this->assertEquals("Company Inc.", $queryMap["companyInformation"]);
         $this->assertEquals("1234", $queryMap["terminalId"]);
         $this->assertEquals("5678", $queryMap["reportingToken"]);
+        $this->assertEquals("260042", $queryMap["cardAuthorizationId"]);
+        $this->assertEquals("0321", $queryMap["receiptNumber"]);
+        $this->assertEquals("012345", $queryMap["traceNumber"]);
     }
 
     public function testNulls(): void
