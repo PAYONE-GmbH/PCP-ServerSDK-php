@@ -9,11 +9,11 @@ class CreatePaymentIntent
     #[SerializedName('amountOfMoney')]
     protected ?AmountOfMoney $amountOfMoney;
     #[SerializedName('references')]
-    protected ?PaymentReferences $references;
+    protected PaymentReferencesForPaymentIntent $references;
     #[SerializedName('shoppingCart')]
     protected ?ShoppingCartData $shoppingCart;
 
-    public function __construct(?AmountOfMoney $amountOfMoney = null, ?PaymentReferences $references = null, ?ShoppingCartData $shoppingCart = null)
+    public function __construct(PaymentReferencesForPaymentIntent $references, ?AmountOfMoney $amountOfMoney = null, ?ShoppingCartData $shoppingCart = null)
     {
         $this->amountOfMoney = $amountOfMoney;
         $this->references = $references;
@@ -29,11 +29,11 @@ class CreatePaymentIntent
         $this->amountOfMoney = $amountOfMoney;
         return $this;
     }
-    public function getReferences(): ?PaymentReferences
+    public function getReferences(): PaymentReferencesForPaymentIntent
     {
         return $this->references;
     }
-    public function setReferences(?PaymentReferences $references): self
+    public function setReferences(PaymentReferencesForPaymentIntent $references): self
     {
         $this->references = $references;
         return $this;

@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.61.0
+  version: 1.65.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -27,6 +27,48 @@ tags:
     description: Resource for operations on Payment Intent.
 
 paths:
+  /v1/{merchantId}/authentication-tokens:
+    post:
+      summary: Generate a authentication JWT token
+      operationId: generateAuthToken
+      tags:
+        - Authentication
+      parameters:
+        - name: merchantId
+          in: path
+          description: The Merchant Id
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: X-Request-ID
+          required: false
+          description: Identifier for this request as provided by the client. Will be used
+            in all log statements
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Successfully generated authentication token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationToken'
+        '400':
+          x-nullable: true
+          description: Exception when creating DirectAPIKey with unknown or invalid parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          x-nullable: true
+          description: Server error when creating authentication token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   '/v1/{merchantId}/commerce-cases':
     post:
       summary: Create a Commerce Case
@@ -178,7 +220,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/order':
     post:
-      summary: Creates an Order that will automatially execute a Payment
+      summary: Creates an Order that will automatically execute a Payment
       description: |
         This endpoint can be used to create an Order that automatically executes a payment for the respective Checkout. 
         The Order request requires items within the ShoppingCart and can be made for a partial or the entire
@@ -622,6 +664,9 @@ paths:
         - $ref: '#/components/parameters/companyInformation'
         - $ref: '#/components/parameters/terminalId'
         - $ref: '#/components/parameters/reportingToken'
+        - $ref: '#/components/parameters/cardAuthorizationId'
+        - $ref: '#/components/parameters/receiptNumber'
+        - $ref: '#/components/parameters/traceNumber'
       responses:
         '200':
           x-nullable: true
@@ -634,6 +679,57 @@ paths:
         '400':
           x-nullable: true
           description: Exception when requesting Checkouts with given parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/v1/{merchantId}/commerce-cases/{commerceCaseId}/checkouts/{checkoutId}/pay-by-link':
+    post:
+      summary: "Create a pay-link"
+      description: |-
+        This endpoint can be used to create a pay-link using which customer can make payment for the check out.
+      tags:
+        - PaybyLink
+      operationId: createPayByLink
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/commerceCaseIdPath'
+        - $ref: '#/components/parameters/checkoutIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePayByLinkRequest'
+      responses:
+        '201':
+          description: |-
+            The response contains the details of the created pay-link.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePayByLinkResponse'
+        '404':
+          description: |-
+            No matching data found for the given input parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: "Data validation errors"
           content:
             application/json:
               schema:
@@ -1482,7 +1578,7 @@ paths:
         This endpoint can be used to create a payment intent for PayPal payment method.
       tags:
         - PaymentIntent
-      operationId: createPaymentIntemt
+      operationId: createPaymentIntent
       parameters:
         - $ref: '#/components/parameters/merchantIdPath'
       requestBody:
@@ -1556,6 +1652,15 @@ paths:
 
 components:
   parameters:
+    cardAuthorizationId:
+      in: query
+      name: cardAuthorizationId
+      description: |-
+        Filter your results by the authorization ID assigned to the card payment.
+      schema:
+        type: string
+        maxLength: 8
+      example: 260042
     checkoutIdPath:
       in: path
       name: checkoutId
@@ -1853,6 +1958,15 @@ components:
         type: string
         x-trim-at: 20
       example: '+1234567890'
+    receiptNumber:
+      in: query
+      name: receiptNumber
+      description: |-
+        Filter your results by the receipt number set by the terminal.
+      schema:
+        type: string
+        maxLength: 40
+      example: 0321
     reportingToken:
       in: query
       name: reportingToken
@@ -1984,6 +2098,15 @@ components:
         maximum: 999999999999
         minimum: 0
       example: 1000
+    traceNumber:
+      in: query
+      name: traceNumber
+      description: |-
+        Filter your results by the trace number set by the terminal.
+      schema:
+        type: string
+        maxLength: 40
+      example: 012345
   schemas:
     Address:
       type: object
@@ -2221,6 +2344,7 @@ components:
           * SALE - The payment creation results in an authorization that is already captured at the moment of approval. 
         
         If the parameter is not provided in the request, the default value will be PRE_AUTHORIZATION
+      default: PRE_AUTHORIZATION
     BankAccountInformation:
       type: object
       description: Object containing information about the end customer's bank account.
@@ -3115,9 +3239,11 @@ components:
         amountOfMoney:
           $ref: '#/components/schemas/AmountOfMoney'
         references:
-          $ref: '#/components/schemas/PaymentReferences'
+          $ref: '#/components/schemas/PaymentReferencesForPaymentIntent'
         shoppingCart:
           $ref: '#/components/schemas/ShoppingCartData'
+      required:
+        - references
     CreatePaymentIntentRequest:
       title: PaymentIntentRequest
       type: object
@@ -4285,6 +4411,18 @@ components:
             (e.g. card present payments, cash payments or payments processed by other payment providers).
           maxLength: 40
           example: 6a891660b8cf16edaeb26f87d86f0b2f
+        traceNumber:
+          type: string
+          description: Tracenumber that is incremented by the terminal by 1 for every transaction request.
+            It is printed on the customer receipt. Usually it has an upper limit and restarts by 0 or 1 if the upper limit is reached.
+          maxLength: 40
+          example: "012345"
+        receiptNumber:
+          type: string
+          description: Receiptnumber, that is incremented by 1 by the terminal for every successful financial transaction.
+            It is printed on the customer receipt. Usually it has an upper limit and restarts by 0 or 1 if the upper limit is reached.
+          maxLength: 40
+          example: "0321"
         creationDateTime:
           type: string
           format: date-time
@@ -4537,17 +4675,29 @@ components:
           type: string
           description: Surname of the PayPal account holder
           example: Doe
-    PaymentProduct840SpecificOutput:
+    PaymentProduct840CustomerAccountForIntent:
       type: object
       description: |
-        PayPal (payment product 840) specific details.
-      allOf:
-        - $ref: '#/components/schemas/PaymentProduct840SpecificOutputData'
+        Object containing the details of the PayPal account.
       additionalProperties: false
       properties:
-        shippingAddress:
-          $ref: '#/components/schemas/Address'
-    PaymentProduct840SpecificOutputData:
+        companyName:
+          type: string
+          description: Name of the company in case the PayPal account is owned by a business
+          example: Customer Company Name
+        firstName:
+          type: string
+          description: First name of the PayPal account holder
+          example: John
+        surname:
+          type: string
+          description: Surname of the PayPal account holder
+          example: Doe
+        emailAddress:
+          type: string
+          description: Email address of the customer
+          maxLength: 70
+    PaymentProduct840SpecificOutput:
       type: object
       description: |
         PayPal (payment product 840) specific details.
@@ -4559,14 +4709,20 @@ components:
           $ref: '#/components/schemas/PaymentProduct840CustomerAccount'
         payPalTransactionId:
           $ref: '#/components/schemas/PayPalTransactionId'
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
     PaymentProduct840SpecificOutputForIntent:
       type: object
       description: |
         PayPal (payment product 840) specific details.
-      allOf:
-        - $ref: '#/components/schemas/PaymentProduct840SpecificOutputData'
       additionalProperties: false
       properties:
+        billingAddress:
+          $ref: '#/components/schemas/Address'
+        customerAccount:
+          $ref: '#/components/schemas/PaymentProduct840CustomerAccountForIntent'
+        payPalTransactionId:
+          $ref: '#/components/schemas/PayPalTransactionId'
         shippingAddress:
           $ref: '#/components/schemas/ShippingAddress'
     PaymentProductId:
@@ -4590,6 +4746,15 @@ components:
             If provided for captures or refunds, it must be unique per Checkout.
           maxLength: 20
           example: your-order-6372
+    PaymentReferencesForPaymentIntent:
+      description: |-
+        Object that holds all reference properties that are linked to this transaction.
+        Extends the standard PaymentReferences by making merchantReference mandatory when creating a payment intent.
+      allOf:
+        - $ref: '#/components/schemas/PaymentReferences'
+        - type: object
+          required:
+            - merchantReference
     PaymentReferencesForRefund:
       type: object
       description: |-
@@ -5490,3 +5655,209 @@ components:
         - first
         - subsequent
       x-enum-to-string: false
+    CreatePayByLinkRequest:
+      type: object
+      description: Request object for pay-link generation.
+      properties:
+        paymentLinkSpecificInput:
+          $ref: '#/components/schemas/PaymentLinkSpecificInput'
+        orderType:
+          $ref: '#/components/schemas/OrderType'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        orderReferences:
+          $ref: '#/components/schemas/References'
+      required:
+        - paymentLinkSpecificInput
+        - orderType
+        - orderReferences
+    PaymentLinkSpecificInput:
+      type: object
+      description: Object containing the specific input details for generating Pay-link
+      properties:
+        expirationDate:
+          type: string
+          format: date-time
+          description: |-
+            If provided it overwrites 24 h default validity.
+            Date and time in RFC3339 format after which Items (Checkouts or Commerce-Cases, depending on the context) should be included in the request. Accepted formats are:
+              YYYY-MM-DD'T'HH:mm:ss'Z'
+              YYYY-MM-DD'T'HH:mm:ss+XX:XX
+              YYYY-MM-DD'T'HH:mm:ss-XX:XX
+              YYYY-MM-DD'T'HH:mm'Z'
+              YYYY-MM-DD'T'HH:mm+XX:XX
+              YYYY-MM-DD'T'HH:mm-XX:XX
+            All other formats may be ignored by the system.
+            some examples:
+              YYYY-MM-DDThh:mm:ssZ:
+                value: 2022-11-10T13:34:23Z
+              YYYY-MM-DDThh:mm:ss+XX:XX:
+                value: 2022-11-10T14:34:23+01:00
+        authorizationMode:
+          $ref: '#/components/schemas/AuthorizationMode'
+        paymentMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentMethodId'
+          description: List of supported Payment product identifiers
+          example: [ 1,2,3,390 ]
+        bnplId:
+          type: string
+          description: Dedicated ID to be known when the page is generated to display the BNPL payment methods in order to create a dedicated identification token.
+          example: 18323
+        returnUrl:
+          type: string
+          format: uri
+          pattern: '^(https?|ftp)://[^\s/$.?#].[^\s]*$'
+          description: |-
+            The URL that the customer is redirect to after the payment flow has finished. You can add any number of key
+            value pairs in the query string that, for instance help you to identify the customer when they return to
+            your site. Please note that we will also append some additional key value pairs that will also help you with
+            this identification process.
+            Note: The provided URL should be absolute and contain the protocol to use, e.g. http:// or https://. For use
+            on mobile devices a custom protocol can be used in the form of protocol://. This protocol must be registered
+            on the device first.
+            URLs without a protocol will be rejected.
+          maxLength: 2048
+          example: "https://shop.url/orderfinishedetc"
+        logoUrl:
+          type: string
+          format: uri
+          pattern: '^(https?|ftp)://[^\s/$.?#].[^\s]*$'
+          description: To be used If the Merchant wants the customer to see his Logo ( special size need to be defined )
+          maxLength: 2048
+          example: "https://shop.url/orderfinishedetc"
+        autoRedirection:
+          type: boolean
+          example: true
+          description: |-
+            with the cases:
+            If is false and ReturnURl is not present, then no Button is displayed for shopper to come back
+            If is false but ReturnUrl is present then, a button will be displayed with a custom message if user wants to go back to merchant
+            If is True, no button will be displayed, and when payment is completed, user is returned back to a landing page on the merchant side using the returnUrl|
+        termsUrl:
+          type: string
+          format: uri
+          pattern: '^(https?|ftp)://[^\s/$.?#].[^\s]*$'
+          description: |-
+            Url to show the customer terms & conditions content
+          maxLength: 2048
+          example: "https://shop.url/tersmandconditions"
+        retryNumber:
+          type: integer
+          format: int64
+          description: Number of times to retry the back end apis, if not specified by default 3 retries
+          example: 4
+          minimum: 1
+          maximum: 20
+        merchantName:
+          $ref: '#/components/schemas/MerchantName'
+        merchantOrigin:
+          $ref: '#/components/schemas/MerchantOrigin'
+      required:
+        - authorizationMode
+        - paymentMethods
+    PaymentMethodId:
+      type: string
+      description: Payment method identifier used by the payment engine.
+    CreatePayByLinkResponse:
+      type: object
+      description: Object containing details about created Pay-link.
+      additionalProperties: false
+      properties:
+        expirationDate:
+          type: string
+          format: date-time
+          description: |-
+            If provided it overwrites 24 h default validity.
+            Date and time in RFC3339 format after which Items (Checkouts or Commerce-Cases, depending on the context) should be included in the request. Accepted formats are:
+              YYYY-MM-DD'T'HH:mm:ss'Z'
+              YYYY-MM-DD'T'HH:mm:ss+XX:XX
+              YYYY-MM-DD'T'HH:mm:ss-XX:XX
+              YYYY-MM-DD'T'HH:mm'Z'
+              YYYY-MM-DD'T'HH:mm+XX:XX
+              YYYY-MM-DD'T'HH:mm-XX:XX
+            All other formats may be ignored by the system.
+            some examples:
+              YYYY-MM-DDThh:mm:ssZ:
+                value: 2022-11-10T13:34:23Z
+              YYYY-MM-DDThh:mm:ss+XX:XX:
+                value: 2022-11-10T14:34:23+01:00
+        paymentLinkOrder:
+          $ref: "#/components/schemas/PaymentLinkOrder"
+        status:
+          $ref: '#/components/schemas/PayLinkStatusValue'
+        redirectionUrl:
+          type: string
+          example: "https://commerceplatformURL/25296588-4ddc-4632-9818-532840d49780"
+        paymentLinkId:
+          type: string
+          format: UUID
+          description: Unique identifier for the pay-link
+    PaymentLinkOrder:
+      type: object
+      properties:
+        merchantReference:
+          type: string
+          example: "Order-20250119112400"
+        amount:
+          type: object
+          properties:
+            amount:
+              type: integer
+              format: int64
+              example: 30200
+              description: Total amount of money to be paid
+            currencyCode:
+              type: string
+              description: Currency code (e.g., EUR)
+    PayLinkStatusValue:
+      type: string
+      description: enum for pay-link status
+      enum:
+        - ACTIVE
+        - PAID
+        - EXPIRED
+        - REDIRECTED
+    MerchantName:
+      type: string
+      description: >-
+        The canonical name of the merchant that initiates the checkout,
+        per your records. This name needs to be suitable for display.
+        Don't localize the name.
+      example: "TestMerchant"
+    MerchantOrigin:
+      type: string
+      description: >-
+        The fully qualified domain of the merchant who made the request.
+        Make this string the hostname of the merchant's website where the
+        checkout initiation occurs. For international (non-ASCII) domains,
+        use Punycode. For example, if the merchant domain is google.rf,
+        provide an origin value of xn-c1aay4a.xn-p1ai. The string can
+        include an optional port number if it doesn't use a standard HTTP
+        or HTTPS port value.
+      example: "merchant.example.com"
+    AuthenticationToken:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The JWT authentication token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier of the JWT authentication token
+          example: "b311ea35-57c9-4118-8712-9a5bd253eb37"
+        creationDate:
+          type: string
+          format: date-time
+          description: The creation date of the JWT authentication token. Format YYYY-MM-DD'T'HH:mm:ss'Z'
+          example: "2023-10-01T00:00:00.000Z"
+        expirationDate:
+          type: string
+          format: date-time
+          description: The expiration date of the JWT authentication token. Format YYYY-MM-DD'T'HH:mm:ss'Z'
+          example: "2024-01-01T00:00:00.000Z"
