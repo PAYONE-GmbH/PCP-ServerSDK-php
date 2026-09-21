@@ -94,6 +94,43 @@ class GetCheckoutsQueryTest extends TestCase
         $this->assertEquals("260042", $queryMap["cardAuthorizationId"]);
         $this->assertEquals("0321", $queryMap["receiptNumber"]);
         $this->assertEquals("012345", $queryMap["traceNumber"]);
+
+        $this->assertSame(1, $query->getOffset());
+        $this->assertSame(10, $query->getSize());
+        $this->assertSame('2021-01-01T00:00:00+00:00', $query->getFromDate()?->format(DateTime::ATOM));
+        $this->assertSame('2021-01-31T00:00:00+00:00', $query->getToDate()?->format(DateTime::ATOM));
+        $this->assertSame(100, $query->getFromCheckoutAmount());
+        $this->assertSame(200, $query->getToCheckoutAmount());
+        $this->assertSame(50, $query->getFromOpenAmount());
+        $this->assertSame(150, $query->getToOpenAmount());
+        $this->assertSame(10, $query->getFromCollectedAmount());
+        $this->assertSame(20, $query->getToCollectedAmount());
+        $this->assertSame(5, $query->getFromCancelledAmount());
+        $this->assertSame(15, $query->getToCancelledAmount());
+        $this->assertSame(1, $query->getFromRefundAmount());
+        $this->assertSame(2, $query->getToRefundAmount());
+        $this->assertSame(100, $query->getFromChargebackAmount());
+        $this->assertSame(200, $query->getToChargebackAmount());
+        $this->assertSame('123456', $query->getCheckoutId());
+        $this->assertSame('7890', $query->getMerchantReference());
+        $this->assertSame('1234', $query->getMerchantCustomerId());
+        $this->assertSame([12, 456], $query->getIncludePaymentProductId());
+        $this->assertSame([StatusCheckout::BILLED, StatusCheckout::CHARGEBACKED], $query->getIncludeCheckoutStatus());
+        $this->assertSame([ExtendedCheckoutStatus::OPEN, ExtendedCheckoutStatus::DELETED], $query->getIncludeExtendedCheckoutStatus());
+        $this->assertSame([PaymentChannel::ECOMMERCE, PaymentChannel::POS], $query->getIncludePaymentChannel());
+        $this->assertSame('1234', $query->getPaymentReference());
+        $this->assertSame('5678', $query->getPaymentId());
+        $this->assertSame('John', $query->getFirstName());
+        $this->assertSame('Doe', $query->getSurname());
+        $this->assertSame('john.doe@example.com', $query->getEmail());
+        $this->assertSame('1234567890', $query->getPhoneNumber());
+        $this->assertSame('1980-01-01', $query->getDateOfBirth());
+        $this->assertSame('Company Inc.', $query->getCompanyInformation());
+        $this->assertSame('1234', $query->getTerminalId());
+        $this->assertSame('5678', $query->getReportingToken());
+        $this->assertSame('260042', $query->getCardAuthorizationId());
+        $this->assertSame('0321', $query->getReceiptNumber());
+        $this->assertSame('012345', $query->getTraceNumber());
     }
 
     public function testNulls(): void
