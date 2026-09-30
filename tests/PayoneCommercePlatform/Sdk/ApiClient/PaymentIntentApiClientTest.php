@@ -12,6 +12,9 @@ use PayoneCommercePlatform\Sdk\Models\CreatePaymentIntentRequest;
 use PayoneCommercePlatform\Sdk\Models\CreatePaymentIntentResponse;
 use PayoneCommercePlatform\Sdk\Models\PaymentIntentResponse;
 use PayoneCommercePlatform\Sdk\Models\PaymentReferencesForPaymentIntent;
+use PayoneCommercePlatform\Sdk\Models\PatchPaymentIntentRequest;
+use PayoneCommercePlatform\Sdk\Models\PatchPaymentIntentResponse;
+use PayoneCommercePlatform\Sdk\Models\ShoppingCartData;
 use PayoneCommercePlatform\Sdk\TestUtils\TestApiClientTrait;
 
 class PaymentIntentApiClientTest extends TestCase
@@ -66,5 +69,32 @@ class PaymentIntentApiClientTest extends TestCase
         $response = $this->paymentIntentClient->getPaymentIntent('merchant id', 'intent/id');
 
         self::assertEquals(new PaymentIntentResponse(), $response);
+    }
+
+    public function testPatchPaymentIntentBuildsRequestAndDeserializesUpdatedIntent(): void
+    {
+        $this->httpClientMock->expects(self::once())->method('send')->with(
+            self::callback(function (RequestInterface $request): bool {
+                self::assertSame('PATCH', $request->getMethod());
+                self::assertSame('awesome-api.com/v1/merchant%20id/payment-intents/intent%2Fid', $request->getUri()->getPath());
+                self::assertSame('application/json', $request->getHeaderLine('Content-Type'));
+                self::assertSame(
+                    '{"amountOfMoney":{"amount":1337,"currencyCode":"EUR"},"shoppingCart":{}}',
+                    (string) $request->getBody(),
+                );
+                return true;
+            }),
+            ['http_errors' => false],
+        )->willReturn(new Response(200, body: '{"shoppingCart":{},"paymentIntentOutput":{"paymentIntentId":"intent-id"}}'));
+
+        $response = $this->paymentIntentClient->patchPaymentIntent(
+            'merchant id',
+            'intent/id',
+            new PatchPaymentIntentRequest(new AmountOfMoney(1337, 'EUR'), new ShoppingCartData()),
+        );
+
+        self::assertInstanceOf(PatchPaymentIntentResponse::class, $response);
+        self::assertSame('intent-id', $response->getPaymentIntentOutput()?->getPaymentIntentId());
+        self::assertInstanceOf(ShoppingCartData::class, $response->getShoppingCart());
     }
 }

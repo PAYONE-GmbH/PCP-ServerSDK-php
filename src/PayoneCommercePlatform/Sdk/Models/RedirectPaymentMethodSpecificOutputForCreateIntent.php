@@ -12,15 +12,15 @@ class RedirectPaymentMethodSpecificOutputForCreateIntent
     protected ?int $paymentProductId;
     #[SerializedName('paymentProduct840SpecificOutput')]
     protected ?RedirectPaymentProduct840SpecificInputData $paymentProduct840SpecificOutput;
-    #[SerializedName('redirectionData')]
-    protected ?RedirectionData $redirectionData;
+    #[SerializedName('redirectData')]
+    protected ?RedirectData $redirectData;
 
-    public function __construct(?bool $requiresApproval = null, ?int $paymentProductId = null, ?RedirectPaymentProduct840SpecificInputData $paymentProduct840SpecificOutput = null, ?RedirectionData $redirectionData = null)
+    public function __construct(?bool $requiresApproval = null, ?int $paymentProductId = null, ?RedirectPaymentProduct840SpecificInputData $paymentProduct840SpecificOutput = null, ?RedirectData $redirectData = null)
     {
         $this->requiresApproval = $requiresApproval;
         $this->paymentProductId = $paymentProductId;
         $this->paymentProduct840SpecificOutput = $paymentProduct840SpecificOutput;
-        $this->redirectionData = $redirectionData;
+        $this->redirectData = $redirectData;
     }
 
     public function getRequiresApproval(): ?bool
@@ -50,13 +50,13 @@ class RedirectPaymentMethodSpecificOutputForCreateIntent
         $this->paymentProduct840SpecificOutput = $paymentProduct840SpecificOutput;
         return $this;
     }
-    public function getRedirectionData(): ?RedirectionData
+    public function getRedirectData(): ?RedirectData
     {
-        return $this->redirectionData;
+        return $this->redirectData;
     }
-    public function setRedirectionData(?RedirectionData $redirectionData): self
+    public function setRedirectData(?RedirectData $redirectData): self
     {
-        $this->redirectionData = $redirectionData;
+        $this->redirectData = $redirectData;
         return $this;
     }
 }
