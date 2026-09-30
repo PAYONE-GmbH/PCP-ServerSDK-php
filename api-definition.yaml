@@ -1,7 +1,7 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.65.0
+  version: 1.71.0
   title: "Commerce Platform API"
   description: |
     RESTful API for the creation of Commerce Cases with Checkouts and the execution of Payments.
@@ -1590,7 +1590,7 @@ paths:
       responses:
         '201':
           x-nullable: true
-          description: The response contains the reference of the created Payment Intent.
+          description: The response contains the created Payment Intent, including its reference.
           content:
             application/json:
               schema:
@@ -1637,11 +1637,42 @@ paths:
       responses:
         '200':
           x-nullable: true
-          description: The response contains the reference of the created Payment Intent.
+          description: The response contains the Payment Intent.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaymentIntentResponse'
+        '404':
+          x-nullable: true
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update a Payment Intent
+      description: |-
+        This endpoint can be used to update the shopping cart and amount of money of a payment intent.
+      tags:
+        - PaymentIntent
+      operationId: patchPaymentIntent
+      parameters:
+        - $ref: '#/components/parameters/merchantIdPath'
+        - $ref: '#/components/parameters/paymentIntentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchPaymentIntentRequest'
+      responses:
+        '200':
+          x-nullable: true
+          description: The response contains the updated Payment Intent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchPaymentIntentResponse'
         '404':
           x-nullable: true
           description: Payment not found
@@ -1719,7 +1750,6 @@ components:
         Format YYYYMMDD
       schema:
         type: string
-        maxLength: 8
         pattern: ^((19|20|21)\d{6})?$
       example: 20041101
     email:
@@ -4116,6 +4146,24 @@ components:
       properties:
         customer:
           $ref: '#/components/schemas/Customer'
+    PatchPaymentIntentRequest:
+      title: PaymentIntentRequest
+      type: object
+      description: |
+        Object containing details for updating a payment intent.
+      additionalProperties: false
+      properties:
+        amountOfMoney:
+          $ref: '#/components/schemas/AmountOfMoney'
+        shoppingCart:
+          $ref: '#/components/schemas/ShoppingCartData'
+    PatchPaymentIntentResponse:
+      title: PaymentIntentResponse
+      type: object
+      description: Object containing details on the updated payment intent.
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/CreatePaymentIntentResponse'
     PausePaymentRequest:
       type: object
       description: Request to pause a payment for a specific payment method.
@@ -4870,7 +4918,6 @@ components:
           description: |-
             The date of birth of the customer of the recipient of the loan.
             Format YYYYMMDD
-          maxLength: 8
           pattern: ^((19|20|21)\d{6})?$
         gender:
           type: string
@@ -4985,7 +5032,7 @@ components:
         redirectURL:
           type: string
           description: The URL that the customer should be redirected to. Be sure to redirect using the GET method
-          example: https://example-mandate-signing-url.com\
+          example: https://example-redirect-url.com
     RedirectionData:
       type: object
       description: Object containing browser specific redirection related data.
@@ -5090,8 +5137,8 @@ components:
           $ref: '#/components/schemas/PaymentProductId'
         paymentProduct840SpecificOutput:
           $ref: '#/components/schemas/RedirectPaymentProduct840SpecificInputData'
-        redirectionData:
-          $ref: '#/components/schemas/RedirectionData'
+        redirectData:
+          $ref: '#/components/schemas/RedirectData'
     RedirectPaymentMethodSpecificOutputForIntent:
       title: redirectPaymentMethodSpecificOutput
       type: object
